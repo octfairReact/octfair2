@@ -1,7 +1,7 @@
 import { NoticeModalStyled } from "./styled";
 import { modalState } from "../../../../stores/modalState";
 import { useRecoilState } from "recoil";
-import { FC, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FC, useEffect, useRef, useState } from "react";
 import { ILoginInfo } from "../../../../models/interface/store/userInfo";
 import { loginInfoState } from "../../../../stores/userInfo";
 import {
@@ -11,6 +11,7 @@ import {
 } from "../../../../models/interface/INotice";
 import { postNoticeApi } from "../../../../api/postNoticeApi";
 import { Notice } from "../../../../api/api";
+import axios, { AxiosResponse } from "axios";
 
 interface INoticeModalProps {
   onSuccess: () => void;
@@ -26,6 +27,8 @@ export const NoticeModal: FC<INoticeModalProps> = ({
   const [modal, setModal] = useRecoilState<boolean>(modalState); // recoil에 저장된 state
   const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
   const [noticeDetail, setNoticeDetail] = useState<INoticeDetail>();
+  const [imageUrl, setImageUrl] = useState<string>();
+  const [fileData, setFileData] = useState<File>();
   const title = useRef<HTMLInputElement>();
   const context = useRef<HTMLInputElement>();
 
@@ -42,38 +45,89 @@ export const NoticeModal: FC<INoticeModalProps> = ({
     const detailApi = await postNoticeApi<IDetailReponse>(Notice.getDetail, {
       noticeSeq,
     });
-    if (detailApi) setNoticeDetail(detailApi.detail);
+
+    if (detailApi) {
+      setNoticeDetail(detailApi.detail);
+      const { fileExt, logicalPath } = detailApi.detail;
+      if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png") {
+        setImageUrl(logicalPath);
+        console.log(logicalPath);
+      } else {
+        setImageUrl("");
+      }
+      // console.log(logicalPath);
+    }
   };
 
   const handlerModal = () => {
     setModal(!modal);
   };
 
-  const handlerSave = async () => {
-    const param = {
+  // const handlerSave = async () => {
+  //   const param = {
+  //     title: title.current.value,
+  //     context: context.current.value,
+  //     loginId: userInfo.loginId,
+  //   };
+
+  //   const saveApi = await postNoticeApi<IPostResponse>(Notice.getSave, param);
+
+  //   if (saveApi.result === "success") onSuccess();
+  // };
+
+  const handlerFileSave = () => {
+    const fileForm = new FormData();
+    const textData = {
       title: title.current.value,
       context: context.current.value,
       loginId: userInfo.loginId,
     };
+    fileData && fileForm.append("file", fileData);
+    fileForm.append(
+      "text",
+      new Blob([JSON.stringify(textData)], { type: "application/json" })
+    );
 
-    const saveApi = await postNoticeApi<IPostResponse>(Notice.getSave, param);
-
-    if (saveApi.result === "success") onSuccess();
+    axios
+      .post("/board/noticeSaveFileForm.do", fileForm)
+      .then((res: AxiosResponse<IPostResponse>) => {
+        res.data.result === "success" && onSuccess();
+      });
   };
 
-  const handlerUpdate = async () => {
-    const param = {
+  // const handlerUpdate = async () => {
+  //   const param = {
+  //     title: title.current.value,
+  //     context: context.current.value,
+  //     noticeSeq,
+  //   };
+
+  //   const updateApi = await postNoticeApi<IPostResponse>(
+  //     Notice.getUpdate,
+  //     param
+  //   );
+
+  //   if (updateApi.result === "success") onSuccess();
+  // };
+
+  const handlerFileUPdate = () => {
+    const fileForm = new FormData();
+    const textData = {
       title: title.current.value,
       context: context.current.value,
       noticeSeq,
     };
-
-    const updateApi = await postNoticeApi<IPostResponse>(
-      Notice.getUpdate,
-      param
+    fileData && fileForm.append("file", fileData);
+    fileForm.append(
+      "text",
+      new Blob([JSON.stringify(textData)], { type: "application/json" })
     );
 
-    if (updateApi.result === "success") onSuccess();
+    axios
+      .post("/board/noticeUpdateFileForm.do", fileForm)
+      .then((res: AxiosResponse<IPostResponse>) => {
+        res.data.result === "success" && onSuccess();
+      });
   };
 
   const handlerDelete = async () => {
@@ -82,6 +136,26 @@ export const NoticeModal: FC<INoticeModalProps> = ({
     });
 
     if (deleteApi.result === "success") onSuccess();
+  };
+
+  const handlerFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const fileInfo = e.target.files;
+    if (fileInfo?.length > 0) {
+      const fileInfoSplit = fileInfo[0].name.split(".");
+      const fileExtension = fileInfoSplit[1].toLowerCase();
+
+      if (
+        fileExtension === "jpg" ||
+        fileExtension === "gif" ||
+        fileExtension === "png"
+      ) {
+        setImageUrl(URL.createObjectURL(fileInfo[0]));
+      } else {
+        setImageUrl("");
+      }
+
+      setFileData(fileInfo[0]);
+    }
   };
 
   return (
@@ -104,18 +178,28 @@ export const NoticeModal: FC<INoticeModalProps> = ({
           ></input>
         </label>
         파일 :
-        <input type="file" id="fileInput" style={{ display: "none" }}></input>
+        <input
+          type="file"
+          id="fileInput"
+          style={{ display: "none" }}
+          onChange={handlerFile}
+        ></input>
         <label className="img-label" htmlFor="fileInput">
           파일 첨부하기
         </label>
         <div>
-          <div>
-            <label>미리보기</label>
-            <img src="" />
-          </div>
+          {imageUrl ? (
+            <div>
+              <label>미리보기</label>
+              <img src={imageUrl} />
+              {fileData?.name || noticeDetail.fileName}
+            </div>
+          ) : (
+            <div>{fileData?.name}</div>
+          )}
         </div>
         <div className={"button-container"}>
-          <button onClick={noticeSeq ? handlerUpdate : handlerSave}>
+          <button onClick={noticeSeq ? handlerFileUPdate : handlerFileSave}>
             {noticeSeq ? "수정" : "등록"}
           </button>
           {noticeSeq && <button onClick={handlerDelete}>삭제</button>}
