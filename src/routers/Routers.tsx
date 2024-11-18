@@ -3,6 +3,7 @@ import { Login } from "../pages/Login";
 import { DashBoard } from "../component/layout/DashBoard/DashBoard";
 import { NotFound } from "../component/common/NotFound/NotFound";
 import { Notice } from "../pages/Notice";
+import { History } from "../pages/History";
 import { NoticeRouter } from "../component/page/Notice/NoticeRouter/NoticeRouter";
 import { JobPost } from "../pages/JobPost";
 
@@ -23,6 +24,10 @@ const routers: RouteObject[] = [
       {
         path: "jobs",
         children: [{ path: "posts.do", element: <JobPost /> }],
+      },
+      {
+        path: "apply",
+        children: [{ path: "history.do", element: <History /> }],
       },
     ],
   },
