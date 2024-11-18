@@ -10,3 +10,7 @@ export const Notice = {
   getUpdate: "/board/noticeUpdateBody.do",
   getDelete: "/board/noticeDeleteBody.do",
 };
+
+export const JobPost = {
+  getList: "/jobs/posts",
+};
