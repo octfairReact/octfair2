@@ -11,7 +11,7 @@ import {
 } from "../../../../models/interface/INotice";
 import { postNoticeApi } from "../../../../api/postNoticeApi";
 import { Notice } from "../../../../api/api";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 
 interface INoticeModalProps {
   onSuccess: () => void;
@@ -158,6 +158,29 @@ export const NoticeModal: FC<INoticeModalProps> = ({
     }
   };
 
+  const downloadFile = async () => {
+    const param = new URLSearchParams();
+    param.append("noticeSeq", noticeSeq.toString());
+
+    const postAction: AxiosRequestConfig = {
+      url: "/board/noticeDownload.do",
+      method: "POST",
+      data: param,
+      responseType: "blob",
+    };
+
+    await axios(postAction).then((res) => {
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", noticeDetail?.fileName as string);
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove(); // 다운로드 후 a태그 삭제
+    });
+  };
+
   return (
     <NoticeModalStyled>
       <div className="container">
@@ -187,7 +210,7 @@ export const NoticeModal: FC<INoticeModalProps> = ({
         <label className="img-label" htmlFor="fileInput">
           파일 첨부하기
         </label>
-        <div>
+        <div onClick={downloadFile}>
           {imageUrl ? (
             <div>
               <label>미리보기</label>

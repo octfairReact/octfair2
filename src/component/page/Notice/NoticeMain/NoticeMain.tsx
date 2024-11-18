@@ -109,12 +109,13 @@ export const NoticeMain = () => {
               return (
                 <tr
                   key={notice.noticeIdx}
-                  //   onClick={() => handlerModal(notice.noticeIdx)}
-                  onClick={() =>
-                    navigate(notice.noticeIdx.toString(), {
-                      state: { title: notice.title },
-                    })
-                  }
+                  onClick={() => handlerModal(notice.noticeIdx)}
+                  // // ↓ router
+                  // onClick={() =>
+                  //   navigate(notice.noticeIdx.toString(), {
+                  //     state: { title: notice.title },
+                  //   })
+                  // }
                 >
                   <StyledTd>{notice.noticeIdx}</StyledTd>
                   <StyledTd>{notice.title}</StyledTd>
