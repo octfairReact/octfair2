@@ -15,3 +15,6 @@ export const Notice = {
 //   getList: 'board/faqListJson.do',
 //   getListBody: '/board/faqListBody.do',
 // };
+export const JobPost = {
+  getList: '/jobs/posts',
+};
