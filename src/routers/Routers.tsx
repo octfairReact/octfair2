@@ -9,6 +9,7 @@ import { JobPost } from "../pages/JobPost";
 import ManageHirePost from "../pages/ManageHirePost";
 import ManageHireApplicant from "../pages/ManageHireApplicant";
 import NewHirePost from "../component/page/ManageHire/NewHirePost/NewHirePost";
+import { Resume } from "../pages/Resume";
 
 const routers: RouteObject[] = [
   { path: "*", element: <NotFound /> },
@@ -30,7 +31,10 @@ const routers: RouteObject[] = [
       },
       {
         path: "apply",
-        children: [{ path: "history.do", element: <History /> }],
+        children: [
+          { path: "resume.do", element: <Resume /> },
+          { path: "history.do", element: <History /> }
+        ],
       },
       {
         path: "manage-hire",
