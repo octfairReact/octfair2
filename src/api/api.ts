@@ -18,5 +18,10 @@ export const Faq = {
 };
 
 export const JobPost = {
-  getList: '/jobs/posts',
+  getList: '/api/jobs/readPostList.do',
+};
+
+export const Resume = {
+  getList: '/api/apply/resumeList.do',
+  getCopy: '/api/apply/resumeCopy.do',
 };

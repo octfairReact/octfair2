@@ -8,6 +8,7 @@ import { NoticeRouter } from '../component/page/Notice/NoticeRouter/NoticeRouter
 import { JobPost } from '../pages/JobPost';
 import { Faq } from '../pages/Faq';
 import { FaqRouter } from '../component/page/Faq/FaqRouter/FaqRouter';
+import { Resume } from '../pages/Resume';
 
 const routers: RouteObject[] = [
   { path: '*', element: <NotFound /> },
@@ -31,7 +32,10 @@ const routers: RouteObject[] = [
       },
       {
         path: 'apply',
-        children: [{ path: 'history.do', element: <History /> }],
+        children: [
+          { path: 'resume.do', element: <Resume /> },
+          { path: 'history.do', element: <History /> },
+        ],
       },
     ],
   },
