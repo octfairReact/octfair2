@@ -5,7 +5,7 @@ export const SignUpModalStyled = styled.div`
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 500px;
+    width: auto;
     height: auto;
     z-index: 1000;
     display: flex;
@@ -15,15 +15,17 @@ export const SignUpModalStyled = styled.div`
     padding: 20px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
 
-    label {
-        display: flex;
-        width: auto;
-        flex-direction: column;
-    }
-
     input[type="text"] {
         padding: 8px;
         width: 350px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        border: 1px solid #ccc;
+    }
+
+    input[name="userName"] {
+        padding: 8px;
+        width: 150px;
         margin-top: 5px;
         margin-bottom: 5px;
         border-radius: 4px;
@@ -34,17 +36,45 @@ export const SignUpModalStyled = styled.div`
         padding: 8px;
         margin-top: 5px;
         margin-bottom: 5px;
-        border-radius: 4px;
+        border-radius: 5px;
         border: 1px solid #ccc;
     }
 
-    .container {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.25);
-        position: relative;
-        width: 400px;
+    .table {
+        display: flex;
+        width: auto;
+        flex-direction: column;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        padding: 10px; /* 내부 여백 */
+        text-align: left; /* 텍스트 정렬 */
+        border: 1px solid #ddd; /* 경계선 추가 */
+    }
+
+    th {
+        min-width: 110px; /* 최소 너비를 지정 */
+        text-align: center; /* 텍스트를 가운데 정렬 */
+        white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    }
+
+    .address-container {
+        display: flex; /* 가로로 배치 */
+        align-items: center; /* 수직 가운데 정렬 */
+        gap: 20px; /* 요소 간 간격 */
+    }
+
+    .address-container input {
+        flex: 1; /* input이 버튼보다 넓게 차지하도록 설정 */
+    }
+
+    .modal-footer {
+        margin-top: auto; /* 테이블 아래로 밀어내기 */
+        display: flex;
+        justify-content: center; /* 버튼을 가로로 중앙에 배치 */
+        width: 100%;
     }
 
     img {

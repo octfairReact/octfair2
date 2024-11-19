@@ -25,3 +25,7 @@ export const Resume = {
   getList: '/api/apply/resumeList.do',
   getCopy: '/api/apply/resumeCopy.do',
 };
+
+export const SignUp = {
+  register: '/register.do',
+}
