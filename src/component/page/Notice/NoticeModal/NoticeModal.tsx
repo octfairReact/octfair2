@@ -75,7 +75,7 @@ export const NoticeModal: FC<INoticeModalProps> = ({
   //   if (saveApi.result === "success") onSuccess();
   // };
 
-  const handlerFileSave = () => {
+  const handlerFileSave = (e) => {
     const fileForm = new FormData();
     const textData = {
       title: title.current.value,

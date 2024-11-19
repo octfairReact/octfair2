@@ -18,3 +18,7 @@ export const Notice = {
 export const JobPost = {
   getList: '/jobs/posts',
 };
+
+export const SignUp = {
+  register: '/register.do',
+}
