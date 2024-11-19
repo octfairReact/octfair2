@@ -6,6 +6,7 @@ import { Notice } from "../pages/Notice";
 import { History } from "../pages/History";
 import { NoticeRouter } from "../component/page/Notice/NoticeRouter/NoticeRouter";
 import { JobPost } from "../pages/JobPost";
+import { Resume } from "../pages/Resume";
 
 const routers: RouteObject[] = [
   { path: "*", element: <NotFound /> },
@@ -27,7 +28,10 @@ const routers: RouteObject[] = [
       },
       {
         path: "apply",
-        children: [{ path: "history.do", element: <History /> }],
+        children: [
+          { path: "resume.do", element: <Resume /> },
+          { path: "history.do", element: <History /> }
+        ],
       },
     ],
   },
