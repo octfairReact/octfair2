@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, FC, useState } from 'react';
 
 interface Context {
   searchKeyWord: object;
@@ -12,6 +12,9 @@ const defaultValue: Context = {
 
 export const FaqContext = createContext(defaultValue);
 
-//  const FaqProvider: FC<{
-//      children:React.ReactNode}
-//  }
+export const FaqProvider: FC<{
+  children: React.ReactNode | React.ReactNode[];
+}> = ({ children }) => {
+  const [searchKeyWord, setSearchKeyWord] = useState({});
+  return <FaqContext.Provider value={{ searchKeyWord, setSearchKeyWord }}>{children}</FaqContext.Provider>;
+};

@@ -11,10 +11,12 @@ export const Notice = {
   getDelete: '/board/noticeDeleteBody.do',
 };
 
-// export const Faq = {
-//   getList: 'board/faqListJson.do',
-//   getListBody: '/board/faqListBody.do',
-// };
+export const Faq = {
+  getList: '/board/faqListJson.do',
+  getListBody: '/board/faqListBody.do',
+  getDetail: '/board/faqDetailBody.do',
+};
+
 export const JobPost = {
   getList: '/jobs/posts',
 };
