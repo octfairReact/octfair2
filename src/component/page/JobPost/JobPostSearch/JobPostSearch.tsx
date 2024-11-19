@@ -25,7 +25,7 @@ export const JobPostSearch = () => {
 
   const handlerSearch = () => {
     setSearchKeyWord(searchValue);
-    console.log(searchValue);
+    // console.log(searchValue);
   };
 
   return (
