@@ -6,6 +6,9 @@ import { Notice } from "../pages/Notice";
 import { History } from "../pages/History";
 import { NoticeRouter } from "../component/page/Notice/NoticeRouter/NoticeRouter";
 import { JobPost } from "../pages/JobPost";
+import ManageHirePost from "../pages/ManageHirePost";
+import ManageHireApplicant from "../pages/ManageHireApplicant";
+import NewHirePost from "../component/page/ManageHire/NewHirePost/NewHirePost";
 
 const routers: RouteObject[] = [
   { path: "*", element: <NotFound /> },
@@ -28,6 +31,14 @@ const routers: RouteObject[] = [
       {
         path: "apply",
         children: [{ path: "history.do", element: <History /> }],
+      },
+      {
+        path: "manage-hire",
+        children: [
+          { path: "post.do", element: <ManageHirePost /> },
+          { path: "new-post.do", element: <NewHirePost /> },
+          { path: "applicant.do", element: <ManageHireApplicant /> },
+        ],
       },
     ],
   },
