@@ -54,8 +54,8 @@ export const LeftMenuBar = () => {
             <div className="logo-box">
                 <img src={logoImage} alt="logoImage" />
                 <div className="user-info">
-                    <div>{userInfo.loginId}</div>
-                    <button onClick={handlerLogout}>로그아웃</button>
+                    <div><span>{userInfo.loginId}</span>    <button onClick={handlerLogout}>로그아웃</button></div>
+                    
                 </div>
             </div>
             <ul>
