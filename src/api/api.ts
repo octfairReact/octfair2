@@ -18,6 +18,13 @@ export const Faq = {
   getDelete: '/board/faqDeleteBody.do',
 };
 
+export const Qna = {
+  getList: '/board/qnaListJson.do',
+  getListBody: '/board/qnaListBody.do',
+  getDetail: '/board/qnaDetailFileBody.do',
+  getDelete: '/board/qnaDeleteBody.do',
+};
+
 export const JobPost = {
   getList: "/api/jobs/readPostList.do",
   getDetail: "/api/jobs/readPostDetailBody.do",

@@ -3,13 +3,13 @@ import { IFaq, IFaqListResponse } from '../../../../models/interface/IFaq';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import { PageNavigate } from '../../../common/pageNavigation/PageNavigate';
 import { FaqContext } from '../../../../api/provider/FaqProvider';
-import { postFaqApi } from '../../../../api/postFaqApi';
 import { Faq } from '../../../../api/api';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { Portal } from '../../../common/potal/Portal';
 import { FaqModal } from '../FaqModal/FaqModal';
-import { Button, ButtonGroup } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
+import { postApi } from '../../../../api/postApi';
 
 export const FaqMain = () => {
   const [faqList, setFaqList] = useState<IFaq[]>();
@@ -32,7 +32,7 @@ export const FaqMain = () => {
       pageSize: '5',
     };
 
-    const searchList = await postFaqApi<IFaqListResponse>(Faq.getListBody, searchParam);
+    const searchList = await postApi<IFaqListResponse>(Faq.getListBody, searchParam);
 
     if (searchList) {
       setFaqList(searchList.faq);

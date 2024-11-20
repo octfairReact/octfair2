@@ -6,6 +6,10 @@ export interface IFaq {
   created_date: string;
 }
 
+export interface IFaqPostResponse {
+  result: string;
+}
+
 export interface IFaqListResponse {
   faqCnt: number;
   faq: IFaq[];

@@ -25,10 +25,11 @@ const routers: RouteObject[] = [
       {
         path: "board",
         children: [
-          { path: "notice.do", element: <Notice /> },
-          { path: "notice.do/:noticeIdx", element: <NoticeRouter /> },
-          { path: "faq.do", element: <Faq /> },
-          { path: "faq.do/:faqIdx", element: <FaqRouter /> },
+          { path: 'notice.do', element: <Notice /> },
+          { path: 'notice.do/:noticeIdx', element: <NoticeRouter /> },
+          { path: 'faq.do', element: <Faq /> },
+          { path: 'faq.do/:faqIdx', element: <FaqRouter /> },
+          { path: 'qna.do', element: <Qna /> },
         ],
       },
       {
