@@ -22,6 +22,8 @@ export const LoginMain = () => {
         pwd: "",
     });
     const navigate = useNavigate();
+
+    //회원 가입 모달 창 띄우기
     const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     const handlerModal = () => {

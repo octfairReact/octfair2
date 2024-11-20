@@ -2,17 +2,19 @@ import { useRef, useState } from "react";
 import { SignUpModalStyled } from "./styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../stores/modalState";
-import axios from "axios";
 
 import { SignUp } from "../../../../api/api";
 import { postSignUpApi } from "../../../../api/postSignUpApi";
-import { IPostResponse } from "../../../../models/interface/INotice";
+import { IPostResponse, ISignUp, ISignUpForValidation } from "../../../../models/interface/ISignUp";
+import { z } from "zod";
+import { userSchema } from './Validate/Schemas';
 
 export const SignUpModal = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [userType, setUserType] = useState<string>(""); // 초기값 설정
     const loginId = useRef<HTMLInputElement>();
     const password = useRef<HTMLInputElement>();
+    const checkPassword = useRef<HTMLInputElement>();
     const name = useRef<HTMLInputElement>();
     const [userGender, setUserGender] = useState<string>("");
     const birth = useRef<HTMLInputElement>();
@@ -22,7 +24,32 @@ export const SignUpModal = () => {
     const userAddress = useRef<HTMLInputElement>();
     const userDetailAddress = useRef<HTMLInputElement>();
 
-    const blank = "";
+    // const loginIdRegex = new RegExp(/^[a-z0-9]{6,20}$/g);
+    // const passwordRegex = new RegExp(/^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/);
+    // const emailRegex = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
+    // const phoneRegex = new RegExp(/^(010)-?\d{3,4}-?\d{4}$/);
+
+    // const userSchema = z.object({
+    //     userType: z.string().min(1, "회원 유형을 선택해주세요"),
+    //     loginId: z.string().min(1, "아이디를 입력해주세요").regex(loginIdRegex, "올바른 아이디 형식이 아닙니다"),
+    //     password: z
+    //         .string()
+    //         .min(1, "비밀번호를 입력해주세요")
+    //         .regex(passwordRegex, "비밀번호는 숫자, 영문자, 특수문자 조합으로 8~15자리여야 합니다"),
+    //     checkPassword: z.string().min(1, "확인용 비밀번호를 입력해주세요"),
+    //     name: z.string().min(1, "이름을 입력해주세요"),
+    //     userGender: z.string().min(1, "성별을 선택해주세요"),
+    //     birth: z.string().min(1, "생년월일을 선택해주세요"),
+    //     phone: z.string().min(1, "전화번호를 입력해주세요").regex(phoneRegex, "올바른 전화번호 형식이 아닙니다"),
+    //     email: z.string().min(1, "이메일을 입력해주세요").regex(emailRegex, "올바른 이메일 형식이 아닙니다"),
+    //     zipCode: z
+    //         .string()
+    //         .min(1, "우편번호를 입력해주세요")
+    //         .max(5, "우편번호는 다섯 자리 숫자입니다")
+    //         .regex(/^\d{5}$/, "우편번호는 반드시 다섯 자리 숫자여야 합니다") // 숫자만 허용
+    //         .transform((val) => parseInt(val, 10)), // 문자열을 숫자로 변환,
+    //     userAddress: z.string().min(1, "주소를 입력해주세요"),
+    // });
 
     const handleUserType = (e) => {
         setUserType(e.target.value);
@@ -34,6 +61,45 @@ export const SignUpModal = () => {
 
     const handlerSave = async (e) => {
         e.preventDefault();
+
+        const data: ISignUpForValidation = {
+            userType: userType,
+            loginId: loginId.current.value,
+            password: password.current.value,
+            checkPassword: checkPassword.current.value,
+            name: name.current.value,
+            userGender: userGender, // gender 필드 수정: userGender -> sex로 변경
+            phone: phone.current.value,
+            email: email.current.value,
+            birth: birth.current.value,
+            zipCode: zipCode.current.value,
+            address: userAddress.current.value,
+            detailAddress: userDetailAddress.current.value,
+        };
+
+        const validResult = userSchema.safeParse(data);
+        if (!validResult.success) {
+            alert(validResult.error.errors[0].message);
+            return;
+        }
+        // // Zod 유효성 검사
+        // const result = userSchema.safeParse({
+        //     userType: userType,
+        //     loginId: loginId.current.value,
+        //     password: password.current.value,
+        //     checkPassword: checkPassword.current.value,
+        //     name: name.current.value,
+        //     userGender: userGender,
+        //     birth: birth.current.value,
+        //     phone: phone.current.value,
+        //     email: email.current.value,
+        //     zipCode: zipCode.current.value,
+        //     userAddress: userAddress.current.value,
+        // }); 
+        // if (!result.success) {
+        //     alert(result.error.errors[0].message); // 에러 메시지 출력
+        //     return; // 유효성 검사 실패 시 폼 제출 중지
+        // }
 
         const param = {
             action: "I",
@@ -55,6 +121,7 @@ export const SignUpModal = () => {
         const save = await postSignUpApi<IPostResponse>(SignUp.register, param);
 
         if (save.result === "SUCCESS") {
+            alert("회원 가입이 완료되었습니다");
             handlerModal();
         }
     };
@@ -67,22 +134,7 @@ export const SignUpModal = () => {
         <form>
             <SignUpModalStyled>
                 <table className="table">
-                    <thead style={{ display: "none" }}>
-                        <tr>
-                            <th>헤더 1</th>
-                            <th>헤더 2</th>
-                            <th>헤더 3</th>
-                        </tr>
-                    </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <input type="hidden" name="ckIdcheckreg" value="" />
-                                <input type="hidden" name="ckEmailcheckreg" value="" />
-                                <input type="hidden" name="action" value="" />
-                            </td>
-                            <td></td>
-                        </tr>
                         <tr>
                             <th>회원 유형</th>
                             <td>
@@ -91,6 +143,8 @@ export const SignUpModal = () => {
                                     <option value="A">개인회원</option>
                                     <option value="B">기업회원</option>
                                 </select>
+                                {/* ValidType 컴포넌트를 <td> 안에 넣고 props로 전달
+                                <ValidType userType={userType} setUserType={setUserType} /> */}
                             </td>
                         </tr>
                         <tr>
@@ -112,7 +166,7 @@ export const SignUpModal = () => {
                         <tr>
                             <th>비밀번호 확인</th>
                             <td>
-                                <input type="text"></input>
+                                <input type="text" ref={checkPassword}></input>
                             </td>
                         </tr>
                         <tr>
