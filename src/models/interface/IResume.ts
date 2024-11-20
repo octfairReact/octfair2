@@ -9,14 +9,14 @@ export interface IPostResponse {
   result: string;
 }
 
-// export interface IResumeDetail extends IResume {
-//   content: string;
-//   fileExt: string | null;
-//   fileName: string | null;
-//   fileSize: number;
-//   logicalPath: string | null;
-//   phsycalPath: string | null;
-// }
+export interface IResumeDetail extends IResume {
+  content: string;
+  fileExt: string | null;
+  fileName: string | null;
+  fileSize: number;
+  logicalPath: string | null;
+  phsycalPath: string | null;
+}
 
 // export interface IDetailReponse {
 //   detail: IResumeDetail;

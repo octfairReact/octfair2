@@ -7,7 +7,6 @@ import { IDetailResponse, IFaqDetail } from '../../../../models/interface/IFaq';
 import { FaqModalStyled } from './styled';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
-import { Blob } from 'buffer';
 import axios, { AxiosResponse } from 'axios';
 import { IPostResponse } from '../../../../models/interface/INotice';
 
@@ -49,29 +48,38 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
 
   const handlerSave = () => {
     const dataForm = new FormData();
-    const data = {
+    const textData = {
       title: title.current.value,
       context: context.current.value,
       loginId: userInfo.loginId,
+      faq_type: faq_type.current.value,
     };
-    // dataForm.append('text', new Blob([JSON.stringify(data)], { type: 'application/json' }));
-    axios.post('/board/faqSaveBody.do', dataForm).then((res: AxiosResponse<IPostResponse>) => {
+    dataForm.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
+    axios.post('/board/faqSavePart.do', dataForm).then((res: AxiosResponse<IPostResponse>) => {
       res.data.result === 'success' && onSuccess();
     });
   };
 
   const handlerUpdate = () => {
     const dataForm = new FormData();
-    const data = {
+    const textData = {
       title: title.current.value,
       context: context.current.value,
+      faq_type: faq_type.current.value,
       faqSeq,
     };
-    // dataForm.append('text', new Blob([JSON.stringify(data)], { type: 'application/json' }));
-    axios.post('/board/', dataForm).then((res: AxiosResponse<IPostResponse>) => {
+    dataForm.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
+    axios.post('/board/faqUpdatePart.do', dataForm).then((res: AxiosResponse<IPostResponse>) => {
       res.data.result === 'success' && onSuccess();
     });
   };
+
+  // const handlerDelete = () => {
+  //   const deleteApi = postFaqApi<IPostResponse>(Faq.dsfs, {
+  //     faqSeq,
+  //   });
+  //   if (deleteApi.result === 'success') onSuccess();
+  // };
 
   return (
     <FaqModalStyled>
@@ -85,11 +93,11 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
         <label>
           내용<input type="text" ref={context} defaultValue={faqDetail?.content}></input>
         </label>
-      </div>
-      <div className={'button-container'}>
-        <button onClick={faqSeq ? handlerUpdate : handlerSave}>{faqSeq ? '수정' : '등록'}</button>
-        {faqSeq && <button>삭제</button>}
-        <button onClick={handlerModal}>닫기</button>
+        <div className={'button-container'}>
+          <button onClick={faqSeq ? handlerUpdate : handlerSave}>{faqSeq ? '수정' : '등록'}</button>
+          {faqSeq && <button>삭제</button>}
+          <button onClick={handlerModal}>닫기</button>
+        </div>
       </div>
     </FaqModalStyled>
   );
