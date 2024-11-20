@@ -3,18 +3,22 @@ import {
   StyledTable,
   StyledTd,
   StyledTh,
-} from "../../common/styled/StyledTable";
-import { JobPostContext } from "../../../api/provider/JobPostProvider";
-import { IJobPost } from "../../../models/IJobPost";
-import { postNoticeApi } from "../../../api/postNoticeApi";
+} from "../../../common/styled/StyledTable";
+import { JobPostContext } from "../../../../api/provider/JobPostProvider";
+import { IJobPost, IJobPostListResponse } from "../../../../models/IJobPost";
+import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
+import { postJobPostApi } from "../../../../api/postJopPostApi";
+import { JobPost } from "../../../../api/api";
 
 export const JobPostMain = () => {
   const [jobPostList, setJobPostList] = useState<IJobPost[]>();
   const [listCount, setListCount] = useState<number>(0);
 
+  const [cPage, setCPage] = useState<number>();
   const { searchKeyWord } = useContext(JobPostContext);
 
   useEffect(() => {
+    // console.log("updated searchKeyWord: ", searchKeyWord);
     searchJobPostList();
   }, [searchKeyWord]);
 
@@ -27,19 +31,26 @@ export const JobPostMain = () => {
       pageSize: "5",
     };
 
-    // const searchList = await postNoticeApi<INoticeListResponse>(
-    //   JobPost.getList
-    //   searchParam
-    // );
-    // if (searchList) {
-    //   setJobPostList(searchList.);
-    //   setListCount(searchList.);
-    //   setCPage(currentPage);
-    // }
+    // console.log("searchParam: ", searchParam);
+
+    const searchList = await postJobPostApi<IJobPostListResponse>(
+      JobPost.getList,
+      searchParam
+    );
+    // console.log("API Response:", searchList);
+
+    if (searchList) {
+      setJobPostList(searchList.approvalList);
+      setListCount(searchList.approvalPostCnt);
+      setCPage(currentPage);
+    }
   };
 
   return (
     <>
+      <p>
+        총 공고 수: {listCount} | 현재 페이지: {cPage}
+      </p>
       <StyledTable>
         <thead>
           <tr>
@@ -70,11 +81,17 @@ export const JobPostMain = () => {
             })
           ) : (
             <tr>
-              <StyledTd colSpan={3}>데이터가 없습니다.</StyledTd>
+              <StyledTd colSpan={6}>데이터가 없습니다.</StyledTd>
             </tr>
           )}
         </tbody>
       </StyledTable>
+      <PageNavigate
+        totalItemsCount={listCount}
+        onChange={searchJobPostList}
+        activePage={cPage}
+        itemsCountPerPage={5}
+      ></PageNavigate>
     </>
   );
 };

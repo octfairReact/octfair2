@@ -1,5 +1,5 @@
 import { ContentBox } from "../component/common/ContentBox/ContentBox";
-import { JobPostMain } from "../component/page/JobPost/JobPostMain";
+import { JobPostMain } from "../component/page/JobPost/JobPostMain/JobPostMain";
 import { JobPostSearch } from "../component/page/JobPost/JobPostSearch/JobPostSearch";
 import { JobPostProvider } from "../api/provider/JobPostProvider";
 

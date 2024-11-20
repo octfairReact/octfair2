@@ -11,16 +11,27 @@ export const Notice = {
   getDelete: '/board/noticeDeleteBody.do',
 };
 
-// export const Faq = {
-//   getList: 'board/faqListJson.do',
-//   getListBody: '/board/faqListBody.do',
-// };
+export const Faq = {
+  getList: '/board/faqListJson.do',
+  getListBody: '/board/faqListBody.do',
+  getDetail: '/board/faqDetailBody.do',
+  getDelete: '/board/faqDeleteBody.do',
+};
+
 export const JobPost = {
-  getList: '/jobs/posts',
+  getList: '/api/jobs/readPostList.do',
 };
 
 export const Resume = {
   getList: '/api/apply/resumeList.do',
   getCopy: '/api/apply/resumeCopy.do',
   getDelete: '/api/apply/resumeDelete.do',
+};
+
+export const SignUp = {
+  register: '/register.do',
+};
+
+export const HirePost = {
+  getList: '/api/manage-hire/post-list'
 };
