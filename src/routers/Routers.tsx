@@ -7,6 +7,7 @@ import { History } from "../pages/History";
 import { NoticeRouter } from "../component/page/Notice/NoticeRouter/NoticeRouter";
 import { JobPost } from "../pages/JobPost";
 import { Resume } from "../pages/Resume";
+import { ResumeWrite } from "../component/page/Resume/ResumeDetail/ResumeWrite";
 
 const routers: RouteObject[] = [
   { path: "*", element: <NotFound /> },
@@ -30,6 +31,7 @@ const routers: RouteObject[] = [
         path: "apply",
         children: [
           { path: "resume.do", element: <Resume /> },
+          { path: "resumeDetail.do", element: <ResumeWrite /> },
           { path: "history.do", element: <History /> }
         ],
       },

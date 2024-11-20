@@ -1,26 +1,27 @@
-import { Button } from "../../../common/Button/Button";
-import { useContext, useEffect, useRef, useState } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { NoticeContext } from "../../../../api/provider/NoticeProvider";
 import { ResumeAddStyled } from "./styled";
+import Button from 'react-bootstrap/Button';
 
 export const ResumeAdd = () => {
   const navigate = useNavigate();
-  const { setSearchKeyWord } = useContext(NoticeContext);
 
-  useEffect(() => {
-    window.location.search &&
-      navigate(window.location.pathname, { replace: true });
-  }, [navigate]);
+  // useEffect(() => {
+  //   window.location.search &&
+  //     navigate(window.location.pathname, { replace: true });
+  // }, [navigate]);
 
   const handlerAdd = () => {
-    //
+    navigate('/react/apply/resumeDetail.do');
   };
 
   return (
     <ResumeAddStyled>
       <div className="input-box">
-        <Button onClick={handlerAdd}>새 이력서작성</Button>
+        <Button variant="primary" onClick={handlerAdd}>
+          새 이력서 작성
+        </Button>
       </div>
     </ResumeAddStyled>
   );
