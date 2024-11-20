@@ -5,15 +5,19 @@ import {
   StyledTh,
 } from "../../../common/styled/StyledTable";
 import { JobPostContext } from "../../../../api/provider/JobPostProvider";
-import { IJobPost, IJobPostListResponse } from "../../../../models/IJobPost";
+import {
+  IJobPost,
+  IJobPostListResponse,
+} from "../../../../models/interface/IJobPost";
 import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
-import { postJobPostApi } from "../../../../api/postJopPostApi";
 import { JobPost } from "../../../../api/api";
+import { useNavigate } from "react-router-dom";
+import { postApi } from "../../../../api/postApi";
 
 export const JobPostMain = () => {
+  const navigate = useNavigate();
   const [jobPostList, setJobPostList] = useState<IJobPost[]>();
   const [listCount, setListCount] = useState<number>(0);
-
   const [cPage, setCPage] = useState<number>();
   const { searchKeyWord } = useContext(JobPostContext);
 
@@ -33,7 +37,7 @@ export const JobPostMain = () => {
 
     // console.log("searchParam: ", searchParam);
 
-    const searchList = await postJobPostApi<IJobPostListResponse>(
+    const searchList = await postApi<IJobPostListResponse>(
       JobPost.getList,
       searchParam
     );
@@ -44,6 +48,10 @@ export const JobPostMain = () => {
       setListCount(searchList.approvalPostCnt);
       setCPage(currentPage);
     }
+  };
+
+  const hanlderDetail = (postIdx: number, bizIdx: number) => {
+    navigate(`/react/manage-post/${postIdx}/${bizIdx}`);
   };
 
   return (
@@ -68,7 +76,7 @@ export const JobPostMain = () => {
               return (
                 <tr
                   key={jobPost.postIdx}
-                  //  todo : 클릭시 post detail 연결
+                  onClick={() => hanlderDetail(jobPost.postIdx, jobPost.bizIdx)}
                 >
                   <StyledTd>{jobPost.postIdx}</StyledTd>
                   <StyledTd>{jobPost.title}</StyledTd>
