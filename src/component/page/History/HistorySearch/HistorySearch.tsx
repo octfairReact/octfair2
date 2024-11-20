@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ApplyContext } from "../../../../api/provider/ApplyProvider";
+import { HistorySearchStyled } from "./styled";
+import { Button } from "../../../common/Button/Button";
 
 export const HistorySearch = () => {
     const navigate = useNavigate();
@@ -62,11 +64,17 @@ export const HistorySearch = () => {
     setSearchKeyWord(searchValue);
   };
 
+  const handlerReset = () => {
+    // CaculateStartDate("all");
+    setSearchValue({viewStatus:'all',startDate: 'all', sortOrder: 'desc', keyword: ''});
+  }
+
     return(
         <>
+        <HistorySearchStyled>
         <p className="conTitle">
-							<span>입사지원 내역</span> <span className="fr"> <select
-								className="period" id="period" onChange={CaculateStartDate} >
+							<span className="fr"> <select
+								className="period" id="period" onChange={CaculateStartDate} value={searchValue.startDate}>
 									<option value="all">조회기간 전체</option>
 									<option value="1week">지난 1주일</option>
 									<option value="1month">지난 1개월</option>
@@ -75,21 +83,22 @@ export const HistorySearch = () => {
 									<option value="6month">지난 6개월</option>
 									<option value="1year">지난 1년</option>
 							</select> <select className="view-status" id="view-status" defaultValue="all" onChange={(e) =>
-                                    setSearchValue({ ...searchValue, viewStatus: e.target.value })}>
+                  setSearchValue({ ...searchValue, viewStatus: e.target.value })} value={searchValue.viewStatus}>
 									<option value="all">열람여부 전체</option>
 									<option value="1">열람</option>
 									<option value="0">미열람</option>
 							</select> <select className="sort-order" id="sort-order" defaultValue="desc" onChange={(e) =>
-                                    setSearchValue({ ...searchValue, sortOrder: e.target.value })}>
+                  setSearchValue({ ...searchValue, sortOrder: e.target.value })} value={searchValue.sortOrder}>
 									<option value="desc">최근지원순</option>
 									<option value="asc">과거지원순</option>
 							</select> <input type="text" className="keyword" id="keyword"
 								placeholder="키워드 입력"  onChange={(e) =>
-                                    setSearchValue({ ...searchValue, keyword: e.target.value })}/> 
-                                <button className="btnType blue" onClick={handlerSearch}>검색</button> 
-                                <a className="btnType gray" href="javascript:reset()"><span>초기화</span></a>
+                setSearchValue({ ...searchValue, keyword: e.target.value })} value={searchValue.keyword}/> 
+                                <Button onClick={handlerSearch}>검색</Button> 
+                                <button id='reset' onClick={handlerReset}><span>초기화</span></button>
 							</span>
 						</p>
+            </HistorySearchStyled>
         </>
     );
 }
