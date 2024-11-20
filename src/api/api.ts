@@ -15,6 +15,7 @@ export const Faq = {
   getList: '/board/faqListJson.do',
   getListBody: '/board/faqListBody.do',
   getDetail: '/board/faqDetailBody.do',
+  getDelete: '/board/faqDeleteBody.do',
 };
 
 export const JobPost = {
@@ -28,8 +29,8 @@ export const Resume = {
 
 export const SignUp = {
   register: '/register.do',
-}
+};
 
 export const HirePost = {
   getList: '/api/manage-hire/post-list'
-}
+};

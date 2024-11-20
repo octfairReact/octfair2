@@ -9,6 +9,7 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { Portal } from '../../../common/potal/Portal';
 import { FaqModal } from '../FaqModal/FaqModal';
+import { Button, ButtonGroup } from 'react-bootstrap';
 
 export const FaqMain = () => {
   const [faqList, setFaqList] = useState<IFaq[]>();
@@ -52,6 +53,11 @@ export const FaqMain = () => {
 
   return (
     <>
+      <div>
+        <Button>개인회원</Button>
+        <Button>기업회원</Button>
+      </div>
+
       <StyledTable>
         <thead>
           <tr>
@@ -66,12 +72,12 @@ export const FaqMain = () => {
           {faqList?.length > 0 ? (
             faqList?.map((faq) => {
               return (
-                <tr key={faq.faq_idx} onClick={() => handlerModal(faq.faq_idx)}>
+                <tr key={faq.faq_idx}>
                   <StyledTd>{faq.faq_idx}</StyledTd>
                   <StyledTd>{faq.title}</StyledTd>
                   <StyledTd>{faq.author}</StyledTd>
                   <StyledTd>{faq.created_date}</StyledTd>
-                  <StyledTd>관리</StyledTd>
+                  <StyledTd onClick={() => handlerModal(faq.faq_idx)}>관리</StyledTd>
                 </tr>
               );
             })
