@@ -74,12 +74,12 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
     });
   };
 
-  const handlerDelete = () => {
-    const deleteApi = postFaqApi<IPostResponse>(Faq.dsfs, {
-      faqSeq,
-    });
-    if (deleteApi.result === 'success') onSuccess();
-  };
+  // const handlerDelete = () => {
+  //   const deleteApi = postFaqApi<IPostResponse>(Faq.dsfs, {
+  //     faqSeq,
+  //   });
+  //   if (deleteApi.result === 'success') onSuccess();
+  // };
 
   return (
     <FaqModalStyled>

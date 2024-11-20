@@ -57,6 +57,7 @@ export const FaqMain = () => {
         <Button>개인회원</Button>
         <Button>기업회원</Button>
       </div>
+
       <StyledTable>
         <thead>
           <tr>
