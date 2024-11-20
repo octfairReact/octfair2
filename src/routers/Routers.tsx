@@ -37,6 +37,7 @@ const routers: RouteObject[] = [
         path: 'apply',
         children: [
           { path: 'resume.do', element: <Resume /> },
+          { path: "resumeDetail.do", element: <ResumeWrite /> },
           { path: 'history.do', element: <History /> },
         ],
       },
