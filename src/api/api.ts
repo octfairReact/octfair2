@@ -29,3 +29,7 @@ export const Resume = {
 export const SignUp = {
   register: '/register.do',
 }
+
+export const HirePost = {
+  getList: '/api/manage-hire/post-list'
+}
