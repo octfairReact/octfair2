@@ -1,41 +1,46 @@
-import { RouteObject, createBrowserRouter } from 'react-router-dom';
-import { Login } from '../pages/Login';
-import { DashBoard } from '../component/layout/DashBoard/DashBoard';
-import { NotFound } from '../component/common/NotFound/NotFound';
-import { Notice } from '../pages/Notice';
-import { History } from '../pages/History';
-import { NoticeRouter } from '../component/page/Notice/NoticeRouter/NoticeRouter';
-import { JobPost } from '../pages/JobPost';
-import ManageHirePost from '../pages/ManageHirePost';
-import ManageHireApplicant from '../pages/ManageHireApplicant';
-import NewHirePost from '../component/page/ManageHire/NewHirePost/NewHirePost';
-import { Resume } from '../pages/Resume';
-import { Faq } from '../pages/Faq';
-import { FaqRouter } from '../component/page/Faq/FaqRouter/FaqRouter';
+import { RouteObject, createBrowserRouter } from "react-router-dom";
+import { Login } from "../pages/Login";
+import { DashBoard } from "../component/layout/DashBoard/DashBoard";
+import { NotFound } from "../component/common/NotFound/NotFound";
+import { Notice } from "../pages/Notice";
+import { History } from "../pages/History";
+import { NoticeRouter } from "../component/page/Notice/NoticeRouter/NoticeRouter";
+import { JobPost } from "../pages/JobPost";
+import ManageHirePost from "../pages/ManageHirePost";
+import ManageHireApplicant from "../pages/ManageHireApplicant";
+import NewHirePost from "../component/page/ManageHire/NewHirePost/NewHirePost";
+import { Faq } from "../pages/Faq";
+import { FaqRouter } from "../component/page/Faq/FaqRouter/FaqRouter";
+import { Resume } from "../pages/Resume";
+import { JobPostDetail } from "../component/page/JobPost/JobPostDetail/JobPostDetail";
 import { ResumeWrite } from '../component/page/Resume/ResumeDetail/ResumeWrite';
 
 const routers: RouteObject[] = [
-  { path: '*', element: <NotFound /> },
-  { path: '/', element: <Login /> },
+  { path: "*", element: <NotFound /> },
+  { path: "/", element: <Login /> },
   {
-    path: '/react',
+    path: "/react",
     element: <DashBoard />,
     children: [
       {
-        path: 'board',
+        path: "board",
         children: [
-          { path: 'notice.do', element: <Notice /> },
-          { path: 'notice.do/:noticeIdx', element: <NoticeRouter /> },
-          { path: 'faq.do', element: <Faq /> },
-          { path: 'faq.do/:faqIdx', element: <FaqRouter /> },
+          { path: "notice.do", element: <Notice /> },
+          { path: "notice.do/:noticeIdx", element: <NoticeRouter /> },
+          { path: "faq.do", element: <Faq /> },
+          { path: "faq.do/:faqIdx", element: <FaqRouter /> },
         ],
       },
       {
-        path: 'jobs',
-        children: [{ path: 'posts.do', element: <JobPost /> }],
+        path: "jobs",
+        children: [{ path: "posts.do", element: <JobPost /> }],
       },
       {
-        path: 'apply',
+        path: "manage-post",
+        children: [{ path: ":postIdx/:bizIdx", element: <JobPostDetail /> }],
+      },
+      {
+        path: "apply",
         children: [
           { path: 'resume.do', element: <Resume /> },
           { path: "resumeDetail.do", element: <ResumeWrite /> },
