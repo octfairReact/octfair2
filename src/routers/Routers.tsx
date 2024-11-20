@@ -12,6 +12,7 @@ import NewHirePost from '../component/page/ManageHire/NewHirePost/NewHirePost';
 import { Resume } from '../pages/Resume';
 import { Faq } from '../pages/Faq';
 import { FaqRouter } from '../component/page/Faq/FaqRouter/FaqRouter';
+import { ResumeWrite } from '../component/page/Resume/ResumeDetail/ResumeWrite';
 
 const routers: RouteObject[] = [
   { path: '*', element: <NotFound /> },
