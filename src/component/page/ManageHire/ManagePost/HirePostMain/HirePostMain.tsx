@@ -1,8 +1,24 @@
+import { useEffect } from "react";
 import { Button, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const HirePostMain = () => {
+const HirePostMain = ({ searchParams }: { searchParams: { selectStatus: string; keyword: string } }) => {
+  const {selectStatus,keyword} = searchParams;
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    //getHirePostList();
+  })
+
+  useEffect(()=>{
+    // 리스트 솔팅 메소드 구현
+  },[selectStatus,keyword])
+
+  /*
+  const getHirePostList = async () => {
+    const postList = await 
+  }
+    */
 
   return (
     <div className="mt-5">
@@ -15,6 +31,7 @@ const HirePostMain = () => {
         <Table hover>
           <thead className="table-light">
             <tr>
+              <th className="py-3">#</th>
               <th className="py-3 w-50">공고제목</th>
               <th className="py-3">경력여부</th>
               <th className="py-3">게시일</th>
@@ -25,6 +42,7 @@ const HirePostMain = () => {
           </thead>
           <tbody className="table-group-divider">
             <tr>
+              <td>1</td>
               <td>Mark</td>
               <td>Otto</td>
               <td>@mdo</td>
@@ -33,94 +51,7 @@ const HirePostMain = () => {
               <td>@mdo</td>
             </tr>
             <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
+              <td>2</td>
               <td>Mark</td>
               <td>Otto</td>
               <td>@mdo</td>
