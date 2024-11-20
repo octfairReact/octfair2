@@ -13,6 +13,14 @@ const GlobalStyles = createGlobalStyle`
     margin: 0;
     padding: 0;
   }
+  
+  .spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    width: 100%;
+  }
 `;
 
 export default GlobalStyles;
