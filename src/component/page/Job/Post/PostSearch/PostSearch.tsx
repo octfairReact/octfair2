@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { JobPostSearchStyled } from "./styled";
 import { Button } from "react-bootstrap";
-import { JobPostContext } from "../../../../api/provider/JobPostProvider";
+import { PostContext } from "../../../../../api/provider/PostProvider";
 import { useNavigate } from "react-router-dom";
+import { PostSearchStyled } from "./styled";
 
-export const JobPostSearch = () => {
+export const PostSearch = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<{
     searchTitle: string;
@@ -16,7 +16,7 @@ export const JobPostSearch = () => {
     searchEdDate: "",
   });
 
-  const { setSearchKeyWord } = useContext(JobPostContext);
+  const { setSearchKeyWord } = useContext(PostContext);
 
   useEffect(() => {
     window.location.search &&
@@ -29,7 +29,7 @@ export const JobPostSearch = () => {
   };
 
   return (
-    <JobPostSearchStyled>
+    <PostSearchStyled>
       <div className="input-box">
         <input
           onChange={(e) =>
@@ -50,6 +50,6 @@ export const JobPostSearch = () => {
         ></input>
         <Button onClick={handlerSearch}>검색</Button>
       </div>
-    </JobPostSearchStyled>
+    </PostSearchStyled>
   );
 };
