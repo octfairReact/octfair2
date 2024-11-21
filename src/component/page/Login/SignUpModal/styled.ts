@@ -23,6 +23,14 @@ export const SignUpModalStyled = styled.div`
         border: 1px solid #ccc;
     }
 
+    input[type="password"] {
+        padding: 8px;
+        width: 350px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        border: 1px solid #ccc;
+    }
+
     input[name="userName"] {
         padding: 8px;
         width: 150px;
