@@ -1,0 +1,14 @@
+svg {
+  cursor: pointer;
+  fill: #666; /* 기본 색상 */
+  transition: transform 0.1s ease, color 0.1s ease;
+}
+
+svg:hover {
+  transform: scale(1.2);
+  fill: #007bff; /* 호버 시 색상 */
+}
+
+tr {
+  cursor: pointer;
+}
