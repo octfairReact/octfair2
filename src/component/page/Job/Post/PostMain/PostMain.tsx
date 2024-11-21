@@ -10,7 +10,7 @@ import {
   IPostListResponse,
 } from "../../../../../models/interface/IPost";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
-import { JobPost } from "../../../../../api/api";
+import { Post } from "../../../../../api/api";
 import { useNavigate } from "react-router-dom";
 import { postApi } from "../../../../../api/postApi";
 
@@ -38,7 +38,7 @@ export const PostMain = () => {
     // console.log("searchParam: ", searchParam);
 
     const searchList = await postApi<IPostListResponse>(
-      JobPost.getList,
+      Post.getList,
       searchParam
     );
     // console.log("API Response:", searchList);

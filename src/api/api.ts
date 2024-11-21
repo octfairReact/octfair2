@@ -25,7 +25,7 @@ export const Qna = {
   getDelete: "/board/qnaDeleteBody.do",
 };
 
-export const JobPost = {
+export const Post = {
   getList: "/api/jobs/readPostList.do",
   getDetail: "/api/jobs/readPostDetailBody.do",
 };
