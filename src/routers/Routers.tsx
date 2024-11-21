@@ -13,7 +13,8 @@ import { Faq } from "../pages/Faq";
 import { FaqRouter } from "../component/page/Faq/FaqRouter/FaqRouter";
 import { Resume } from "../pages/Resume";
 import { JobPostDetail } from "../component/page/JobPost/JobPostDetail/JobPostDetail";
-import { ResumeWrite } from '../component/page/Resume/ResumeDetail/ResumeWrite';
+import { ResumeWrite } from "../component/page/Resume/ResumeDetail/ResumeWrite";
+import { Qna } from "../pages/Qna";
 
 const routers: RouteObject[] = [
   { path: "*", element: <NotFound /> },
@@ -25,11 +26,11 @@ const routers: RouteObject[] = [
       {
         path: "board",
         children: [
-          { path: 'notice.do', element: <Notice /> },
-          { path: 'notice.do/:noticeIdx', element: <NoticeRouter /> },
-          { path: 'faq.do', element: <Faq /> },
-          { path: 'faq.do/:faqIdx', element: <FaqRouter /> },
-          { path: 'qna.do', element: <Qna /> },
+          { path: "notice.do", element: <Notice /> },
+          { path: "notice.do/:noticeIdx", element: <NoticeRouter /> },
+          { path: "faq.do", element: <Faq /> },
+          { path: "faq.do/:faqIdx", element: <FaqRouter /> },
+          { path: "qna.do", element: <Qna /> },
         ],
       },
       {
@@ -43,17 +44,17 @@ const routers: RouteObject[] = [
       {
         path: "apply",
         children: [
-          { path: 'resume.do', element: <Resume /> },
+          { path: "resume.do", element: <Resume /> },
           { path: "resumeDetail.do", element: <ResumeWrite /> },
-          { path: 'history.do', element: <History /> },
+          { path: "history.do", element: <History /> },
         ],
       },
       {
-        path: 'manage-hire',
+        path: "manage-hire",
         children: [
-          { path: 'post.do', element: <ManageHirePost /> },
-          { path: 'new-post.do', element: <NewHirePost /> },
-          { path: 'applicant.do', element: <ManageHireApplicant /> },
+          { path: "post.do", element: <ManageHirePost /> },
+          { path: "new-post.do", element: <NewHirePost /> },
+          { path: "applicant.do", element: <ManageHireApplicant /> },
         ],
       },
     ],
