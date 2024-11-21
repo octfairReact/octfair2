@@ -55,3 +55,32 @@ export interface IPostdetailResponse {
   postDetail: IJobPostDetail;
   bizDetail: IBizDetail;
 }
+
+export interface IHirePost {
+  postIdx: number;
+  bizIdx: number;
+  title: string;
+  expRequired: string;
+  expYears: string;
+  salary: string;
+  workLocation: string;
+  openings: string;
+  posDescription: string;
+  duties: string;
+  reqQualifications: string;
+  prefQualifications: string;
+  benefits: string;
+  postDate: string;
+  startDate: string | null;
+  endDate: string | null;
+  hirProcess: string;
+  appStatus: string;
+  fileName: string | null;
+  phsycalPath: string | null;
+  logicalPath: string | null;
+}
+
+export interface IHirePostListResponse{
+  payload:IHirePost[];
+}
+

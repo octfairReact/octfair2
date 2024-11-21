@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable jsx-a11y/alt-text */
 import { useEffect, useState } from "react";
 import { Button, Spinner, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +9,12 @@ import { postApi } from "../../../../../api/postApi";
 import { HirePost } from "../../../../../api/api";
 import { loginInfoState } from "../../../../../stores/userInfo";
 import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
+import {
+  IHirePost,
+  IHirePostListResponse,
+} from "../../../../../models/interface/IJobPost";
+import { ReactComponent as MyIcon } from "../../../../../assets/swap_vert_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg";
+import "./HirePostMain.css";
 
 const HirePostMain = ({
   searchParams,
@@ -16,15 +24,16 @@ const HirePostMain = ({
   const { selectStatus, keyword } = searchParams;
   const [loding, setLoding] = useRecoilState<boolean>(lodingState);
   const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
-  const [printPost, setPrintPost] = useState();
-  const [filterList, setFilterList] = useState();
-  const [originalList, setOriginalList] = useState({});
+  const [printPost, setPrintPost] = useState<IHirePost[]>([]);
+  const [originalList, setOriginalList] = useState<IHirePost[]>([]);
+  const [sortColumn, setSortColumn] = useState<string>(""); // 정렬 기준 열
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc"); // 정렬 방향
   const navigate = useNavigate();
 
   useEffect(() => {
     setLoding(true);
-    getHirePostList();
-  }, []);
+    userInfo.loginId && getHirePostList();
+  }, [userInfo]);
 
   const getHirePostList = async () => {
     const param = {
@@ -32,8 +41,11 @@ const HirePostMain = ({
     };
 
     try {
-      const response = await postApi(HirePost.getList, param);
-      setOriginalList(response);
+      const response = await postApi<IHirePostListResponse>(
+        HirePost.getList,
+        param
+      );
+      response && setOriginalList(response.payload);
     } catch (error) {
       alert("서버에서 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.");
     } finally {
@@ -41,9 +53,66 @@ const HirePostMain = ({
     }
   };
 
+  const filtered = originalList?.filter((post) => {
+    const today = new Date();
+
+    const endDate = new Date(post.endDate);
+
+    const isInProgress = endDate >= today && post.appStatus === "승인";
+
+    const isCompleted = endDate < today || post.appStatus === "불허";
+
+    const isUpcoming = endDate >= today && post.appStatus === "대기중";
+
+    const statusMatch =
+      selectStatus === "all" ||
+      (selectStatus === "inProgress" && isInProgress) ||
+      (selectStatus === "completed" && isCompleted) ||
+      (selectStatus === "upcoming" && isUpcoming);
+
+    // 키워드 필터링
+    const keywordMatch =
+      !keyword || post.title.toLowerCase().includes(keyword.toLowerCase());
+
+    return statusMatch && keywordMatch;
+  });
+
   useEffect(() => {
-    // 리스트 솔팅 메소드 구현
-  }, [selectStatus, keyword]);
+    setPrintPost(filtered);
+  }, [selectStatus, keyword, originalList]);
+
+  const getStatus = (endDate: string, status: string) => {
+    const today = new Date();
+    const isExpired = new Date(endDate).getTime() < today.getTime();
+    if (isExpired) {
+      return `(${status}) 마감`;
+    } else if (status === "승인") {
+      return "진행중";
+    }
+    return status;
+  };
+
+  const sortList = (column: keyof IHirePost) => {
+    const newOrder =
+      sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
+    setSortColumn(column);
+    setSortOrder(newOrder);
+
+    const sorted = [...printPost].sort((a, b) => {
+      const aValue = a[column] || "";
+      const bValue = b[column] || "";
+
+      if (aValue < bValue) return newOrder === "asc" ? -1 : 1;
+      if (aValue > bValue) return newOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    setPrintPost(sorted);
+  };
+
+  const handlerPostDetail = (postIdx:number) => {
+    alert(postIdx);
+  }
 
   return (
     <div className="mt-5">
@@ -64,36 +133,65 @@ const HirePostMain = ({
           </div>
         ) : (
           <Table hover>
-            <thead className="table-light">
+            <thead>
               <tr>
-                <th className="py-3">#</th>
-                <th className="py-3 w-50">공고제목</th>
-                <th className="py-3">경력여부</th>
-                <th className="py-3">게시일</th>
-                <th className="py-3">마감일</th>
-                <th className="py-3">승인여부</th>
-                <th className="py-3">진행상태</th>
+                <th>#</th>
+                <th>
+                  공고 제목
+                  <MyIcon height={19} onClick={() => sortList("title")} />
+                </th>
+                <th>
+                  경력 사항
+                  <MyIcon height={19} onClick={() => sortList("expRequired")} />
+                </th>
+                <th>
+                  게시일
+                  <MyIcon height={19} onClick={() => sortList("startDate")} />
+                </th>
+                <th>
+                  마감일
+                  <MyIcon height={19} onClick={() => sortList("endDate")} />
+                </th>
+                <th>
+                  진행여부
+                  <MyIcon height={19} onClick={() => sortList("appStatus")} />
+                </th>
+                <th>
+                  근무지역
+                  <MyIcon
+                    height={19}
+                    onClick={() => sortList("workLocation")}
+                  />
+                </th>
               </tr>
             </thead>
             <tbody className="table-group-divider">
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-                <td>@mdo</td>
-              </tr>
+              {printPost?.length > 0 ? (
+                printPost.map((hirePost, index) => (
+                  <tr key={index} onClick={() => handlerPostDetail(hirePost.postIdx)}>
+                    <td>{index + 1}</td>
+                    <td>{hirePost.title}</td>
+                    <td>{hirePost.expRequired}</td>
+                    <td>{hirePost.startDate}</td>
+                    <td>{hirePost.endDate}</td>
+                    <td>{getStatus(hirePost.endDate, hirePost.appStatus)}</td>
+                    <td>{hirePost.workLocation}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: "center" }}>
+                    <p>
+                      <img
+                        src={
+                          "https://www.saraminimage.co.kr/sri/person/resume/img_empty_announce.png"
+                        }
+                      />
+                    </p>
+                    <p>등록된 공고가 없습니다.</p>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </Table>
         )}

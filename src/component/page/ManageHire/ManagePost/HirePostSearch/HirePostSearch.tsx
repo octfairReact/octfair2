@@ -3,17 +3,22 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Form, InputGroup, Stack } from "react-bootstrap";
 import { useEffect, useState } from "react";
 
-const HirePostSearch = ({ onSearch }: { onSearch: (selectStatus: string, keyword: string) => void }) => {
+
+const HirePostSearch = ({ onSearch }) => {
   const [selectStatus, setSelectStatus] = useState<string>("all");
   const [keyword, setKeyword] = useState<string>("");
 
-  
   useEffect(() => {
-    console.log(selectStatus);
+      if(keyword !== ""){
+        setKeyword("");
+        onSearch(selectStatus, keyword);
+      }else{
+        onSearch(selectStatus, keyword);
+      }
   }, [selectStatus]);
 
   const handlerSearch = () => {
-    onSearch(selectStatus,keyword);
+    onSearch(selectStatus, keyword);
     setKeyword("");
   };
 
@@ -27,9 +32,9 @@ const HirePostSearch = ({ onSearch }: { onSearch: (selectStatus: string, keyword
         }}
       >
         <option value={"all"}>공고 상태 선택</option>
-        <option value={1}>현재 진행 중</option>
-        <option value={2}>마감 완료</option>
-        <option value={3}>예정됨</option>
+        <option value={"inProgress"}>현재 진행 중</option>
+        <option value={"completed"}>마감 완료</option>
+        <option value={"upcoming"}>예정됨</option>
       </Form.Select>
 
       <InputGroup>

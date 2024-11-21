@@ -23,9 +23,9 @@ const NewHirePost = () => {
   const navigate = useNavigate();
 
   const getMinEndDate = (startDate: Date | null) => {
-    if (!startDate) return new Date(); // 기본값: 오늘
+    if (!startDate) return new Date();
     const minEndDate = new Date(startDate);
-    minEndDate.setDate(minEndDate.getDate() + 30); // 30일 추가
+    minEndDate.setDate(minEndDate.getDate() + 30);
     return minEndDate;
   };
 
@@ -33,6 +33,11 @@ const NewHirePost = () => {
     setEndDate(null);
     setStartDate(null);
   };
+
+  const handlerSavePost = () => {}
+
+  const handlerPreviewPost = () => {}
+
   return (
     <div>
       <ContentBox>채용공고 등록</ContentBox>
@@ -247,7 +252,8 @@ const NewHirePost = () => {
           >
             뒤로
           </Button>
-          <Button variant="primary">등록</Button>
+          <Button variant="success" onClick={handlerPreviewPost}>미리보기</Button>
+          <Button variant="primary" onClick={handlerSavePost}>등록</Button>
         </ButtonGroup>
       </div>
     </div>
