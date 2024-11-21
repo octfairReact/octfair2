@@ -17,11 +17,11 @@ export interface IDetailResponse {
 }
 
 export interface IQnaDetail extends IQna {
-  fileName: string;
-  phsycalPath: string;
-  logicalPath: string;
-  fileSize: string;
-  fileExt: string;
+  fileName: string | null;
+  phsycalPath: string | null;
+  logicalPath: string | null;
+  fileSize: number;
+  fileExt: string | null;
   password: string;
 }
 
