@@ -77,8 +77,7 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
     const deleteApi = await postApi<IFaqPostResponse>(Faq.getDelete, {
       faqSeq,
     });
-
-    // if (deleteApi.result === 'success') onSuccess();
+    if (deleteApi && deleteApi.result === 'success') onSuccess();
   };
 
   return (
