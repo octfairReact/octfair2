@@ -16,6 +16,7 @@ import { PostDetails } from "../component/page/Job/Post/PostDetails/PostDetails"
 import { ResumeWrite } from "../component/page/Resume/ResumeDetail/ResumeWrite";
 import { Qna } from "../pages/Qna";
 import { Scrab } from "../pages/Scrab";
+import PostDetail from "../pages/PostDetail";
 
 const routers: RouteObject[] = [
   { path: "*", element: <NotFound /> },
@@ -39,6 +40,7 @@ const routers: RouteObject[] = [
         children: [
           { path: "posts.do", element: <Post /> },
           { path: "postDetail/:postIdx", element: <PostDetails /> },
+          { path: "post-detail/:postIdx", element: <PostDetail/> },
           { path: "scrap.do", element: <Scrab /> },
         ],
       },

@@ -42,6 +42,7 @@ export const PostDetails = () => {
       <ContentBox>채용 공고</ContentBox> <br></br>
       <PostDetailStyled>
         {postDetail?.postIdx ? (
+          
           <div
             style={{
               display: "grid",
@@ -51,7 +52,9 @@ export const PostDetails = () => {
             }}
           >
             {/* 채용 공고 */}
+            
             <div>
+            
               <div
                 style={{
                   display: "flex",

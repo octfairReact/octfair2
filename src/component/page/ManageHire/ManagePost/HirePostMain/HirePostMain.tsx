@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
 import { useEffect, useState } from "react";
-import { Button, Spinner, Table } from "react-bootstrap";
+import { Button, Modal, Spinner, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { lodingState } from "../../../../../stores/lodingState";
@@ -15,6 +15,7 @@ import {
 } from "../../../../../models/interface/IPost";
 import { ReactComponent as MyIcon } from "../../../../../assets/swap_vert_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg";
 import "./HirePostMain.css";
+
 
 const HirePostMain = ({
   searchParams,
@@ -111,7 +112,7 @@ const HirePostMain = ({
   };
 
   const handlerPostDetail = (postIdx:number) => {
-    alert(postIdx);
+    navigate(`/react/jobs/post-detail/${postIdx}`);
   }
 
   return (
