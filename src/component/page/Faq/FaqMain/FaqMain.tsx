@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { IFaq, IFaqListResponse } from '../../../../models/interface/IFaq';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import { PageNavigate } from '../../../common/pageNavigation/PageNavigate';
@@ -18,6 +18,7 @@ export const FaqMain = () => {
   const [faqSeq, setFaqSeq] = useState<number>();
   const [cPage, setCPage] = useState<number>();
   const { searchKeyWord } = useContext(FaqContext);
+  const [activeFaq, setActiveFaq] = useState<number>();
 
   useEffect(() => {
     searchFaqList();
@@ -51,13 +52,16 @@ export const FaqMain = () => {
     searchFaqList();
   };
 
+  const handlerShowContent = (faq_idx) => {
+    setActiveFaq((prevFaq) => (prevFaq === faq_idx ? null : faq_idx));
+  };
+
   return (
     <>
       <div>
         <Button>개인회원</Button>
         <Button>기업회원</Button>
       </div>
-
       <StyledTable>
         <thead>
           <tr>
@@ -72,13 +76,20 @@ export const FaqMain = () => {
           {faqList?.length > 0 ? (
             faqList?.map((faq) => {
               return (
-                <tr key={faq.faq_idx}>
-                  <StyledTd>{faq.faq_idx}</StyledTd>
-                  <StyledTd>{faq.title}</StyledTd>
-                  <StyledTd>{faq.author}</StyledTd>
-                  <StyledTd>{faq.created_date}</StyledTd>
-                  <StyledTd onClick={() => handlerModal(faq.faq_idx)}>관리</StyledTd>
-                </tr>
+                <>
+                  <tr key={faq.faq_idx}>
+                    <StyledTd>{faq.faq_idx}</StyledTd>
+                    <StyledTd onClick={() => handlerShowContent(faq.faq_idx)}>{faq.title}</StyledTd>
+                    <StyledTd>{faq.author}</StyledTd>
+                    <StyledTd>{faq.created_date}</StyledTd>
+                    <StyledTd onClick={() => handlerModal(faq.faq_idx)}>관리</StyledTd>
+                  </tr>
+                  <tr>
+                    <StyledTd colSpan={5} style={{ display: 'none' }}>
+                      영광오리탕
+                    </StyledTd>
+                  </tr>
+                </>
               );
             })
           ) : (

@@ -9,6 +9,7 @@ import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTa
 import { PageNavigate } from '../../../common/pageNavigation/PageNavigate';
 import { Portal } from '../../../common/potal/Portal';
 import { QnaModal } from '../QnaModal/QnaModal';
+import { Button } from 'react-bootstrap';
 
 export const QnaMain = () => {
   const [qnaList, setQnaList] = useState<IQna[]>();
@@ -52,6 +53,10 @@ export const QnaMain = () => {
 
   return (
     <>
+      <div>
+        <Button>개인회원</Button>
+        <Button>기업회원</Button>
+      </div>
       <StyledTable>
         <thead>
           <tr>

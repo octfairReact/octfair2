@@ -1,12 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { IResume, IResumeListResponse } from "../../../../models/interface/IResume";
-import { ResumeContext } from "../../../../api/provider/ResumeProvider";
-import { postApplyApi } from "../../../../api/PostApplyApi";
-import { StyledTable, StyledTd, StyledTh } from "../../../common/styled/StyledTable";
-import { Resume } from "../../../../api/api";
-import { Button } from "react-bootstrap";
+import { useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { IResume, IResumeListResponse } from '../../../../models/interface/IResume';
+import { ResumeContext } from '../../../../api/provider/ResumeProvider';
+import { postApplyApi } from '../../../../api/PostApplyApi';
+import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
+import { Resume } from '../../../../api/api';
+import { Button } from 'react-bootstrap';
 // import { Button } from "../../../common/Button/Button";
 
 export const ResumeMain = () => {
@@ -24,10 +24,7 @@ export const ResumeMain = () => {
       ...searchKeyWord,
     };
 
-    const searchList = await postApplyApi<IResumeListResponse>(
-      Resume.getList,
-      searchParam
-    );
+    const searchList = await postApplyApi<IResumeListResponse>(Resume.getList, searchParam);
 
     if (searchList) {
       setResumeList(searchList.payload);
@@ -40,26 +37,23 @@ export const ResumeMain = () => {
   };
 
   const copyResumeList = async (resumeSeq: number) => {
-    const copyList = await postApplyApi<IResumeListResponse>(
-      Resume.getCopy,
-      { resIdx: resumeSeq }
-    );
+    const copyList = await postApplyApi<IResumeListResponse>(Resume.getCopy, { resIdx: resumeSeq });
 
     if (copyList) {
       searchResumeList();
     }
   };
 
-  const deleteResumeList = async (resumeSeq: number) => {
-    const deleteList = await postApplyApi<IResumeListResponse>(
-      Resume.getDelete,
-      { resIdx: resumeSeq }
-    );
+  // const deleteResumeList = async (resumeSeq: number) => {
+  //   const deleteList = await postApplyApi<IResumeListResponse>(
+  //     Resume.getDelete,
+  //     { resIdx: resumeSeq }
+  //   );
 
-    if (deleteList) {
-      searchResumeList();
-    }
-  }
+  //   if (deleteList) {
+  //     searchResumeList();
+  //   }
+  // }
 
   return (
     <>
@@ -77,22 +71,16 @@ export const ResumeMain = () => {
             resumeList?.map((resume) => {
               return (
                 <tr key={resume.resIdx}>
-                  <StyledTd onClick={() => handlerDetail(resume.resIdx)}>
-                    {resume.resTitle}
-                  </StyledTd>
+                  <StyledTd onClick={() => handlerDetail(resume.resIdx)}>{resume.resTitle}</StyledTd>
                   <StyledTd>
                     <div className="input-box">
-                      <Button
-                        variant="primary" 
-                        style={{ margin: "3px" }}
-                        onClick={ () => copyResumeList(resume.resIdx) }
-                      >
+                      <Button variant="primary" style={{ margin: '3px' }} onClick={() => copyResumeList(resume.resIdx)}>
                         복사하기
                       </Button>
-                      <Button 
-                        variant="secondary" 
-                        style={{ margin: "3px" }}
-                        onClick={ () => deleteResumeList(resume.resIdx) }
+                      <Button
+                        variant="secondary"
+                        style={{ margin: '3px' }}
+                        // onClick={() => deleteResumeList(resume.resIdx)}
                       >
                         삭제하기
                       </Button>
