@@ -8,8 +8,8 @@ export const Qna = () => {
     <>
       <QnaProvider>
         <ContentBox>Qna작업중...</ContentBox>
-        <QnaMain />
         <QnaSearch />
+        <QnaMain />
       </QnaProvider>
     </>
   );

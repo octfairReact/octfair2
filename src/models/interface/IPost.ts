@@ -1,4 +1,4 @@
-export interface IJobPost {
+export interface IPost {
   postIdx: number;
   title: string;
   workLocation: string;
@@ -8,14 +8,14 @@ export interface IJobPost {
   bizIdx: number;
 }
 
-export interface IJobPostDetail extends IJobPost {
+export interface IPostDetail extends IPost {
   appStatus: string;
   benefits: string | null;
   duties: string;
   expYears: number | null;
   fileExt: string | null;
   fileName: string | null;
-  fileSize: number;
+  fileSize: number | null;
   hirProcess: string | null;
   logicalPath: string | null;
   openings: string | null;
@@ -46,12 +46,12 @@ export interface IBizDetail {
   phsycalPath: string | null;
 }
 
-export interface IJobPostListResponse {
+export interface IPostListResponse {
   approvalPostCnt: number;
-  approvalList: IJobPost[];
+  approvalList: IPost[];
 }
 
-export interface IPostdetailResponse {
-  postDetail: IJobPostDetail;
+export interface IPostdatailResponse {
+  postDetail: IPostDetail;
   bizDetail: IBizDetail;
 }

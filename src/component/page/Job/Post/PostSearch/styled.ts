@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const JobPostSearchStyled = styled.div`
+export const PostSearchStyled = styled.div`
   margin-bottom: 10px;
   float: inline-end;
   input {

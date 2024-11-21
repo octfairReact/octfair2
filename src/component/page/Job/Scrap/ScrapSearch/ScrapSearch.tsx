@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
-import { JobPostSearchStyled } from "./styled";
-import { Button } from "react-bootstrap";
-import { JobPostContext } from "../../../../api/provider/JobPostProvider";
 import { useNavigate } from "react-router-dom";
+import { ScrapContext } from "../../../../../api/provider/ScrapProvider";
+import { ScrapSearchStyled } from "./styled";
+import { Button } from "../../../../common/Button/Button";
 
-export const JobPostSearch = () => {
+export const ScrapSearch = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<{
     searchTitle: string;
@@ -16,7 +16,7 @@ export const JobPostSearch = () => {
     searchEdDate: "",
   });
 
-  const { setSearchKeyWord } = useContext(JobPostContext);
+  const { setSearchKeyWord } = useContext(ScrapContext);
 
   useEffect(() => {
     window.location.search &&
@@ -24,12 +24,12 @@ export const JobPostSearch = () => {
   }, [navigate]);
 
   const handlerSearch = () => {
-    setSearchKeyWord(searchValue);
     // console.log(searchValue);
+    setSearchKeyWord(searchValue);
   };
 
   return (
-    <JobPostSearchStyled>
+    <ScrapSearchStyled>
       <div className="input-box">
         <input
           onChange={(e) =>
@@ -49,7 +49,8 @@ export const JobPostSearch = () => {
           }
         ></input>
         <Button onClick={handlerSearch}>검색</Button>
+        <Button>삭제</Button>
       </div>
-    </JobPostSearchStyled>
+    </ScrapSearchStyled>
   );
 };
