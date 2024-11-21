@@ -12,7 +12,7 @@ import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
 import {
   IHirePost,
   IHirePostListResponse,
-} from "../../../../../models/interface/IJobPost";
+} from "../../../../../models/interface/IPost";
 import { ReactComponent as MyIcon } from "../../../../../assets/swap_vert_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg";
 import "./HirePostMain.css";
 
