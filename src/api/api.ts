@@ -30,6 +30,10 @@ export const Post = {
   getDetail: "/api/jobs/readPostDetailBody.do",
 };
 
+export const Scrap = {
+  getList: "/api/jobs/readScrabList.do",
+};
+
 export const Resume = {
   getList: "/api/apply/resumeList.do",
   getCopy: "/api/apply/resumeCopy.do",
