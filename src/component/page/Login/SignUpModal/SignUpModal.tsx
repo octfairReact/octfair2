@@ -8,6 +8,7 @@ import { postSignUpApi } from "../../../../api/postSignUpApi";
 import { IPostResponse, ISignUp, ISignUpForValidation } from "../../../../models/interface/ISignUp";
 import { z } from "zod";
 import { userSchema } from './Validate/Schemas';
+import { postApi } from "../../../../api/postApi";
 
 export const SignUpModal = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -157,7 +158,7 @@ export const SignUpModal = () => {
                             <th>비밀번호</th>
                             <td>
                                 <input
-                                    type="text"
+                                    type="password"
                                     ref={password}
                                     placeholder="숫자, 영문자, 특수문자 조합으로 8~15자리"
                                 ></input>
