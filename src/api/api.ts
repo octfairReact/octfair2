@@ -12,17 +12,17 @@ export const Notice = {
 };
 
 export const Faq = {
-  getList: '/board/faqListJson.do',
-  getListBody: '/board/faqListBody.do',
-  getDetail: '/board/faqDetailBody.do',
-  getDelete: '/board/faqDeleteBody.do',
+  getList: "/board/faqListJson.do",
+  getListBody: "/board/faqListBody.do",
+  getDetail: "/board/faqDetailBody.do",
+  getDelete: "/board/faqDeleteBody.do",
 };
 
 export const Qna = {
-  getList: '/board/qnaListJson.do',
-  getListBody: '/board/qnaListBody.do',
-  getDetail: '/board/qnaDetailFileBody.do',
-  getDelete: '/board/qnaDeleteBody.do',
+  getList: "/board/qnaListJson.do",
+  getListBody: "/board/qnaListBody.do",
+  getDetail: "/board/qnaDetailFileBody.do",
+  getDelete: "/board/qnaDeleteBody.do",
 };
 
 export const JobPost = {
@@ -33,15 +33,13 @@ export const JobPost = {
 export const Resume = {
   getList: "/api/apply/resumeList.do",
   getCopy: "/api/apply/resumeCopy.do",
+  getDelete: "/api/apply/resumeDelete.do",
 };
 
 export const SignUp = {
   register: "/register.do",
-  getList: '/api/apply/resumeList.do',
-  getCopy: '/api/apply/resumeCopy.do',
-  getDelete: '/api/apply/resumeDelete.do',
 };
 
 export const HirePost = {
-  getList: '/api/manage-hire/post-list'
+  getList: "/api/manage-hire/post-list",
 };
