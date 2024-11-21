@@ -16,7 +16,11 @@ export const BizDetail: React.FC<IBizDetailProps> = ({
       <PostDetailStyled>
         <div className="bizDetailContainer">
           <div>
-            <img src={bizDetail.logicalPath} alt="BizImage" />
+            <img
+              className="bizImg"
+              src={bizDetail.logicalPath}
+              alt="BizImage"
+            />
             {/* {bizDetail?.bizLogo} */}
           </div>
           <br></br>
