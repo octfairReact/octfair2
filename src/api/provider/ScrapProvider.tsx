@@ -10,15 +10,15 @@ const defaultValue: Context = {
   setSearchKeyWord: () => {},
 };
 
-export const ScrabContext = createContext(defaultValue);
+export const ScrapContext = createContext(defaultValue);
 
-export const ScrabProvider: FC<{
+export const ScrapProvider: FC<{
   children: React.ReactNode | React.ReactNode[];
 }> = ({ children }) => {
   const [searchKeyWord, setSearchKeyWord] = useState({});
   return (
-    <ScrabContext.Provider value={{ searchKeyWord, setSearchKeyWord }}>
+    <ScrapContext.Provider value={{ searchKeyWord, setSearchKeyWord }}>
       {children}
-    </ScrabContext.Provider>
+    </ScrapContext.Provider>
   );
 };
