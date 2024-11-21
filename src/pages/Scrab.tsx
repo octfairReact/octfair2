@@ -3,7 +3,7 @@ import { ContentBox } from "../component/common/ContentBox/ContentBox";
 import { ScrabMain } from "../component/page/Job/Scrab/ScrabMain/ScrabMain";
 import { ScrabSearch } from "../component/page/Job/Scrab/ScrabSearch/ScrabSearch";
 
-export const Scarb = () => {
+export const Scrab = () => {
   return (
     <>
       <ScrabProvider>

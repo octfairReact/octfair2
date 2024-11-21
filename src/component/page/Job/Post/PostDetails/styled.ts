@@ -14,6 +14,13 @@ export const PostDetailStyled = styled.div`
     border-radius: 8px;
   }
 
+  .bizImg {
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
   // 기본 버튼 스타일
   button {
     background-color: #3bb2ea;

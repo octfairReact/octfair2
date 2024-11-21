@@ -1,3 +1,3 @@
 export const ScrabSearch = () => {
-  return <>This is This is ScrabSearch</>;
+  return <>This is ScrabSearch</>;
 };
