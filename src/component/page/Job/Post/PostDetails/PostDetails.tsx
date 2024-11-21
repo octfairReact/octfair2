@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from "react";
 import { postApi } from "../../../../../api/postApi";
 import { ContentBox } from "../../../../common/ContentBox/ContentBox";
-import { JobPost } from "../../../../../api/api";
+import { Post } from "../../../../../api/api";
 import { PostDetail } from "./PostDetail";
 import { BizDetail } from "./BizDetail";
 import { PostDetailStyled } from "./styled";
@@ -25,10 +25,7 @@ export const PostDetails = () => {
   const postDetailData = async (postIdx: string) => {
     const params = { postIdx };
 
-    const response = await postApi<IPostdatailResponse>(
-      JobPost.getDetail,
-      params
-    );
+    const response = await postApi<IPostdatailResponse>(Post.getDetail, params);
 
     console.log("API Response: ", response);
     // console.log(response.)
