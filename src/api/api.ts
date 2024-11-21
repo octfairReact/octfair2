@@ -33,6 +33,7 @@ export const JobPost = {
 export const Resume = {
   getList: "/api/apply/resumeList.do",
   getCopy: "/api/apply/resumeCopy.do",
+  getDelete: '/api/apply/resumeDelete.do',
 };
 
 export const SignUp = {

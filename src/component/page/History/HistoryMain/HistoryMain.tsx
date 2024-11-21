@@ -19,7 +19,7 @@ export const HistoryMain = () => {
     const [cPage, setCPage] = useState<number>();
   	const [listCount, setListCount] = useState<number>(0);
  	const [hModal, setHModal] = useRecoilState<boolean>(hModalState);
-	 const [historySeq, setHistorySeq] = useState<number>();
+	const [historySeq, setHistorySeq] = useState<number>();
 
     interface IApply {
     appId: number;
