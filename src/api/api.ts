@@ -35,9 +35,15 @@ export const Scrap = {
 };
 
 export const Resume = {
-  getList: "/api/apply/resumeList.do",
-  getCopy: "/api/apply/resumeCopy.do",
-  getDelete: "/api/apply/resumeDelete.do",
+  getList: '/api/apply/resumeList.do',
+  getCopy: '/api/apply/resumeCopy.do',
+  getDelete: '/api/apply/resumeDelete.do',
+  getDetail: '/api/apply/resumeDetail.do',
+
+  getCareer: '/api/apply/careerList.do',
+  getEdu: '/api/apply/educationList.do',
+  getSkill: '/api/apply/skillList.do',
+  getCert: '/api/apply/certList.do',
 };
 
 export const SignUp = {

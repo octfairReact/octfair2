@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ResumeTable = styled.table`
+export const StyledTableResume = styled.table`
     width: 100%;
     border-collapse: collapse;
     margin: 20px 0px 0px 0px;
@@ -23,10 +23,40 @@ export const ResumeTable = styled.table`
 
     /* 테이블 올렸을 때 */
     tbody tr:hover {
-        background-color: #d3d3d3;
-        opacity: 0.9;
-        cursor: pointer;
+        
     }
+
+    #resumetitle, #userName, #userEmail, #userPhone {
+        margin: 5px 0px 5px;
+    }
+
+    .resumeDetail_body {
+        margin: 20px 20px 60px;
+    }
+
+    .resumeDetail_body_basicInfo {
+        margin: 20px;
+    }
+
+    .resumeDetail_body_haeder {
+        margin-top: 15px;
+        margin-bottom: 15px;
+        padding: 5px;
+        font-size: 25px;
+        border-bottom: 0.5px solid black;
+    }
+
+    .resumeDetail_body_guide {
+        font-size: 15px;
+    }
+
+    // .resumeDetail_body_guide {
+    //     margin: 10px 0px;
+    //     padding: 5px;
+    //     background-color: #eaf2fe;
+    //     border-radius: 5px;
+    //     color: gray;
+    // }
 `;
 
 export const ResumeTh = styled.th<{ size?: number }>`

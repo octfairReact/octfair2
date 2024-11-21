@@ -10,7 +10,7 @@ export const ResumeWrite = () => {
       <ResumeProvider>
         <ResumeReturn />
         <ContentBox>이력서 수정/작성</ContentBox>
-        <ResumeDetail />
+        <ResumeDetail/>
       </ResumeProvider>
     </>
   );

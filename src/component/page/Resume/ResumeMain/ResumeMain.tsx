@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { IResume, IResumeListResponse } from "../../../../models/interface/IResume";
 import { ResumeContext } from "../../../../api/provider/ResumeProvider";
-import { postApplyApi } from "../../../../api/PostApplyApi";
+import { postApi } from "../../../../api/postApi";
 import { StyledTable, StyledTd, StyledTh } from "../../../common/styled/StyledTable";
 import { Resume } from "../../../../api/api";
 import { Button } from "react-bootstrap";
@@ -24,7 +24,7 @@ export const ResumeMain = () => {
       ...searchKeyWord,
     };
 
-    const searchList = await postApplyApi<IResumeListResponse>(
+    const searchList = await postApi<IResumeListResponse>(
       Resume.getList,
       searchParam
     );
@@ -40,7 +40,7 @@ export const ResumeMain = () => {
   };
 
   const copyResumeList = async (resumeSeq: number) => {
-    const copyList = await postApplyApi<IResumeListResponse>(
+    const copyList = await postApi<IResumeListResponse>(
       Resume.getCopy,
       { resIdx: resumeSeq }
     );
@@ -51,7 +51,7 @@ export const ResumeMain = () => {
   };
 
   const deleteResumeList = async (resumeSeq: number) => {
-    const deleteList = await postApplyApi<IResumeListResponse>(
+    const deleteList = await postApi<IResumeListResponse>(
       Resume.getDelete,
       { resIdx: resumeSeq }
     );
