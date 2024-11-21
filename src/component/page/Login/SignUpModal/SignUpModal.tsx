@@ -42,7 +42,7 @@ export const SignUpModal = () => {
             loginId: loginId.current.value,
         };
         console.log(param);
-        const checkId = await postSignUpApi<IPostResponseN>(SignUp.checkId, param);
+        // const checkId = await postSignUpApi<IPostResponseN>(SignUp.checkId, param);
         // console.log(checkId.result);
         // if (checkId === 0) {
         //     alert("사용 가능한 ID입니다");
