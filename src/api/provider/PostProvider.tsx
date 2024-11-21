@@ -10,15 +10,15 @@ const defaultValue: Context = {
   setSearchKeyWord: () => {},
 };
 
-export const JobPostContext = createContext(defaultValue);
+export const PostContext = createContext(defaultValue);
 
-export const JobPostProvider: FC<{
+export const PostProvider: FC<{
   children: React.ReactNode | React.ReactNode[];
 }> = ({ children }) => {
   const [searchKeyWord, setSearchKeyWord] = useState({});
   return (
-    <JobPostContext.Provider value={{ searchKeyWord, setSearchKeyWord }}>
+    <PostContext.Provider value={{ searchKeyWord, setSearchKeyWord }}>
       {children}
-    </JobPostContext.Provider>
+    </PostContext.Provider>
   );
 };

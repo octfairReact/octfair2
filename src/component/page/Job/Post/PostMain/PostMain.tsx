@@ -3,23 +3,23 @@ import {
   StyledTable,
   StyledTd,
   StyledTh,
-} from "../../../common/styled/StyledTable";
-import { JobPostContext } from "../../../../api/provider/JobPostProvider";
+} from "../../../../common/styled/StyledTable";
+import { PostContext } from "../../../../../api/provider/PostProvider";
 import {
-  IJobPost,
-  IJobPostListResponse,
-} from "../../../../models/interface/IJobPost";
-import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
-import { JobPost } from "../../../../api/api";
+  IPost,
+  IPostListResponse,
+} from "../../../../../models/interface/IPost";
+import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { JobPost } from "../../../../../api/api";
 import { useNavigate } from "react-router-dom";
-import { postApi } from "../../../../api/postApi";
+import { postApi } from "../../../../../api/postApi";
 
-export const JobPostMain = () => {
+export const PostMain = () => {
   const navigate = useNavigate();
-  const [jobPostList, setJobPostList] = useState<IJobPost[]>();
+  const [jobPostList, setJobPostList] = useState<IPost[]>();
   const [listCount, setListCount] = useState<number>(0);
   const [cPage, setCPage] = useState<number>();
-  const { searchKeyWord } = useContext(JobPostContext);
+  const { searchKeyWord } = useContext(PostContext);
 
   useEffect(() => {
     // console.log("updated searchKeyWord: ", searchKeyWord);
@@ -37,7 +37,7 @@ export const JobPostMain = () => {
 
     // console.log("searchParam: ", searchParam);
 
-    const searchList = await postApi<IJobPostListResponse>(
+    const searchList = await postApi<IPostListResponse>(
       JobPost.getList,
       searchParam
     );
@@ -50,8 +50,9 @@ export const JobPostMain = () => {
     }
   };
 
-  const hanlderDetail = (postIdx: number, bizIdx: number) => {
-    navigate(`/react/manage-post/${postIdx}/${bizIdx}`);
+  const hanlderDetail = (postIdx: number) => {
+    // console.log("hanlderDetail");
+    navigate(`/react/jobs/postDetail/${postIdx}`);
   };
 
   return (
@@ -76,7 +77,7 @@ export const JobPostMain = () => {
               return (
                 <tr
                   key={jobPost.postIdx}
-                  onClick={() => hanlderDetail(jobPost.postIdx, jobPost.bizIdx)}
+                  onClick={() => hanlderDetail(jobPost.postIdx)}
                 >
                   <StyledTd>{jobPost.postIdx}</StyledTd>
                   <StyledTd>{jobPost.title}</StyledTd>
