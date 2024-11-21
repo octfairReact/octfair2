@@ -5,10 +5,14 @@ import { modalState } from "../../../../stores/modalState";
 
 import { SignUp } from "../../../../api/api";
 import { postSignUpApi } from "../../../../api/postSignUpApi";
-import { IPostResponse, ISignUp, ISignUpForValidation } from "../../../../models/interface/ISignUp";
-import { z } from "zod";
-import { userSchema } from './Validate/Schemas';
-import { postApi } from "../../../../api/postApi";
+import {
+    IPostResponse,
+    IPostResponseN,
+    SignUpOtherUserDetail,
+    SignUpPasswordDetail,
+} from "../../../../models/interface/ISignUp";
+
+import { userSchema1, userSchema2 } from "./Validate/Schemas";
 
 export const SignUpModal = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -25,33 +29,6 @@ export const SignUpModal = () => {
     const userAddress = useRef<HTMLInputElement>();
     const userDetailAddress = useRef<HTMLInputElement>();
 
-    // const loginIdRegex = new RegExp(/^[a-z0-9]{6,20}$/g);
-    // const passwordRegex = new RegExp(/^.*(?=^.{8,15}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/);
-    // const emailRegex = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
-    // const phoneRegex = new RegExp(/^(010)-?\d{3,4}-?\d{4}$/);
-
-    // const userSchema = z.object({
-    //     userType: z.string().min(1, "회원 유형을 선택해주세요"),
-    //     loginId: z.string().min(1, "아이디를 입력해주세요").regex(loginIdRegex, "올바른 아이디 형식이 아닙니다"),
-    //     password: z
-    //         .string()
-    //         .min(1, "비밀번호를 입력해주세요")
-    //         .regex(passwordRegex, "비밀번호는 숫자, 영문자, 특수문자 조합으로 8~15자리여야 합니다"),
-    //     checkPassword: z.string().min(1, "확인용 비밀번호를 입력해주세요"),
-    //     name: z.string().min(1, "이름을 입력해주세요"),
-    //     userGender: z.string().min(1, "성별을 선택해주세요"),
-    //     birth: z.string().min(1, "생년월일을 선택해주세요"),
-    //     phone: z.string().min(1, "전화번호를 입력해주세요").regex(phoneRegex, "올바른 전화번호 형식이 아닙니다"),
-    //     email: z.string().min(1, "이메일을 입력해주세요").regex(emailRegex, "올바른 이메일 형식이 아닙니다"),
-    //     zipCode: z
-    //         .string()
-    //         .min(1, "우편번호를 입력해주세요")
-    //         .max(5, "우편번호는 다섯 자리 숫자입니다")
-    //         .regex(/^\d{5}$/, "우편번호는 반드시 다섯 자리 숫자여야 합니다") // 숫자만 허용
-    //         .transform((val) => parseInt(val, 10)), // 문자열을 숫자로 변환,
-    //     userAddress: z.string().min(1, "주소를 입력해주세요"),
-    // });
-
     const handleUserType = (e) => {
         setUserType(e.target.value);
     };
@@ -60,16 +37,35 @@ export const SignUpModal = () => {
         setUserGender(e.target.value);
     };
 
+    const checkId = async () => {
+        const param = {
+            loginId: loginId.current.value,
+        };
+        console.log(param);
+        const checkId = await postSignUpApi<IPostResponseN>(SignUp.checkId, param);
+        // console.log(checkId.result);
+        // if (checkId === 0) {
+        //     alert("사용 가능한 ID입니다");
+        // } else {
+        //     alert("중복된 ID입니다");
+        // }
+    };
+
     const handlerSave = async (e) => {
         e.preventDefault();
 
-        const data: ISignUpForValidation = {
+        const userTypeToCheckPassword: SignUpPasswordDetail = {
             userType: userType,
             loginId: loginId.current.value,
             password: password.current.value,
             checkPassword: checkPassword.current.value,
+        };
+
+        //SignUpOtherUserDetails
+        //= zod userSchema.safeParse용으로 zipCode(number)까지 string으로 타입 통일된 인터페이스
+        const nameToDetailAddress: SignUpOtherUserDetail = {
             name: name.current.value,
-            userGender: userGender, // gender 필드 수정: userGender -> sex로 변경
+            userGender: userGender,
             phone: phone.current.value,
             email: email.current.value,
             birth: birth.current.value,
@@ -78,34 +74,25 @@ export const SignUpModal = () => {
             detailAddress: userDetailAddress.current.value,
         };
 
-        const validResult = userSchema.safeParse(data);
-        if (!validResult.success) {
-            alert(validResult.error.errors[0].message);
-            return;
+        const validResult1 = userSchema1.safeParse(userTypeToCheckPassword);
+        const validResult2 = userSchema2.safeParse(nameToDetailAddress);
+
+        // validResult1이 성공한 경우
+        if (validResult1.success) {
+            // validResult2 검사
+            if (!validResult2.success) {
+                alert(validResult2.error.errors[0].message);
+                return; // validResult2 검증 실패 시 리턴
+            }
+        } else {
+            alert(validResult1.error.errors[0].message);
+            return; // validResult1 검증 실패 시 리턴
         }
-        // // Zod 유효성 검사
-        // const result = userSchema.safeParse({
-        //     userType: userType,
-        //     loginId: loginId.current.value,
-        //     password: password.current.value,
-        //     checkPassword: checkPassword.current.value,
-        //     name: name.current.value,
-        //     userGender: userGender,
-        //     birth: birth.current.value,
-        //     phone: phone.current.value,
-        //     email: email.current.value,
-        //     zipCode: zipCode.current.value,
-        //     userAddress: userAddress.current.value,
-        // }); 
-        // if (!result.success) {
-        //     alert(result.error.errors[0].message); // 에러 메시지 출력
-        //     return; // 유효성 검사 실패 시 폼 제출 중지
-        // }
 
         const param = {
             action: "I",
-            ckIdcheckreg: 1,
-            ckEmailcheckreg: 0,
+            // ckIdcheckreg: 0,
+            // ckEmailcheckreg: 0,
             loginId: loginId.current.value,
             userType: userType,
             name: name.current.value,
@@ -144,14 +131,13 @@ export const SignUpModal = () => {
                                     <option value="A">개인회원</option>
                                     <option value="B">기업회원</option>
                                 </select>
-                                {/* ValidType 컴포넌트를 <td> 안에 넣고 props로 전달
-                                <ValidType userType={userType} setUserType={setUserType} /> */}
                             </td>
                         </tr>
                         <tr>
                             <th>아이디</th>
                             <td>
                                 <input type="text" ref={loginId} placeholder="숫자, 영문자 조합으로 6~20자리"></input>
+                                <button onClick={checkId}>중복확인</button>
                             </td>
                         </tr>
                         <tr>
@@ -167,7 +153,7 @@ export const SignUpModal = () => {
                         <tr>
                             <th>비밀번호 확인</th>
                             <td>
-                                <input type="text" ref={checkPassword}></input>
+                                <input type="password" ref={checkPassword}></input>
                             </td>
                         </tr>
                         <tr>
