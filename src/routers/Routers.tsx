@@ -14,6 +14,7 @@ import { FaqRouter } from "../component/page/Faq/FaqRouter/FaqRouter";
 import { Resume } from "../pages/Resume";
 import { JobPostDetail } from "../component/page/JobPost/JobPostDetail/JobPostDetail";
 import { ResumeWrite } from '../component/page/Resume/ResumeDetail/ResumeWrite';
+import { Qna } from "../pages/Qna";
 
 const routers: RouteObject[] = [
   { path: "*", element: <NotFound /> },

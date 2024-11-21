@@ -31,15 +31,14 @@ export const JobPost = {
 };
 
 export const Resume = {
-  getList: "/api/apply/resumeList.do",
-  getCopy: "/api/apply/resumeCopy.do",
+  getList: '/api/apply/resumeList.do',
+  getCopy: '/api/apply/resumeCopy.do',
+  getDelete: '/api/apply/resumeDelete.do',
 };
 
 export const SignUp = {
   register: "/register.do",
-  getList: '/api/apply/resumeList.do',
-  getCopy: '/api/apply/resumeCopy.do',
-  getDelete: '/api/apply/resumeDelete.do',
+
 };
 
 export const HirePost = {
