@@ -1,14 +1,13 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
-import { postFaqApi } from '../../../../api/postFaqApi';
 import { Faq } from '../../../../api/api';
-import { IDetailResponse, IFaqDetail } from '../../../../models/interface/IFaq';
+import { IDetailResponse, IFaqDetail, IFaqPostResponse } from '../../../../models/interface/IFaq';
 import { FaqModalStyled } from './styled';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
 import axios, { AxiosResponse } from 'axios';
-import { IPostResponse } from '../../../../models/interface/INotice';
+import { postApi } from '../../../../api/postApi';
 
 interface IFaqModalProps {
   onSuccess: () => void;
@@ -33,7 +32,7 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
   }, []);
 
   const searchDetail = async () => {
-    const detailApi = await postFaqApi<IDetailResponse>(Faq.getDetail, {
+    const detailApi = await postApi<IDetailResponse>(Faq.getDetail, {
       faqSeq,
     });
 
@@ -55,7 +54,7 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
       faq_type: faq_type.current.value,
     };
     dataForm.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
-    axios.post('/board/faqSavePart.do', dataForm).then((res: AxiosResponse<IPostResponse>) => {
+    axios.post('/board/faqSavePart.do', dataForm).then((res: AxiosResponse<IFaqPostResponse>) => {
       res.data.result === 'success' && onSuccess();
     });
   };
@@ -69,17 +68,18 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
       faqSeq,
     };
     dataForm.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
-    axios.post('/board/faqUpdatePart.do', dataForm).then((res: AxiosResponse<IPostResponse>) => {
+    axios.post('/board/faqUpdatePart.do', dataForm).then((res: AxiosResponse<IFaqPostResponse>) => {
       res.data.result === 'success' && onSuccess();
     });
   };
 
-  // const handlerDelete = () => {
-  //   const deleteApi = postFaqApi<IPostResponse>(Faq.dsfs, {
-  //     faqSeq,
-  //   });
-  //   if (deleteApi.result === 'success') onSuccess();
-  // };
+  const handlerDelete = async () => {
+    const deleteApi = await postApi<IFaqPostResponse>(Faq.getDelete, {
+      faqSeq,
+    });
+
+    // if (deleteApi.result === 'success') onSuccess();
+  };
 
   return (
     <FaqModalStyled>
@@ -95,7 +95,7 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
         </label>
         <div className={'button-container'}>
           <button onClick={faqSeq ? handlerUpdate : handlerSave}>{faqSeq ? '수정' : '등록'}</button>
-          {faqSeq && <button>삭제</button>}
+          {faqSeq && <button onClick={handlerDelete}>삭제</button>}
           <button onClick={handlerModal}>닫기</button>
         </div>
       </div>

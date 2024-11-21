@@ -3,19 +3,23 @@ import {
   StyledTable,
   StyledTd,
   StyledTh,
-} from "../../../common/styled/StyledTable";
-import { JobPostContext } from "../../../../api/provider/JobPostProvider";
-import { IJobPost, IJobPostListResponse } from "../../../../models/IJobPost";
-import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
-import { postJobPostApi } from "../../../../api/postJopPostApi";
-import { JobPost } from "../../../../api/api";
+} from "../../../../common/styled/StyledTable";
+import { PostContext } from "../../../../../api/provider/PostProvider";
+import {
+  IPost,
+  IPostListResponse,
+} from "../../../../../models/interface/IPost";
+import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
+import { Post } from "../../../../../api/api";
+import { useNavigate } from "react-router-dom";
+import { postApi } from "../../../../../api/postApi";
 
-export const JobPostMain = () => {
-  const [jobPostList, setJobPostList] = useState<IJobPost[]>();
+export const PostMain = () => {
+  const navigate = useNavigate();
+  const [jobPostList, setJobPostList] = useState<IPost[]>();
   const [listCount, setListCount] = useState<number>(0);
-
   const [cPage, setCPage] = useState<number>();
-  const { searchKeyWord } = useContext(JobPostContext);
+  const { searchKeyWord } = useContext(PostContext);
 
   useEffect(() => {
     // console.log("updated searchKeyWord: ", searchKeyWord);
@@ -33,8 +37,8 @@ export const JobPostMain = () => {
 
     // console.log("searchParam: ", searchParam);
 
-    const searchList = await postJobPostApi<IJobPostListResponse>(
-      JobPost.getList,
+    const searchList = await postApi<IPostListResponse>(
+      Post.getList,
       searchParam
     );
     // console.log("API Response:", searchList);
@@ -44,6 +48,11 @@ export const JobPostMain = () => {
       setListCount(searchList.approvalPostCnt);
       setCPage(currentPage);
     }
+  };
+
+  const hanlderDetail = (postIdx: number) => {
+    // console.log("hanlderDetail");
+    navigate(`/react/jobs/postDetail/${postIdx}`);
   };
 
   return (
@@ -68,7 +77,7 @@ export const JobPostMain = () => {
               return (
                 <tr
                   key={jobPost.postIdx}
-                  //  todo : 클릭시 post detail 연결
+                  onClick={() => hanlderDetail(jobPost.postIdx)}
                 >
                   <StyledTd>{jobPost.postIdx}</StyledTd>
                   <StyledTd>{jobPost.title}</StyledTd>
