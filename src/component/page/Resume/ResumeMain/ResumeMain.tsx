@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { IResume, IResumeListResponse } from '../../../../models/interface/IResume';
 import { ResumeContext } from '../../../../api/provider/ResumeProvider';
-import { postApplyApi } from '../../../../api/PostApplyApi';
+import { postApi } from '../../../../api/postApi';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import { Resume } from '../../../../api/api';
 import { Button } from 'react-bootstrap';
@@ -24,7 +24,7 @@ export const ResumeMain = () => {
       ...searchKeyWord,
     };
 
-    const searchList = await postApplyApi<IResumeListResponse>(Resume.getList, searchParam);
+    const searchList = await postApi<IResumeListResponse>(Resume.getList, searchParam);
 
     if (searchList) {
       setResumeList(searchList.payload);
@@ -37,23 +37,20 @@ export const ResumeMain = () => {
   };
 
   const copyResumeList = async (resumeSeq: number) => {
-    const copyList = await postApplyApi<IResumeListResponse>(Resume.getCopy, { resIdx: resumeSeq });
+    const copyList = await postApi<IResumeListResponse>(Resume.getCopy, { resIdx: resumeSeq });
 
     if (copyList) {
       searchResumeList();
     }
   };
 
-  // const deleteResumeList = async (resumeSeq: number) => {
-  //   const deleteList = await postApplyApi<IResumeListResponse>(
-  //     Resume.getDelete,
-  //     { resIdx: resumeSeq }
-  //   );
+  const deleteResumeList = async (resumeSeq: number) => {
+    const deleteList = await postApi<IResumeListResponse>(Resume.getDelete, { resIdx: resumeSeq });
 
-  //   if (deleteList) {
-  //     searchResumeList();
-  //   }
-  // }
+    if (deleteList) {
+      searchResumeList();
+    }
+  };
 
   return (
     <>
@@ -80,7 +77,7 @@ export const ResumeMain = () => {
                       <Button
                         variant="secondary"
                         style={{ margin: '3px' }}
-                        // onClick={() => deleteResumeList(resume.resIdx)}
+                        onClick={() => deleteResumeList(resume.resIdx)}
                       >
                         삭제하기
                       </Button>

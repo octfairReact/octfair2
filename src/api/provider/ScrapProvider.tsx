@@ -1,4 +1,4 @@
-import { createContext, FC, useState } from "react";
+import React, { createContext, FC, useState } from "react";
 
 interface Context {
   searchKeyWord: object;
@@ -10,15 +10,15 @@ const defaultValue: Context = {
   setSearchKeyWord: () => {},
 };
 
-export const JobPostContext = createContext(defaultValue);
+export const ScrapContext = createContext(defaultValue);
 
-export const JobPostProvider: FC<{
+export const ScrapProvider: FC<{
   children: React.ReactNode | React.ReactNode[];
 }> = ({ children }) => {
   const [searchKeyWord, setSearchKeyWord] = useState({});
   return (
-    <JobPostContext.Provider value={{ searchKeyWord, setSearchKeyWord }}>
+    <ScrapContext.Provider value={{ searchKeyWord, setSearchKeyWord }}>
       {children}
-    </JobPostContext.Provider>
+    </ScrapContext.Provider>
   );
 };
