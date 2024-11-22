@@ -4,13 +4,14 @@ import { ApplyContext } from "../../../../api/provider/ApplyProvider";
 import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { hModalState } from "../../../../stores/modalState";
+import { modalState } from "../../../../stores/modalState";
 import { Portal } from "../../../common/potal/Portal";
 import {
 	StyledTable,
 	StyledTd,
 	StyledTh,
   } from "../../../common/styled/StyledTable";
+import { ResumeModalPreview } from "../../Resume/ResumeModal/ResumeModalPreview";
 
 export const HistoryMain = () => {
     const [applyList,setApplyList] = useState<IApply[]>();
@@ -18,8 +19,8 @@ export const HistoryMain = () => {
     const navigate = useNavigate();
     const [cPage, setCPage] = useState<number>();
   	const [listCount, setListCount] = useState<number>(0);
- 	const [hModal, setHModal] = useRecoilState<boolean>(hModalState);
-	const [historySeq, setHistorySeq] = useState<number>();
+ 	const [modal, setModal] = useRecoilState<boolean>(modalState);
+	const [resSeq, setResSeq] = useState<number>();
 
     interface IApply {
     appId: number;
@@ -77,13 +78,13 @@ export const HistoryMain = () => {
 		navigate(path);
 	  };
 
-	const handlerModal = (historySeq: number) => {
-		setHModal(!hModal);
-		setHistorySeq(historySeq);
+	const handlerModal = (resSeq: number) => {
+		setModal(!modal);
+		setResSeq(resSeq);
 	  };
 	
 	const onPostSuccess = () => {
-		setHModal(!hModal);
+		setModal(!modal);
 		searchApplyList();
 	  };
 
@@ -154,7 +155,7 @@ export const HistoryMain = () => {
 													</p>
 													<p className="resume-link"
 														style={{textAlign: 'left', paddingLeft: '50px', margin: '5px 0px 5px 0px', fontSize: '13px'}}>
-														<a onClick={() => handlerModal(data.postingId)}><span>지원이력서</span></a>
+														<a onClick={() => handlerModal(data.resIdx)}><span>지원이력서</span></a>
 													</p>
 												</StyledTd>
 												<StyledTd className="job-status">
@@ -186,15 +187,15 @@ export const HistoryMain = () => {
         activePage={cPage}
         itemsCountPerPage={5}
       ></PageNavigate>
-	  {/* {hModal && (
+	  {modal && (
         <Portal>
-          <ResumePreviewModal
+          <ResumeModalPreview
             onSuccess={onPostSuccess}
-            historySeq={historySeq}
-            setHistorySeq={setHistorySeq}
+            resumeSeq={resSeq}
+            setResumeSeq={setResSeq}
           />
         </Portal>
-      )} */}
+      )}
     </>
     );
 }
