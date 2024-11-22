@@ -20,3 +20,7 @@ export interface IScrapListResponse {
 export interface ISaveScrapResponse {
   result: string;
 }
+
+export interface IPostResponse {
+  result: string;
+}

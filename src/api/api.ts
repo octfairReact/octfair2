@@ -33,6 +33,7 @@ export const Post = {
 export const Scrap = {
   getList: "/api/jobs/readScrapList.do",
   saveScrap: "/api/jobs/saveScrap.do",
+  getDelete: "/api/jobs/deleteScrap.do",
 };
 
 export const Resume = {
