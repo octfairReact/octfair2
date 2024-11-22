@@ -52,7 +52,8 @@ export const PostMain = () => {
 
   const hanlderDetail = (postIdx: number) => {
     // console.log("hanlderDetail");
-    navigate(`/react/jobs/postDetail/${postIdx}`);
+    // navigate(`/react/jobs/postDetail/${postIdx}`);
+    navigate(`/react/jobs/post-detail/${postIdx}`);
   };
 
   return (

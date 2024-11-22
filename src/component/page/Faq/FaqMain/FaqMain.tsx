@@ -10,6 +10,7 @@ import { Portal } from '../../../common/potal/Portal';
 import { FaqModal } from '../FaqModal/FaqModal';
 import { Button } from 'react-bootstrap';
 import { postApi } from '../../../../api/postApi';
+import { ShowContentStyled } from './styled';
 
 export const FaqMain = () => {
   const [faqList, setFaqList] = useState<IFaq[]>();
@@ -18,7 +19,7 @@ export const FaqMain = () => {
   const [faqSeq, setFaqSeq] = useState<number>();
   const [cPage, setCPage] = useState<number>();
   const { searchKeyWord } = useContext(FaqContext);
-  const [activeFaq, setActiveFaq] = useState<number>();
+  const [style, setStyle] = useState<number>(null);
 
   useEffect(() => {
     searchFaqList();
@@ -53,7 +54,7 @@ export const FaqMain = () => {
   };
 
   const handlerShowContent = (faq_idx) => {
-    setActiveFaq((prevFaq) => (prevFaq === faq_idx ? null : faq_idx));
+    setStyle((style) => (style === faq_idx ? null : faq_idx));
   };
 
   return (
@@ -85,9 +86,11 @@ export const FaqMain = () => {
                     <StyledTd onClick={() => handlerModal(faq.faq_idx)}>관리</StyledTd>
                   </tr>
                   <tr>
-                    <StyledTd colSpan={5} style={{ display: 'none' }}>
-                      영광오리탕
-                    </StyledTd>
+                    <ShowContentStyled>
+                      <StyledTd className={style === faq.faq_idx ? 'show' : 'hide'} colSpan={5}>
+                        {faq.content}
+                      </StyledTd>
+                    </ShowContentStyled>
                   </tr>
                 </>
               );

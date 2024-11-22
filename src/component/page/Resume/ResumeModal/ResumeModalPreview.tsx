@@ -1,8 +1,10 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
+import axios, { AxiosRequestConfig } from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 interface IResumeModalProps {
   // title: string;
@@ -17,13 +19,90 @@ interface IResumeModalProps {
 export const ResumeModalPreview: FC<IResumeModalProps> = ({
   onSuccess,
   resumeSeq,
+  setResumeSeq,
 }) => {
+  const navigate = useNavigate();
   const [modal, setModal] = useRecoilState<boolean>(modalState); // recoil에 저장된 state
-  // const [noticeDetail, setNoticeDetail] = useState<INoticeDetail>();
-  // const [imageUrl, setImageUrl] = useState<string>();
-  // const [fileData, setFileData] = useState<File>();
+  const [resumeInfo, setResumeInfo] = useState<IResumeDetail>();
+  const [careerInfo, setCareerInfo] = useState<ICareerDetail[] | null>();
+  const [eduInfo, setEduInfo] = useState<IEduDetail[] | null>();
+  const [skillInfo, setSkillInfo] = useState<ISkillDetail[] | null>();
+  const [certInfo, setCertInfo] = useState<ICertDetail[] | null>();
   // const title = useRef<HTMLInputElement>();
   // const context = useRef<HTMLInputElement>();
+  interface IResumeDetail {
+    resIdx: number,
+    empStatus: string,
+    resTitle: string,
+    shortIntro: string | null,
+    proLink: string | null,
+    perStatement: string | null,
+    updatedDate: string | null,
+    userNm: string | null,
+    phone: string | null,
+    email: string | null,
+    fileName: string | null
+  }
+  interface ICareerDetail {
+    crrIdx: number,
+    company: string,
+    dept: string,
+    position: string,
+    startDate: string,
+    endDate: string,
+    reason: string,
+    crrDesc: string,
+    resIdx: number
+  }
+  interface IEduDetail {
+    eduIdx: number,
+    resIdx: number,
+    eduLevel: string,
+    schoolName: string,
+    major: string,
+    admDate: string,
+    grdDate: string,
+    grdStatus: string
+  }
+  interface ISkillDetail {
+    skillIdx: number,
+    skillName: string,
+    skillDetail: string,
+    resIdx: number
+  }
+  interface ICertDetail {
+    certIdx: number,
+    certName: string,
+    grade: string,
+    issuer: string,
+    acqDate: string,
+    resIdx: number
+  }
+
+  useEffect(() => {
+    resumeSeq && modalDetail(); // 컴포넌트 생성될 때 실행
+    console.log("모달 로그1: " + resumeSeq);
+    // 클린업 함수, 컴포넌트가 사라지기 직전에 실행
+    return () => {
+      resumeSeq && setResumeSeq(undefined);
+    };
+  }, []);
+
+  const modalDetail = () => {
+    const param = {
+      resIdx: resumeSeq
+    }
+
+    axios.post('/api/manage-hire/previewResume.do', param).then((res) => {
+      const data = res.data;
+      console.log("모달 로그: ", data.resumeInfo);
+      setResumeInfo(data.resumeInfo);
+      setCareerInfo(data.careerInfo);
+      setEduInfo(data.eduInfo);
+      setSkillInfo(data.skillInfo);
+      setCertInfo(data.certInfo);
+    })
+  }
 
   const [show, setShow] = useState(true);
 
@@ -36,147 +115,169 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const downloadFile =  (resIdx) => {  
+    axios.post('/api/manage-hire/attachment-download.do', resIdx,{
+      headers: {
+        'Content-Type': 'application/json',  // 서버가 JSON 형식의 요청을 받도록 지정
+      },
+      responseType: 'blob',  // 파일 데이터를 받기 위해 'blob' 응답 타입 사용
+    }).then((res) => {
+        const file = new Blob([res.data], { type: res.headers['content-type'] });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(file);
+        link.download = res.headers['content-disposition'].split('filename*=UTF-8\'\'')[1]; // 헤더에서 파일명 추출
+        link.click(); 
+        URL.revokeObjectURL(link.href);    
+    })
+  };
+  
   return (
-      <Modal 
-        show={show} 
-        onHide={handleClose}
-        size="lg"
-      >
-        <Modal.Header closeButton>
-          <h5 className="modal-title">이력서 미리 보기</h5>
-        </Modal.Header>
-        <Modal.Body>
+    <Modal
+      show={show}
+      onHide={handleClose}
+      size="lg"
+    >
+      <Modal.Header closeButton>
+        <h5 className="modal-title">이력서 미리 보기</h5>
+      </Modal.Header>
+      <Modal.Body>
+        <div>
           <div>
-            <div>
-              <p>resTitle</p>
-            </div>
-            <div>
-              <p>이름 : </p>
-            </div>
-            <div>
-              <p>이메일 : </p>
-            </div>
-            <div>
-              <p>연락처 : </p>
-            </div>
+            <p>{resumeInfo?.resTitle}</p>
+          </div>
+          <div>
+            <p>이름 : {resumeInfo?.userNm}</p>
+          </div>
+          <div>
+            <p>이메일 : {resumeInfo?.email}</p>
+          </div>
+          <div>
+            <p>연락처 : {resumeInfo?.phone}</p>
+          </div>
 
-            <div>
-              {/* <c:if test="${not empty resumeInfo.shortIntro}"> */}
-                <div>
-                  <p >shortIntro</p>
-                </div>
-              {/* </c:if> */}
-              {/* <c:if test="${not empty resumeInfo.proLink}"> */}
-                <div >
-                  <p >
-                    링크 : proLink
-                  </p>
-                </div>
-              {/* </c:if> */}
-              {/* <c:if test="${not empty resumeInfo.fileName}"> */}
-                <div>
-                  <p >
-                    첨부파일 : fileName
-                  </p>
-                </div>
-              {/* </c:if> */}
-            </div>
+          <div>
+            {resumeInfo?.shortIntro !== null ?
+              <div>
+                <p >{resumeInfo?.shortIntro}</p>
+              </div>
+              : null}
 
+            {resumeInfo?.proLink !== null ?
+              <div>
+                <p >링크 : {resumeInfo?.proLink}</p>
+              </div>
+              : null}
+
+            {resumeInfo?.fileName !== null ?
+              <div onClick={()=>downloadFile(resumeInfo?.resIdx)}>
+                <p>첨부파일 : {resumeInfo?.fileName}</p>
+              </div>
+              : null}
+          </div>
+
+          {careerInfo?.length > 0 ? (
             <Modal.Body>
               <table className="table">
                 <thead className="table-light">
                   <tr>
-                    <th scope="col">경력</th>
-                    <th scope="col"></th>
+                    <th scope="col" colSpan={2}>경력</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Mark</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Jacob</td>
-                  </tr>
+                  {careerInfo?.map((data) => {
+                    return (
+                      <tr>
+                        <td>{data.startDate} ~ {data.endDate}</td>
+                        <td>{data.company} | {data.dept} |
+                          {data.position}
+                          <p
+                            style={{ marginTop: '20px', marginLeft: '20px', whiteSpace: 'pre-line' }}>{data.crrDesc}</p>
+                        </td>
+                      </tr>
+                    )
+                  })
+                  }
                 </tbody>
               </table>
             </Modal.Body>
+          ) : null}
 
+          {eduInfo?.length > 0 ? (
             <Modal.Body>
               <table className="table">
                 <thead className="table-light">
                   <tr>
-                    <th scope="col">학력</th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
+                    <th colSpan={3} scope="col">학력</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                  </tr>
-                  {/* <tr>
-                    <td>3</td>
-                    <td colSpan={2}>Larry the Bird</td>
-                    <td>@twitter</td>
-                  </tr> */}
+                  {eduInfo?.map((data) => {
+                    return (
+                      <tr>
+                        <td>{data.grdStatus}</td>
+                        <td>{data.schoolName}
+                          {data.major !== null ? (
+                            <>
+                              {"\u00A0\u00A0"} | {"\u00A0\u00A0"} {data.major}
+                            </>
+                          ) : null}
+                        </td>
+                        <td>{data.admDate} ~ {data.grdDate}</td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </Modal.Body>
+          ) : null}
 
+          {skillInfo?.length > 0 ? (
             <Modal.Body>
               <table className="table">
                 <thead className="table-light">
                   <tr>
-                    <th scope="col">스킬</th>
-                    <th scope="col"></th>
+                    <th scope="col" colSpan={2}>스킬</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Mark</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Jacob</td>
-                  </tr>
+                  {skillInfo?.map((data) => {
+                    return (
+                      <tr>
+                        <td>{data.skillName}</td>
+                        <td>{data.skillDetail}</td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </Modal.Body>
+          ) : null}
 
+          {certInfo?.length > 0 ? (
             <Modal.Body>
               <table className="table">
                 <thead className="table-light">
                   <tr>
-                    <th scope="col">자격증 및 외국어</th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
+                    <th scope="col" colSpan={4}>자격증 및 외국어</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
+                  {certInfo?.map((data) => {
+                    return (
+                      <tr>
+                        <td>{data.acqDate}</td>
+                        <td>{data.certName}</td>
+                        <td>{data.grade}</td>
+                        <td>{data.issuer}</td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </Modal.Body>
+          ) : null}
 
+          {resumeInfo?.perStatement !== null ? (
             <Modal.Body>
               <table className="table">
                 <thead className="table-light">
@@ -186,138 +287,26 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 </thead>
                 <tbody>
                   <tr>
-                    <td>자기소개서 내용</td>
+                    <td style={{borderBottom: "1px solid #ccc"}}>
+                    <p style={{padding: "20px", whiteSpace: "pre-line"}}>
+                      {resumeInfo?.perStatement}
+                    </p>  
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </Modal.Body>
-
-            {/* <c:if test="${not empty careerInfo}"> */}
-              <div>
-                <div>경력</div>
-                <div>
-                  <ul>
-                    {/* <c:forEach var="data" items="${careerInfo}"> */}
-                      <li >
-                        <div>
-                          {/* <span> <fmt:formatDate value="${data.startDate}"
-                              pattern="yyyy.MM" /> ~ <fmt:formatDate
-                              value="${data.endDate}" pattern="yyyy.MM" />
-                          </span> */}
-                        </div>
-                        <div>
-                          {/* <span style="font-weight: 900; font-size: 15px;">${data.company}</span><span
-                            style="font-weight: 900;"> &nbsp;&nbsp; | ${data.dept} |
-                            ${data.position}</span> */}
-                          <p >crrDesc</p>
-                        </div>
-                      </li>
-                    {/* </c:forEach> */}
-                  </ul>
-                </div>
-              </div>
-            {/* </c:if> */}
-
-            {/* <c:if test="${not empty eduInfo}"> */}
-              <div>
-                <div >
-                  학력</div>
-                <div>
-                  <ul >
-                    {/* <c:forEach var="data" items="${eduInfo}"> */}
-                      <li >
-                        <div >
-                          <span>grdStatus</span>
-                        </div>
-                        <div >
-                          <span >schoolName</span>
-                          {/* <c:if test="${not empty data.major}"> */}
-                            {/* <span style="font-weight: 900;"> &nbsp;&nbsp; |
-                              &nbsp;&nbsp;${data.major} </span> */}
-                          {/* </c:if> */}
-                        </div>
-                        <div >
-                          {/* <span style="font-weight: 900;"> <span> <fmt:formatDate
-                                value="${data.admDate}" pattern="yyyy.MM" /> ~ <fmt:formatDate
-                                value="${data.grdDate}" pattern="yyyy.MM" />
-                          </span>
-                          </span> */}
-                        </div>
-                      </li>
-                    {/* </c:forEach> */}
-                  </ul>
-                </div>
-              </div>
-            {/* </c:if> */}
-
-            {/* <c:if test="${not empty skillInfo}"> */}
-              <div>
-                <div>
-                  스킬</div>
-                <ul >
-                  {/* <c:forEach var="data" items="${skillInfo}"> */}
-                    <li>
-                      <div>
-                        <span>skillName</span>
-                      </div>
-                      <div>
-                        <p  >skillDetail</p>
-                      </div>
-                    </li>
-                  {/* </c:forEach> */}
-                </ul>
-              </div>
-            {/* </c:if> */}
-
-            {/* <c:if test="${not empty certInfo}"> */}
-              <div>
-                <div >
-                  자격증 및 외국어</div>
-                {/* <c:forEach var="data" items="${certInfo}"> */}
-                  <li >
-                    <div>
-                      {/* <span><fmt:formatDate value="${data.acqDate}"
-                          pattern="yyyy.MM" /></span> */}
-                    </div>
-                    <div>
-                      <span  >certName</span>
-                      <span  >grade</span>
-                      <span >issuer</span>
-                    </div>
-                    <div>
-                      {/* <span style="font-weight: 900;"> <span> <fmt:formatDate
-                            value="${data.acqDate}" pattern="yyyy.MM" /></span> */}
-                    </div>
-                  </li>
-                {/* </c:forEach> */}
-              </div>
-            {/* </c:if> */}
-
-            {/* <c:if test="${not empty resumeInfo.perStatement}"> */}
-              <div>
-                <div>
-                  자기소개서
-                </div>
-                <div>
-                  <p  >perStatement</p>
-                </div>
-              </div>
-            {/* </c:if> */}
-          </div>
-
-
-
-
-
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            닫기
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            인쇄
-          </Button>
-        </Modal.Footer>
-      </Modal>
+          ) : null}
+        </div>
+      </Modal.Body >
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          닫기
+        </Button>
+        <Button variant="primary" onClick={handleClose}>
+          인쇄
+        </Button>
+      </Modal.Footer>
+    </Modal >
   );
 };

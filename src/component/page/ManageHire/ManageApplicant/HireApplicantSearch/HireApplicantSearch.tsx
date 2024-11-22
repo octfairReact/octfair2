@@ -31,7 +31,6 @@ const { setSearchKeyWord } = useContext(HireApplicantContext);
 
   useEffect(() => {     
     if(searchValue.postIdx !== ''){
-      console.log("searchValue : " + searchValue.postIdx) 
       setSearchKeyWord(searchValue);
     }      
   },[searchValue])

@@ -8,7 +8,6 @@ import { IDetailResponse, IPostResponse, IQnaDetail } from '../../../../models/i
 import { postApi } from '../../../../api/postApi';
 import { Qna } from '../../../../api/api';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { postNoticeApi } from '../../../../api/postNoticeApi';
 
 interface IQnaModalProps {
   onSuccess: () => void;
@@ -26,13 +25,14 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
   const context = useRef<HTMLInputElement>();
   const ans_content = useRef<HTMLInputElement>();
   const password = useRef<HTMLInputElement>();
+  const [showAnsBox, setShowAnsBox] = useState<Boolean>(false);
 
   useEffect(() => {
     qnaSeq && searchDetail();
     return () => {
       qnaSeq && setQnaSeq(undefined);
     };
-  }, []);
+  }, [qnaSeq]);
 
   const searchDetail = async () => {
     const detailApi = await postApi<IDetailResponse>(Qna.getDetail, { qnaSeq });
@@ -60,6 +60,7 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
       loginId: userInfo.loginId,
       password: password.current.value,
     };
+    setShowAnsBox(false);
     fileData && fileForm.append('file', fileData);
     fileForm.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
 
@@ -74,6 +75,7 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
       qnaTit: title.current.value,
       qnaCon: context.current.value,
       password: password.current.value,
+      ans_content: ans_content.current.value,
       qnaSeq,
     };
     fileData && fileForm.append('file', fileData);

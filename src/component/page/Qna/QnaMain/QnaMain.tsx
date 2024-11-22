@@ -10,6 +10,8 @@ import { PageNavigate } from '../../../common/pageNavigation/PageNavigate';
 import { Portal } from '../../../common/potal/Portal';
 import { QnaModal } from '../QnaModal/QnaModal';
 import { Button } from 'react-bootstrap';
+import { ILoginInfo } from '../../../../models/interface/store/userInfo';
+import { loginInfoState } from '../../../../stores/userInfo';
 
 export const QnaMain = () => {
   const [qnaList, setQnaList] = useState<IQna[]>();
@@ -18,10 +20,16 @@ export const QnaMain = () => {
   const [qnaSeq, setQnaSeq] = useState<number>();
   const [cPage, setCPage] = useState<number>();
   const { searchKeyWord } = useContext(QnaContext);
+  const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
+  const [selectedQnaType, setSelectedQnaType] = useState<string>();
 
   useEffect(() => {
     searchQnaList();
-  }, [searchKeyWord]);
+  }, [searchKeyWord, selectedQnaType]);
+
+  useEffect(() => {
+    setSelectedQnaType(userInfo.userType);
+  }, []);
 
   const searchQnaList = async (currentPage?: number) => {
     currentPage = currentPage || 1;
@@ -30,6 +38,7 @@ export const QnaMain = () => {
       ...searchKeyWord,
       currentPage: currentPage.toString(),
       pageSize: '5',
+      qna_type: selectedQnaType,
     };
 
     const searchList = await postApi<IQnaListResponse>(Qna.getListBody, searchParam);
@@ -51,11 +60,15 @@ export const QnaMain = () => {
     searchQnaList();
   };
 
+  const changeQnaType = (qna_type: string) => {
+    setSelectedQnaType(qna_type);
+  };
+
   return (
     <>
       <div>
-        <Button>개인회원</Button>
-        <Button>기업회원</Button>
+        <Button onClick={() => changeQnaType('A')}>개인회원</Button>
+        <Button onClick={() => changeQnaType('B')}>기업회원</Button>
       </div>
       <StyledTable>
         <thead>

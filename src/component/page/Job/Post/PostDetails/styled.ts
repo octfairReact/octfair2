@@ -1,6 +1,13 @@
 import styled from "styled-components";
 
 export const PostDetailStyled = styled.div`
+  .postDetailsContainer {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+
   .bizDetailContainer {
     padding: 20px;
     background-color: #fff;
@@ -12,6 +19,13 @@ export const PostDetailStyled = styled.div`
     padding: 20px;
     background-color: #f9fafb;
     border-radius: 8px;
+  }
+
+  .postTitleAndButtonContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
   }
 
   .bizImg {
@@ -86,5 +100,15 @@ export const PostDetailStyled = styled.div`
     &:hover {
       background-color: #5a6268;
     }
+  }
+
+  // 로딩중
+  .loadingText {
+    font-size: 2rem;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 `;
