@@ -15,14 +15,17 @@ export interface ISignUp {
     detailAddress: string;
 }
 
-// // 유효성 검사용 인터페이스 (zipCode를 string으로 처리)
+// // 전체 유효성 검사용 인터페이스 (zipCode를 string으로 처리)
 // export interface ISignUpForValidation extends Omit<ISignUp, 'zipCode'> {
 //     zipCode: string;  // zipCode는 string으로 변경
 // }
 
 
-// 'loginId', 'userType', 'password', 'checkPassword'만 먼저 묶는 인터페이스
+// 'loginId', 'userType', 'password', 'checkPassword'까지 먼저 묶는 인터페이스
 export type SignUpPasswordDetail = Pick<ISignUp, "loginId" | "userType" | "password" | "checkPassword">;
+
+//recoil 사용시
+export type SignUpUserTypeGender = Pick<ISignUp, "userType" | "userGender">;
 
 // 나머지 필드는 'Omit'을 사용하여 분리
 export type SignUpOtherUserDetails = Omit<ISignUp, "loginId" | "userType" | "password" | "checkPassword">;
@@ -42,6 +45,3 @@ export interface IPostResponse {
   result: string;
 }
 
-export interface IPostResponseN {
-    result: number;
-}
