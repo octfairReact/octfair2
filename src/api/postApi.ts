@@ -6,7 +6,6 @@ export const postApi = async <T>(api: string, param: object): Promise<T> => {
     // HTTP status 코드 체크
     console.log('postApi result : ', result);
     if (result.status >= 200 && result.status < 400) {
-      console.log('here??');
       return result.data;
     } else {
       throw new Error(`HTTP Error: ${result.status} - ${result.statusText}`);
