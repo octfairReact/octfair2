@@ -9,15 +9,20 @@ export interface IPostResponse {
   result: string;
 }
 
-export interface IResumeDetail extends IResume {
+export interface IResumeDetail {
+  resIdx: number;
+  resTitle: string | null;
   empStatus: string | null;
   shortIntro: string | null;
   proLink: string | null;
   perStatement: string | null;
   phsycalPath: string | null;
   logicalPath: string | null;
+  fileName: string;
   fileSize: number;
   fileExt: string | null;
+  updatedDate: string;
+  userNm: string;
   phone: string;
   email: string;
 }

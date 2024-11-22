@@ -44,6 +44,16 @@ export const Resume = {
   getEdu: "/api/apply/educationList.do",
   getSkill: "/api/apply/skillList.do",
   getCert: "/api/apply/certList.do",
+
+  addCareer: "/api/apply/insertCareer.do",
+  addEdu: "/api/apply/insertEdu.do",
+  addSkill: "/api/apply/insertSkill.do",
+  addCert: "/api/apply/insertCert.do",
+
+  deleteCareer: "/api/apply/deleteCareer.do",
+  deleteEdu: "/api/apply/deleteEdu.do",
+  deleteSkill: "/api/apply/deleteSkill.do",
+  deleteCert: "/api/apply/deleteCert.do",
 };
 
 export const SignUp = {
