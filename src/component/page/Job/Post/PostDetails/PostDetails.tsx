@@ -7,10 +7,12 @@ import {
 import { useEffect, useState } from "react";
 import { postApi } from "../../../../../api/postApi";
 import { ContentBox } from "../../../../common/ContentBox/ContentBox";
-import { Post } from "../../../../../api/api";
+import { Post, Scrap } from "../../../../../api/api";
 import { PostDetail } from "./PostDetail";
 import { BizDetail } from "./BizDetail";
 import { PostDetailStyled } from "./styled";
+import axios from "axios";
+import { ISaveScrapResponse } from "../../../../../models/interface/IScrap";
 
 export const PostDetails = () => {
   const { postIdx } = useParams();
@@ -35,6 +37,25 @@ export const PostDetails = () => {
     }
   };
 
+  const handlerSaveScrap = async () => {
+    console.log("handlerSaveScrap");
+    const requestBody = {
+      postIdx: postDetail?.postIdx,
+    };
+
+    const response = await postApi<ISaveScrapResponse>(
+      Scrap.saveScrap,
+      requestBody
+    );
+    console.log("saveScrapResponse : ", response);
+
+    if (response?.result === "success") {
+      alert("스크랩이 성공적으로 저장되었습니다.");
+    } else {
+      alert("이미 스크립된 공고입니다.");
+    }
+  };
+
   console.log("received params : ", { postIdx });
 
   return (
@@ -42,45 +63,28 @@ export const PostDetails = () => {
       <ContentBox>채용 공고</ContentBox> <br></br>
       <PostDetailStyled>
         {postDetail?.postIdx ? (
-          
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "3fr 1fr",
-              gap: "20px",
-              padding: "20px",
-            }}
-          >
+          <div className="postDetailsContainer">
             {/* 채용 공고 */}
-            
             <div>
-            
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "20px",
-                }}
-              >
+              <div className="postTitleAndButtonContainer">
                 <div>
                   <h1>{bizDetail.bizName}</h1>
                   <h2>{postDetail.title}</h2>
                 </div>
                 <div>
-                  <button className="scrapButton">스크랩</button>
+                  <button className="scrapButton" onClick={handlerSaveScrap}>
+                    스크랩
+                  </button>
                   <button className="applyButton">입사지원</button>
                 </div>
               </div>
-              {/* PostDetail 넣을 곳 */}
               <PostDetail postDetail={postDetail} />
             </div>
             {/* 기업 정보 */}
-            {/* BizDetail 넣을 곳 */}
             <BizDetail bizDetail={bizDetail} postDetail={postDetail} />
           </div>
         ) : (
-          <p>로딩중...</p>
+          <p className="loadingText">로딩중...</p>
         )}
         <div style={{ textAlign: "center" }}>
           <button className="backButton" onClick={() => navigate(-1)}>
