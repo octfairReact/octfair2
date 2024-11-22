@@ -14,14 +14,15 @@ import {
 } from "../../../../../models/interface/IScrap";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { useNavigate } from "react-router-dom";
+import { ScrapSearch } from "../ScrapSearch/ScrapSearch";
 
 export const ScrapMain = () => {
   const navigate = useNavigate();
   const [scrapList, setScrapList] = useState<IScrap[]>();
   const [listCount, setListCount] = useState<number>(0);
   const [cPage, setCpage] = useState<number>();
-  const [selectedScrap, setSelectedScrap] = useState<number | null>(null);
-  const { searchKeyWord } = useContext(ScrapContext);
+  const { searchKeyWord, setSelectedScrapIdx, selectedScrapIdx } =
+    useContext(ScrapContext);
 
   useEffect(() => {
     searchScrapList();
@@ -50,17 +51,22 @@ export const ScrapMain = () => {
     }
   };
 
-  const handleRadioChange = (index: number) => {
-    setSelectedScrap(index); // 선택된 행 업데이트
-    console.log(index);
+  const onScrapDeleteSuccess = async () => {
+    await searchScrapList();
+  };
+
+  const handleRadioChange = (scrapIdx: number) => {
+    setSelectedScrapIdx(scrapIdx); // 선택된 행 업데이트
+    console.log(scrapIdx);
   };
 
   const handlerNavigatePostDetail = (postIdx: number) => {
-    navigate(`/react/jobs/postDetail/${postIdx}`);
+    navigate(`/react/jobs/post-detail/${postIdx}`);
   };
 
   return (
     <>
+      <ScrapSearch onSuccess={onScrapDeleteSuccess} />
       <p>총 개수:{listCount} </p>
       <ScrapMainStyledTable>
         <thead>
@@ -83,8 +89,8 @@ export const ScrapMain = () => {
                     <input
                       type="radio"
                       name="scrapSelect"
-                      checked={selectedScrap === index}
-                      onChange={() => handleRadioChange(index)}
+                      checked={selectedScrapIdx === scrap.scrapIdx}
+                      onChange={() => handleRadioChange(scrap.scrapIdx)}
                     />
                   </StyledTd>
                   {scrap.postTitle ? (
