@@ -12,7 +12,6 @@ import NewHirePost from "../component/page/ManageHire/NewHirePost/NewHirePost";
 import { Faq } from "../pages/Faq";
 import { FaqRouter } from "../component/page/Faq/FaqRouter/FaqRouter";
 import { Resume } from "../pages/Resume";
-import { PostDetails } from "../component/page/Job/Post/PostDetails/PostDetails";
 import { ResumeWrite } from "../component/page/Resume/ResumeDetail/ResumeWrite";
 import { Qna } from "../pages/Qna";
 import { Scrap } from "../pages/Scrap";
@@ -39,7 +38,6 @@ const routers: RouteObject[] = [
         path: "jobs",
         children: [
           { path: "posts.do", element: <Post /> },
-          { path: "postDetail/:postIdx", element: <PostDetails /> },
           { path: "post-detail/:postIdx", element: <PostDetail /> },
           { path: "scrap.do", element: <Scrap /> },
         ],
