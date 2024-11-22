@@ -34,9 +34,9 @@ const NewHirePost = () => {
     setStartDate(null);
   };
 
-  const handlerSavePost = () => {}
+  const handlerSavePost = () => {};
 
-  const handlerPreviewPost = () => {}
+  const handlerPreviewPost = () => {};
 
   return (
     <div>
@@ -237,6 +237,7 @@ const NewHirePost = () => {
           <tr>
             <th>첨부파일</th>
             <td colSpan={3}>
+              <Form.Label className="d-flex justify-content-start text-muted">채용공고 이미지 486 * 300 px</Form.Label>
               <Form.Control type="file" />
             </td>
           </tr>
@@ -252,8 +253,12 @@ const NewHirePost = () => {
           >
             뒤로
           </Button>
-          <Button variant="success" onClick={handlerPreviewPost}>미리보기</Button>
-          <Button variant="primary" onClick={handlerSavePost}>등록</Button>
+          <Button variant="success" onClick={handlerPreviewPost}>
+            미리보기
+          </Button>
+          <Button variant="primary" onClick={handlerSavePost}>
+            등록
+          </Button>
         </ButtonGroup>
       </div>
     </div>
