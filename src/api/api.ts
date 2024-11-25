@@ -39,7 +39,9 @@ export const Scrap = {
 export const Resume = {
   getList: "/api/apply/resumeList.do",
   getCopy: "/api/apply/resumeCopy.do",
+  getUpdate: "/api/apply/resumeUpdate.do",
   getDelete: "/api/apply/resumeDelete.do",
+  getNew: "/api/apply/resumeNew.do",
   getDetail: "/api/apply/resumeDetail.do",
   getCareer: "/api/apply/careerList.do",
   getEdu: "/api/apply/educationList.do",
