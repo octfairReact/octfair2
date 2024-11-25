@@ -6,9 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { loginInfoState } from "../../../stores/userInfo";
 import { ILoginInfo } from "../../../models/interface/store/userInfo";
 import logo_img from "../../../assets/logo_img.png";
-import { modalState } from "../../../stores/modalState";
+import { modalState, modalState2 } from "../../../stores/modalState";
 import { Portal } from "../../common/potal/Portal";
-import { SignUpModal } from "./SignUpModal/SignUpModal";
+import { SignUpModal } from "./SignUp/SignUpModal/SignUpModal";
+import { FindIdPwModal } from "./Login/FindIdPwModal";
 
 export interface IAccount {
     lgn_Id: string;
@@ -25,9 +26,15 @@ export const LoginMain = () => {
 
     //회원 가입 모달 창 띄우기
     const [modal, setModal] = useRecoilState<boolean>(modalState);
+    const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
 
-    const handlerModal = () => {
+    const handlerSignUpModal = () => {
         setModal(!modal);
+        setFindModal(findModal);
+    };
+    const handlerFindIdPwModal = () => {
+        setModal(modal);
+        setFindModal(!findModal);
     };
 
     const loginHandler = () => {
@@ -35,7 +42,7 @@ export const LoginMain = () => {
         param.append("lgn_Id", account.lgn_Id);
         param.append("pwd", account.pwd);
 
-        axios.post("/loginProc.do", param).then((res) => {
+        axios.post("/api/loginProc.do", param).then((res) => {
             const data = res.data;
 
             if (data.result === "SUCCESS") {
@@ -100,11 +107,12 @@ export const LoginMain = () => {
                                     <button className="login-button" onClick={loginHandler}>
                                         Login
                                     </button>
-                                    <button className="signup-button" onClick={handlerModal}>
+                                    <button className="signup-button" onClick={handlerSignUpModal}>
                                         {" "}
                                         Sign Up{" "}
                                     </button>
                                 </div>
+                                <button onClick={handlerFindIdPwModal}>아이디/비밀번호 찾기</button>
                             </div>
                         </div>
                     </div>
@@ -112,9 +120,15 @@ export const LoginMain = () => {
             </LoginStyled>
             {modal && (
                 <Portal>
-                    <SignUpModal/>
+                    <SignUpModal />
+                </Portal>
+            )}
+            {findModal && (
+                <Portal>
+                    <FindIdPwModal />
                 </Portal>
             )}
         </>
     );
 };
+

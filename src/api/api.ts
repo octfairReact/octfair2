@@ -58,10 +58,17 @@ export const Resume = {
 };
 
 export const SignUp = {
-  register: "/register.do",
-  checkId: "/check_loginId.do",
+    register: "/api/register.do",
+    checkId: "/api/check_loginId.do",
+    findId: "/api/selectFindInfoId.do",
+    findPw: "/api/selectFindInfoPw.do",
+  updatePw: "/api/updateFindPw.do",
 };
 
 export const HirePost = {
   getList: "/api/manage-hire/post-list",
+};
+
+export const MyPage = {
+    getDetail: "/api/mypage/userDetail.do",
 };
