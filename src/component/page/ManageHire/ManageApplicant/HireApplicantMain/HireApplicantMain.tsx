@@ -2,19 +2,19 @@ import React, { useContext, useEffect, useState } from 'react'
 import { HireApplicantContext } from '../../../../../api/provider/HireApplicantProvider.';
 import axios from 'axios';
 import { PageNavigate } from '../../../../common/pageNavigation/PageNavigate';
-import {
-  StyledTable,
-  StyledTd,
-  StyledTh,
-} from "../../../../common/styled/StyledTable";
 import { HireApplicantMainStyled } from './styled';
+import { useRecoilState } from 'recoil';
+import { modalState } from '../../../../../stores/modalState';
+import { ResumeModalPreview } from '../../../Resume/ResumeModal/ResumeModalPreview';
+import { Portal } from '../../../../common/potal/Portal';
 
 const HireApplicantMain = () => {
   const [applicantList, setApplicantList] = useState<IApplicant[]>();
   const { searchKeyWord } = useContext(HireApplicantContext);
   const [cPage, setCPage] = useState<number>();
   const [listCount, setListCount] = useState<number>(0);
-  const [applicantSeq, setApplicantSeq] = useState<number>();
+  const [modal, setModal] = useRecoilState<boolean>(modalState);
+  const [resSeq, setResSeq] = useState<number>();
   
 
   interface IApplicant {
@@ -40,7 +40,6 @@ const HireApplicantMain = () => {
   useEffect(() => {
 
     if (Object.keys(searchKeyWord).length != 0) {
-      console.log(searchKeyWord);
       loadApplicantList();
     }
   }, [searchKeyWord])
@@ -52,27 +51,89 @@ const HireApplicantMain = () => {
       currentPage: currentPage.toString(),
       pageSize: "5",
     };
-    console.log(searchParam);
+    
     axios.post('/api/manage-hire/applicantList.do', searchParam).then((res) => {
       const data = res.data;
-      console.log(data);
       setApplicantList(data.list);
       setListCount(data.count);
       setCPage(currentPage);
     })
   }
-
-  const handlerSuccessStatus = (loginId,status) => {
-    const nextStatus='';
-    const currentStatus = status;
-
+  const statusUpdate = (userId:string,nextStatus:string, postIdx:number) => {
+    const params = {
+      loginId: userId,
+      postIdx: postIdx,
+      keyword: nextStatus
+    };
+    
+    axios.post('/api/manage-hire/statusUpdate.do', params).then((res) => {
+      const data = res.data;
+    })
   }
 
-  const handlerFailStatus = (loginId,status) => {
-    const nextStatus='';
+  const handlerSuccessStatus = (loginId:string, status:string, postId:number) => {
+    const userId =loginId;
     const currentStatus = status;
-
+    const postIdx = postId;
+    if (currentStatus === '서류심사중') {
+      const nextStatus = '면접진행중'; 
+      statusUpdate(userId,nextStatus, postIdx)
+      loadApplicantList();
+    } else if (currentStatus === '면접진행중') {
+      const nextStatus = '최종합격'; 
+      statusUpdate(userId,nextStatus, postIdx)
+      loadApplicantList();
+    } else if (currentStatus.includes('탈락')){
+      const nextStatus = '서류심사중'; 
+      statusUpdate(userId,nextStatus, postIdx)
+      loadApplicantList();
+    } else {
+      alert('더 이상 진행할 수 없는 상태입니다.');
+      return;
+    }  
   }
+
+  const handlerFailStatus = (loginId:string, status:string, postId:number) => {
+    const userId =loginId;
+    const currentStatus = status;
+    const postIdx = postId;
+    if (currentStatus === '서류심사중') {
+      const nextStatus = '서류탈락'; 
+      statusUpdate(userId,nextStatus, postIdx)
+      loadApplicantList();
+      return
+    } else if (currentStatus === '면접진행중') {
+      const nextStatus = '면접탈락'; 
+      statusUpdate(userId,nextStatus, postIdx)
+      loadApplicantList();
+      return
+    } else {
+      alert('더 이상 진행할 수 없는 상태입니다.');
+      return;
+    }
+  }
+  
+  const viewChange = (loginId: string, postId:number) => {
+    const params = {
+      loginId: loginId,
+      postIdx: postId,
+    };
+    axios.post('/api/manage-hire/viewUpdate.do', params).then((res) => {
+      const data = res.data;    
+    })
+    loadApplicantList();
+  }
+
+  const handlerModal = (loginId: string,resSeq: number, postId:number) => {
+    viewChange(loginId,postId);
+		setModal(!modal);
+		setResSeq(resSeq);
+	  };
+	
+	const onPostSuccess = () => {
+		setModal(!modal);
+		loadApplicantList();
+	  };
 
   return (
     <>
@@ -113,7 +174,7 @@ const HireApplicantMain = () => {
                       </td>
                     )}
                     <td rowSpan={2}><a href="#" className="btn btn-primary res" style={{backgroundColor:'white'}}
-                      data-resIdx={list.resIdx} data-user-id={list.loginId}>지원자 이력서
+                      onClick={() => handlerModal(list.loginId, list.resIdx, list.postIdx)}>지원자 이력서
                       보기</a></td>
                   </tr>
                   <tr>
@@ -129,14 +190,14 @@ const HireApplicantMain = () => {
                       {list.viewed == 1 && list.status == '서류심사중' || list.status == '면접진행중' ? (
                         <>
                           <button id="btnPass" className="btn btn-resume" 
-                          onClick={() => handlerSuccessStatus(list.loginId,list.status)}>합격</button>
+                          onClick={() => handlerSuccessStatus(list.loginId,list.status, list.postIdx)}>합격</button>
                           <button style={{backgroundColor:'white'}} id="btnFail" className="btn btn-danger" 
-                          onClick={() => handlerFailStatus(list.loginId,list.status)}>불합격</button>
+                          onClick={() => handlerFailStatus(list.loginId,list.status, list.postIdx)}>불합격</button>
                         </>
                       ) : null}
                       {list.viewed == 1 && list.status == '서류탈락' || list.status == '면접탈락' ? (
                         <button style={{backgroundColor:'white'}} id="btnPass" className="btn btn-resume"
-                        onClick={() => handlerSuccessStatus(list.loginId,list.status)}>추가합격</button>
+                        onClick={() => handlerSuccessStatus(list.loginId,list.status, list.postIdx)}>추가합격</button>
                       ) : null}
 
                     </td>
@@ -144,18 +205,10 @@ const HireApplicantMain = () => {
                   <tr>
                     <td> <span className="highlight">이메일:</span>{list.email}</td>
                   </tr>
-                  <input type="hidden" id="totcnt" name="totcnt" value={listCount} />
-                  <input type="hidden" id="postIdx" name="postIdx"
-                    // value={postIdx}
-                  />
-                  <input type="hidden" id="hiringProcSerch" name="hiringProcSerch"
-                    // value={hiringProcSerch}
-                  />
+                  
                 </>
               )
             })
-
-
             )}
 
           </thead>
@@ -168,6 +221,15 @@ const HireApplicantMain = () => {
         activePage={cPage}
         itemsCountPerPage={5}
       ></PageNavigate>
+      {modal && (
+        <Portal>
+          <ResumeModalPreview
+            onSuccess={onPostSuccess}
+            resumeSeq={resSeq}
+            setResumeSeq={setResSeq}
+          />
+        </Portal>
+      )}
     </>
   )
 }

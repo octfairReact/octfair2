@@ -88,4 +88,10 @@ export const QnaModalStyled = styled.div`
       transform: translateY(2px);
     }
   }
+  .show {
+    display: 'show';
+  }
+  .hide {
+    display: 'none';
+  }
 `;

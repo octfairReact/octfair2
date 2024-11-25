@@ -3,8 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { ScrapContext } from "../../../../../api/provider/ScrapProvider";
 import { ScrapSearchStyled } from "./styled";
 import { Button } from "../../../../common/Button/Button";
+import { postNoticeApi } from "../../../../../api/postNoticeApi";
+import { Scrap } from "../../../../../api/api";
+import { IPostResponse } from "../../../../../models/interface/IScrap";
 
-export const ScrapSearch = () => {
+interface IScrapSearchProps {
+  onSuccess: () => void;
+}
+
+export const ScrapSearch: React.FC<IScrapSearchProps> = ({ onSuccess }) => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<{
     searchTitle: string;
@@ -16,7 +23,8 @@ export const ScrapSearch = () => {
     searchEdDate: "",
   });
 
-  const { setSearchKeyWord } = useContext(ScrapContext);
+  const { setSearchKeyWord, selectedScrapIdx, setSelectedScrapIdx } =
+    useContext(ScrapContext);
 
   useEffect(() => {
     window.location.search &&
@@ -26,6 +34,26 @@ export const ScrapSearch = () => {
   const handlerSearch = () => {
     // console.log(searchValue);
     setSearchKeyWord(searchValue);
+  };
+
+  const handlerDelete = async () => {
+    if (selectedScrapIdx == null) {
+      alert("삭제할 스크랩을 선택해주세요.");
+      return;
+    }
+
+    console.log("selectedScrapIdx : ", selectedScrapIdx);
+    const deleteApi = await postNoticeApi<IPostResponse>(Scrap.getDelete, {
+      scrapIdx: selectedScrapIdx,
+    });
+
+    if (deleteApi?.result === "success") {
+      alert("삭제되었습니다.");
+
+      setSelectedScrapIdx(null);
+
+      onSuccess();
+    }
   };
 
   return (
@@ -49,7 +77,7 @@ export const ScrapSearch = () => {
           }
         ></input>
         <Button onClick={handlerSearch}>검색</Button>
-        <Button>삭제</Button>
+        <Button onClick={handlerDelete}>삭제</Button>
       </div>
     </ScrapSearchStyled>
   );

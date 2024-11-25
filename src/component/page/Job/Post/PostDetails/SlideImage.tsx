@@ -1,7 +1,7 @@
-import React from "react";
-import Slider, { Settings } from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import React from 'react';
+import Slider, { Settings } from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const SlideImage: React.FC = () => {
   const settings: Settings = {
@@ -34,10 +34,10 @@ const SlideImage: React.FC = () => {
     <>
       <div
         style={{
-          maxWidth: "1200px", // 슬라이더 최대 너비 제한
-          margin: "0 auto", // 가운데 정렬
-          padding: "2rem 0",
-          overflow: "hidden",
+          maxWidth: '1200px', // 슬라이더 최대 너비 제한
+          margin: '0 auto', // 가운데 정렬
+          padding: '2rem 0',
+          overflow: 'hidden',
         }}
       >
         <Slider {...settings}>
@@ -46,10 +46,10 @@ const SlideImage: React.FC = () => {
               src="https://placehold.co/400"
               alt="Slide 1"
               style={{
-                width: "100%",
-                height: "300px",
-                objectFit: "cover", // 이미지 잘라내기
-                borderRadius: "0px",
+                width: '100%',
+                height: '300px',
+                objectFit: 'cover', // 이미지 잘라내기
+                borderRadius: '0px',
               }}
             />
           </div>
@@ -58,10 +58,10 @@ const SlideImage: React.FC = () => {
               src="https://via.placeholder.com/800x400?text=Slide+2"
               alt="Slide 2"
               style={{
-                width: "100%",
-                height: "300px",
-                objectFit: "cover", // 이미지 잘라내기
-                borderRadius: "0px",
+                width: '100%',
+                height: '300px',
+                objectFit: 'cover', // 이미지 잘라내기
+                borderRadius: '0px',
               }}
             />
           </div>

@@ -40,7 +40,7 @@ export const FaqSearch = () => {
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchStDate: e.target.value })}></input>
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchEdDate: e.target.value })}></input>
         <Button onClick={handlerSearch}>검색</Button>
-        <Button onClick={handlerModal}>등록</Button>
+        <Button onClick={handlerModal}>신규등록</Button>
       </div>
     </FaqSearchStyled>
   );
