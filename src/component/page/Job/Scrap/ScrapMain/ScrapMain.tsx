@@ -26,7 +26,7 @@ export const ScrapMain = () => {
 
   useEffect(() => {
     searchScrapList();
-  }, [searchKeyWord]);
+  }, [searchKeyWord, selectedScrapIdx]);
 
   const searchScrapList = async (currentPage?: number) => {
     currentPage = currentPage || 1;
@@ -51,9 +51,9 @@ export const ScrapMain = () => {
     }
   };
 
-  const onScrapDeleteSuccess = async () => {
-    await searchScrapList();
-  };
+  // const onScrapDeleteSuccess = async () => {
+  //   await searchScrapList();
+  // };
 
   const handleRadioChange = (scrapIdx: number) => {
     setSelectedScrapIdx(scrapIdx); // 선택된 행 업데이트
@@ -66,7 +66,6 @@ export const ScrapMain = () => {
 
   return (
     <>
-      <ScrapSearch onSuccess={onScrapDeleteSuccess} />
       <p>총 개수:{listCount} </p>
       <ScrapMainStyledTable>
         <thead>
