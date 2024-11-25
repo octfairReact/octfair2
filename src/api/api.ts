@@ -1,81 +1,88 @@
 export const Login = {
-  login: "/loginProc.do",
+    login: "/loginProc.do",
 };
 
 export const Notice = {
-  getList: "/board/noticeListJson.do",
-  getListBody: "/board/noticeListBody.do",
-  getDetail: "/board/noticeDetailBody.do",
-  getSave: "/board/noticeSaveBody.do",
-  getUpdate: "/board/noticeUpdateBody.do",
-  getDelete: "/board/noticeDeleteBody.do",
+    getList: "/board/noticeListJson.do",
+    getListBody: "/board/noticeListBody.do",
+    getDetail: "/board/noticeDetailBody.do",
+    getSave: "/board/noticeSaveBody.do",
+    getUpdate: "/board/noticeUpdateBody.do",
+    getDelete: "/board/noticeDeleteBody.do",
 };
 
 export const Faq = {
-  getList: "/board/faqListJson.do",
-  getListBody: "/board/faqListBody.do",
-  getDetail: "/board/faqDetailBody.do",
-  getDelete: "/board/faqDeleteBody.do",
+    getList: "/board/faqListJson.do",
+    getListBody: "/board/faqListBody.do",
+    getDetail: "/board/faqDetailBody.do",
+    getDelete: "/board/faqDeleteBody.do",
 };
 
 export const Qna = {
-  getList: "/board/qnaListJson.do",
-  getListBody: "/board/qnaListBody.do",
-  getDetail: "/board/qnaDetailFileBody.do",
-  getDelete: "/board/qnaDeleteBody.do",
+    getList: "/board/qnaListJson.do",
+    getListBody: "/board/qnaListBody.do",
+    getDetail: "/board/qnaDetailFileBody.do",
+    getDelete: "/board/qnaDeleteBody.do",
 };
 
 export const Post = {
-  getList: "/api/jobs/readPostList.do",
-  getDetail: "/api/jobs/readPostDetailBody.do",
+    getList: "/api/jobs/readPostList.do",
+    getDetail: "/api/jobs/readPostDetailBody.do",
 };
 
 export const Scrap = {
-  getList: "/api/jobs/readScrapList.do",
-  saveScrap: "/api/jobs/saveScrap.do",
-  getDelete: "/api/jobs/deleteScrap.do",
+    getList: "/api/jobs/readScrapList.do",
+    saveScrap: "/api/jobs/saveScrap.do",
+    getDelete: "/api/jobs/deleteScrap.do",
 };
 
 export const Resume = {
-  getList: "/api/apply/resumeList.do",
-  getCopy: "/api/apply/resumeCopy.do",
-  getUpdate: "/api/apply/resumeUpdate.do",
-  getDelete: "/api/apply/resumeDelete.do",
-  getNew: "/api/apply/resumeNew.do",
-  getDetail: "/api/apply/resumeDetail.do",
-  getCareer: "/api/apply/careerList.do",
-  getEdu: "/api/apply/educationList.do",
-  getSkill: "/api/apply/skillList.do",
-  getCert: "/api/apply/certList.do",
+    getList: "/api/apply/resumeList.do",
+    getCopy: "/api/apply/resumeCopy.do",
+    getUpdate: "/api/apply/resumeUpdate.do",
+    getDelete: "/api/apply/resumeDelete.do",
+    getNew: "/api/apply/resumeNew.do",
+    getDetail: "/api/apply/resumeDetail.do",
+    getCareer: "/api/apply/careerList.do",
+    getEdu: "/api/apply/educationList.do",
+    getSkill: "/api/apply/skillList.do",
+    getCert: "/api/apply/certList.do",
 
-  addCareer: "/api/apply/insertCareer.do",
-  addEdu: "/api/apply/insertEdu.do",
-  addSkill: "/api/apply/insertSkill.do",
-  addCert: "/api/apply/insertCert.do",
+    addCareer: "/api/apply/insertCareer.do",
+    addEdu: "/api/apply/insertEdu.do",
+    addSkill: "/api/apply/insertSkill.do",
+    addCert: "/api/apply/insertCert.do",
 
-  deleteCareer: "/api/apply/deleteCareer.do",
-  deleteEdu: "/api/apply/deleteEdu.do",
-  deleteSkill: "/api/apply/deleteSkill.do",
-  deleteCert: "/api/apply/deleteCert.do",
+    deleteCareer: "/api/apply/deleteCareer.do",
+    deleteEdu: "/api/apply/deleteEdu.do",
+    deleteSkill: "/api/apply/deleteSkill.do",
+    deleteCert: "/api/apply/deleteCert.do",
 };
 
 export const SignUp = {
-  register: "/register.do",
-  checkId: "/check_loginId.do",
+    register: "/api/register.do",
+    checkId: "/api/check_loginId.do",
+    findId: "/api/selectFindInfoId.do",
+    findPw: "/api/selectFindInfoPw.do",
+    updatePw: "/api/updateFindPw.do",
 };
 
 export const HirePost = {
-  getList: "/api/manage-hire/post-list",
+    getList: "/api/manage-hire/post-list",
 };
 
 export const History = {
-  getList: "/api/apply/historySearchRest.do",
-  deleteApply: "/api/apply/cancleApply.do",
-}
+    getList: "/api/apply/historySearchRest.do",
+    deleteApply: "/api/apply/cancleApply.do",
+};
 
 export const HireApplicant = {
-  getList: "/api/manage-hire/applicantList.do",
-  updateStatus: "/api/manage-hire/statusUpdate.do",
-  viewUpadate: "/api/manage-hire/viewUpdate.do",
-  previewResume: "/api/manage-hire/previewResume.do",
-}
+    getList: "/api/manage-hire/applicantList.do",
+    updateStatus: "/api/manage-hire/statusUpdate.do",
+    viewUpadate: "/api/manage-hire/viewUpdate.do",
+    previewResume: "/api/manage-hire/previewResume.do",
+};
+
+export const MyPage = {
+    getDetail: "/api/mypage/userDetail.do",
+};

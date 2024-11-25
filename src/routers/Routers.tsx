@@ -16,50 +16,55 @@ import { ResumeWrite } from "../component/page/Resume/ResumeDetail/ResumeWrite";
 import { Qna } from "../pages/Qna";
 import { Scrap } from "../pages/Scrap";
 import PostDetail from "../pages/PostDetail";
+import { MyPage } from "../pages/MyPage";
 
 const routers: RouteObject[] = [
-  { path: "*", element: <NotFound /> },
-  { path: "/", element: <Login /> },
-  {
-    path: "/react",
-    element: <DashBoard />,
-    children: [
-      {
-        path: "board",
+    { path: "*", element: <NotFound /> },
+    { path: "/", element: <Login /> },
+    {
+        path: "/react",
+        element: <DashBoard />,
         children: [
-          { path: "notice.do", element: <Notice /> },
-          { path: "notice.do/:noticeIdx", element: <NoticeRouter /> },
-          { path: "faq.do", element: <Faq /> },
-          { path: "faq.do/:faqIdx", element: <FaqRouter /> },
-          { path: "qna.do", element: <Qna /> },
+            {
+                path: "board",
+                children: [
+                    { path: "notice.do", element: <Notice /> },
+                    { path: "notice.do/:noticeIdx", element: <NoticeRouter /> },
+                    { path: "faq.do", element: <Faq /> },
+                    { path: "faq.do/:faqIdx", element: <FaqRouter /> },
+                    { path: "qna.do", element: <Qna /> },
+                ],
+            },
+            {
+                path: "jobs",
+                children: [
+                    { path: "posts.do", element: <Post /> },
+                    { path: "post-detail/:postIdx", element: <PostDetail /> },
+                    { path: "scrap.do", element: <Scrap /> },
+                ],
+            },
+            {
+                path: "apply",
+                children: [
+                    { path: "resume.do", element: <Resume /> },
+                    { path: "resumeDetail.do", element: <ResumeWrite /> },
+                    { path: "history.do", element: <History /> },
+                ],
+            },
+            {
+                path: "manage-hire",
+                children: [
+                    { path: "post.do", element: <ManageHirePost /> },
+                    { path: "new-post.do", element: <NewHirePost /> },
+                    { path: "applicant.do", element: <ManageHireApplicant /> },
+                ],
+            },
+            {
+                path: "mypage",
+                children: [{ path: "update.do", element: <MyPage /> }],
+            },
         ],
-      },
-      {
-        path: "jobs",
-        children: [
-          { path: "posts.do", element: <Post /> },
-          { path: "post-detail/:postIdx", element: <PostDetail /> },
-          { path: "scrap.do", element: <Scrap /> },
-        ],
-      },
-      {
-        path: "apply",
-        children: [
-          { path: "resume.do", element: <Resume /> },
-          { path: "resumeDetail.do", element: <ResumeWrite /> },
-          { path: "history.do", element: <History /> },
-        ],
-      },
-      {
-        path: "manage-hire",
-        children: [
-          { path: "post.do", element: <ManageHirePost /> },
-          { path: "new-post.do", element: <NewHirePost /> },
-          { path: "applicant.do", element: <ManageHireApplicant /> },
-        ],
-      },
-    ],
-  },
+    },
 ];
 
 export const Routers = createBrowserRouter(routers);
