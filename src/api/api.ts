@@ -59,9 +59,7 @@ export const Resume = {
 
 export const SignUp = {
   register: "/register.do",
-  getList: "/api/apply/resumeList.do",
-  getCopy: "/api/apply/resumeCopy.do",
-  getDelete: "/api/apply/resumeDelete.do",
+  checkId: "/check_loginId.do",
 };
 
 export const HirePost = {
@@ -79,3 +77,4 @@ export const HireApplicant = {
   viewUpadate: "/api/manage-hire/viewUpdate.do",
   previewResume: "/api/manage-hire/previewResume.do",
 }
+
