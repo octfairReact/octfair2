@@ -19,7 +19,8 @@ export const ScrapSearch = () => {
     searchEdDate: "",
   });
 
-  const { setSearchKeyWord, selectedScrapIdx, setSelectedScrapIdx } =
+  // const { setSearchKeyWord, selectedScrapIdx, setSelectedScrapIdx } =
+  const { setSearchKeyWord, selectedScrapIdxList, setSelectedScrapIdxList } =
     useContext(ScrapContext);
 
   useEffect(() => {
@@ -33,20 +34,31 @@ export const ScrapSearch = () => {
   };
 
   const handlerDelete = async () => {
-    if (selectedScrapIdx == null) {
+    // if (selectedScrapIdx == null) {
+    if (selectedScrapIdxList.length === 0) {
       alert("삭제할 스크랩을 선택해주세요.");
       return;
     }
 
-    console.log("selectedScrapIdx : ", selectedScrapIdx);
-    const deleteApi = await postNoticeApi<IPostResponse>(Scrap.getDelete, {
-      scrapIdx: selectedScrapIdx,
-    });
+    // console.log("selectedScrapIdx : ", selectedScrapIdx);
+    // const deleteApi = await postNoticeApi<IPostResponse>(Scrap.getDelete, {
+    //   scrapIdx: selectedScrapIdx,
+    // });
 
-    if (deleteApi?.result === "success") {
+    // if (deleteApi?.result === "success") {
+    //   alert("삭제되었습니다.");
+
+    // setSelectedScrapIdx(null);
+
+    const deletedApi = selectedScrapIdxList.map((scrapIdx) =>
+      postNoticeApi<IPostResponse>(Scrap.getDelete, { scrapIdx })
+    );
+
+    const results = await Promise.all(deletedApi);
+
+    if (results.every((res) => res?.result === "success")) {
       alert("삭제되었습니다.");
-
-      setSelectedScrapIdx(null);
+      setSelectedScrapIdxList([]);
     }
   };
 
