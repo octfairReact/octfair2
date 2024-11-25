@@ -7,11 +7,7 @@ import { postNoticeApi } from "../../../../../api/postNoticeApi";
 import { Scrap } from "../../../../../api/api";
 import { IPostResponse } from "../../../../../models/interface/IScrap";
 
-interface IScrapSearchProps {
-  onSuccess: () => void;
-}
-
-export const ScrapSearch: React.FC<IScrapSearchProps> = ({ onSuccess }) => {
+export const ScrapSearch = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<{
     searchTitle: string;
@@ -51,8 +47,6 @@ export const ScrapSearch: React.FC<IScrapSearchProps> = ({ onSuccess }) => {
       alert("삭제되었습니다.");
 
       setSelectedScrapIdx(null);
-
-      onSuccess();
     }
   };
 
