@@ -39,7 +39,9 @@ export const Scrap = {
 export const Resume = {
   getList: "/api/apply/resumeList.do",
   getCopy: "/api/apply/resumeCopy.do",
+  getUpdate: "/api/apply/resumeUpdate.do",
   getDelete: "/api/apply/resumeDelete.do",
+  getNew: "/api/apply/resumeNew.do",
   getDetail: "/api/apply/resumeDetail.do",
   getCareer: "/api/apply/careerList.do",
   getEdu: "/api/apply/educationList.do",
@@ -65,3 +67,15 @@ export const SignUp = {
 export const HirePost = {
   getList: "/api/manage-hire/post-list",
 };
+
+export const History = {
+  getList: "/api/apply/historySearchRest.do",
+  deleteApply: "/api/apply/cancleApply.do",
+}
+
+export const HireApplicant = {
+  getList: "/api/manage-hire/applicantList.do",
+  updateStatus: "/api/manage-hire/statusUpdate.do",
+  viewUpadate: "/api/manage-hire/viewUpdate.do",
+  previewResume: "/api/manage-hire/previewResume.do",
+}

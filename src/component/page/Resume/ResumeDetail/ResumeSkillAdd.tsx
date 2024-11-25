@@ -1,10 +1,32 @@
+import { useRef } from "react";
 import { Button } from "react-bootstrap"
+import { useLocation } from "react-router-dom";
+import { postApi } from "../../../../api/postApi";
+import { IResumeDetailReponse } from "../../../../models/interface/IResume";
+import { Resume } from "../../../../api/api";
 
-export const ResumeSkillAdd = () => {
+export const ResumeSkillAdd = (props) => {
+  const location = useLocation();
+  const skillName = useRef<HTMLInputElement>();
+  const skillDetail = useRef(null);
 
-  const handlerSave = () => {}
+  const handlerSave = async () => {
+    const param = {
+      skillName: skillName.current.value,
+      skillDetail: skillDetail?.current.value,
+      resIdx: location.state.idx,
+    }
 
-  const handlerCancel = () => {}
+    const saveSkill = await postApi<IResumeDetailReponse>(Resume.addSkill, param);
+
+    if (saveSkill.payload) {
+      props.setVisibleState(false);
+    }
+  }
+
+  const handlerCancel = () => {
+    props.setVisibleState(false);
+  }
 
   return (
     <div id="skillInputTable">
@@ -20,6 +42,7 @@ export const ResumeSkillAdd = () => {
                 defaultValue={""} 
                 required={true} 
                 style={{ verticalAlign: "top"}}
+                ref={skillName} 
               />
             </td>
             <td>
@@ -27,7 +50,8 @@ export const ResumeSkillAdd = () => {
                 className="form-control" id="skillDetail" 
                 placeholder=" &#13;&#10; 스킬 상세 기재"
                 rows={5}
-                defaultValue={""}
+                defaultValue={""} 
+                ref={skillDetail} 
               />
             </td>
           </tr>

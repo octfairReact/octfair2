@@ -5,6 +5,7 @@ import { postApi } from "../../../../api/postApi";
 import { Resume } from "../../../../api/api";
 import { useLocation } from "react-router-dom";
 import { ResumeCertAdd } from "./ResumeCertAdd";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 export const ResumeCert = () => {
   const [certList, setCertList] = useState<IResumeCertification[]>();
@@ -27,8 +28,21 @@ export const ResumeCert = () => {
     if (certList) { setCertList(certList.payload); }
   }
 
-  const handlerSave = () => {}
-  const handlerCancel = () => {}
+  const handlerDelete = async (certIdx: number) => {
+    const searchParam = { 
+      resIdx: resumeSeq,
+      certIdx: certIdx, 
+    };
+    const deleteList = await postApi<IResumeCertificationReponse>(Resume.deleteCert, searchParam);
+
+    if (deleteList) {
+      searchCertList(resumeSeq);
+    }
+  }
+
+  const handlerSetVisible = (state: boolean) => {
+    setAddVisible(state);
+  }
 
   return (
     <div className="resumeDetail_body">
@@ -55,7 +69,7 @@ export const ResumeCert = () => {
       {/* <ul> */}
         {/* <li className="list" id="certificationList">조회값 여기에 추가</li> */}
         
-        { addVisible && <ResumeCertAdd/> }
+        { addVisible && <ResumeCertAdd setVisibleState={handlerSetVisible} /> }
         { !addVisible && 
         
           <div className="list" id="certificationList">
@@ -86,7 +100,7 @@ export const ResumeCert = () => {
                         <td>{cert.grade}</td>
                         <td>{cert.issuer}</td>
                         <td>{cert.acqDate}</td>
-                        <td>삭제</td>
+                        <td onClick={() => handlerDelete(cert.certIdx)}><RiDeleteBin6Line /></td>
                       </tr>
                     </tbody>
                   );
@@ -107,8 +121,6 @@ export const ResumeCert = () => {
           </div>
         
         }
-
-        
 
       {/* </ul> */}
     </div>

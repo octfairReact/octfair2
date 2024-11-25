@@ -7,6 +7,11 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../../stores/modalState';
 import { ResumeModalPreview } from '../../../Resume/ResumeModal/ResumeModalPreview';
 import { Portal } from '../../../../common/potal/Portal';
+import { IApplicant, IApplicantResponse } from '../../../../../models/interface/IHireApplicant';
+import { HireApplicant } from '../../../../../api/api';
+import { postApi } from '../../../../../api/postApi';
+import { Await } from 'react-router-dom';
+import { arch } from 'os';
 
 const HireApplicantMain = () => {
   const [applicantList, setApplicantList] = useState<IApplicant[]>();
@@ -15,60 +20,57 @@ const HireApplicantMain = () => {
   const [listCount, setListCount] = useState<number>(0);
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [resSeq, setResSeq] = useState<number>();
-  
-
-  interface IApplicant {
-    "appId": number,
-    "userIdx": number,
-    "loginId": string,
-    "postIdx": number,
-    "title": string,
-    "endDate": null,
-    "applyDate": string,
-    "viewed": number,
-    "status": string,
-    "resIdx": number,
-    "name": string,
-    "email": string,
-    "phone": string,
-    "hirProcess": null,
-    "resTitle": string,
-    "schoolName": string,
-    "grdStatus": string,
-    "company": string,
-  }
+    
   useEffect(() => {
-
     if (Object.keys(searchKeyWord).length != 0) {
       loadApplicantList();
     }
   }, [searchKeyWord])
 
-  const loadApplicantList = (currentPage?: number) => {
+  const loadApplicantList = async (currentPage?: number) => {
     currentPage = currentPage || 1;
     const searchParam = {
       ...searchKeyWord,
       currentPage: currentPage.toString(),
       pageSize: "5",
     };
-    
-    axios.post('/api/manage-hire/applicantList.do', searchParam).then((res) => {
-      const data = res.data;
-      setApplicantList(data.list);
-      setListCount(data.count);
+    const searchList= await postApi<IApplicantResponse>(
+      HireApplicant.getList,
+      searchParam
+    );
+    if(searchList){
+      setApplicantList(searchList.list);
+      setListCount(searchList.count);
       setCPage(currentPage);
-    })
+    }
+    // axios.post('/api/manage-hire/applicantList.do', searchParam).then((res) => {
+    //   const data = res.data;
+    //   setApplicantList(data.list);
+    //   setListCount(data.count);
+    //   setCPage(currentPage);
+    // })
   }
-  const statusUpdate = (userId:string,nextStatus:string, postIdx:number) => {
+
+  const statusUpdate = async (userId:string, nextStatus:string, postIdx:number) => {
     const params = {
       loginId: userId,
       postIdx: postIdx,
       keyword: nextStatus
     };
-    
-    axios.post('/api/manage-hire/statusUpdate.do', params).then((res) => {
-      const data = res.data;
-    })
+
+    const status = await postApi<{result:string}>(
+      HireApplicant.updateStatus,
+      params
+    )
+    if(status.result == "success"){
+      alert("상태가 업데이트 되었습니다.");
+    }else{
+      alert("오류가 발생하였습니다.");
+    }
+  
+    // axios.post('/api/manage-hire/statusUpdate.do', params).then((res) => {
+    //   const data = res.data;
+    // })
   }
 
   const handlerSuccessStatus = (loginId:string, status:string, postId:number) => {
@@ -113,15 +115,23 @@ const HireApplicantMain = () => {
     }
   }
   
-  const viewChange = (loginId: string, postId:number) => {
+  const viewChange = async (loginId: string, postId:number) => {
     const params = {
       loginId: loginId,
       postIdx: postId,
     };
-    axios.post('/api/manage-hire/viewUpdate.do', params).then((res) => {
-      const data = res.data;    
-    })
-    loadApplicantList();
+    const res= await postApi<{result:string}>(
+      HireApplicant.viewUpadate,
+      params
+    );
+    if(res.result =='success'){
+      console.log('이력서 확인');
+      loadApplicantList();
+    }
+    // axios.post('/api/manage-hire/viewUpdate.do', params).then((res) => {
+    //   const data = res.data;    
+    // })
+    // loadApplicantList();
   }
 
   const handlerModal = (loginId: string,resSeq: number, postId:number) => {
@@ -154,7 +164,7 @@ const HireApplicantMain = () => {
               </tr>
             ) : (applicantList?.map((list) => {
               return (
-                <>
+                <div key={list.appId}>
                   <tr className="row-separator">
                     <td rowSpan={4}>
                       <span className="highlight">{list.name}</span> <br />
@@ -173,9 +183,9 @@ const HireApplicantMain = () => {
                         ({list.grdStatus})
                       </td>
                     )}
-                    <td rowSpan={2}><a href="#" className="btn btn-primary res" style={{backgroundColor:'white'}}
+                    <td rowSpan={2}><span className="btn btn-primary res" style={{backgroundColor:'white'}}
                       onClick={() => handlerModal(list.loginId, list.resIdx, list.postIdx)}>지원자 이력서
-                      보기</a></td>
+                      보기</span></td>
                   </tr>
                   <tr>
                     {list.company !== null ? (
@@ -206,7 +216,7 @@ const HireApplicantMain = () => {
                     <td> <span className="highlight">이메일:</span>{list.email}</td>
                   </tr>
                   
-                </>
+                </div>
               )
             })
             )}

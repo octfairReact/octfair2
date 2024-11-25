@@ -5,6 +5,7 @@ import { postApi } from "../../../../api/postApi";
 import { Resume } from "../../../../api/api";
 import { useLocation } from "react-router-dom";
 import { ResumeSkillAdd } from "./ResumeSkillAdd";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 export const ResumeSkill = () => {
   const [skillList, setSkillList] = useState<IResumeSkill[]>();
@@ -28,6 +29,21 @@ export const ResumeSkill = () => {
 
   const handlerSave = () => {}
   const handlerCancel = () => {}
+  const handlerDelete = async (skillIdx: number) => {
+    const searchParam = { 
+      resIdx: resumeSeq,
+      skillIdx: skillIdx, 
+    };
+    const deleteList = await postApi<IResumeSkillReponse>(Resume.deleteSkill, searchParam);
+
+    if (deleteList) {
+      searchSkillList(resumeSeq);
+    }
+  }
+
+  const handlerSetVisible = (state: boolean) => {
+    setAddVisible(state);
+  }
 
   return (
     <div className="resumeDetail_body">
@@ -52,7 +68,7 @@ export const ResumeSkill = () => {
         </button>
       </div>
 
-      { addVisible && <ResumeSkillAdd/> }
+      { addVisible && <ResumeSkillAdd setVisibleState={handlerSetVisible} /> }
       { !addVisible && 
       
         <div className="list" id="skillList">
@@ -76,8 +92,8 @@ export const ResumeSkill = () => {
                 <tbody key={index}>
                   <tr>
                     <td>{skill.skillName}</td>
-                    <td>{skill.skillDetail}</td>
-                    <td>삭제</td>
+                    <td style={{ whiteSpace: "pre-wrap", textAlign: "left" }}>{skill.skillDetail}</td>
+                    <td onClick={() => handlerDelete(skill.skillIdx)}><RiDeleteBin6Line /></td>
                   </tr>
                 </tbody>
               );
