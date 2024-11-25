@@ -14,12 +14,19 @@ import {
 } from "../../../../../models/interface/IScrap";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
+import { Portal } from "../../../../common/potal/Portal";
+import { ResumeModalApplication } from "../../../Resume/ResumeModal/ResumeModalApplication";
 
 export const ScrapMain = () => {
   const navigate = useNavigate();
   const [scrapList, setScrapList] = useState<IScrap[]>();
   const [listCount, setListCount] = useState<number>(0);
   const [cPage, setCpage] = useState<number>();
+  const [modal, setModal] = useRecoilState<boolean>(modalState);
+  const [selectedScrap, setSelectedScrap] = useState<IScrap>();
 
   // const { searchKeyWord, setSelectedScrapIdx, selectedScrapIdx } =
   const { searchKeyWord, setSelectedScrapIdxList, selectedScrapIdxList } =
@@ -77,6 +84,17 @@ export const ScrapMain = () => {
 
   const handlerNavigatePostDetail = (postIdx: number) => {
     navigate(`/react/jobs/post-detail/${postIdx}`);
+  };
+
+  const handlerModal = (scrap) => {
+    setModal(!modal);
+    setSelectedScrap(scrap);
+    console.log(scrap);
+  };
+
+  const onPostSuccess = () => {
+    setModal(!modal);
+    searchScrapList();
   };
 
   return (
@@ -138,7 +156,9 @@ export const ScrapMain = () => {
                       <StyledTd>{scrap.postWorkLocation}</StyledTd>
                       <StyledTd>{scrap.postEndDate}</StyledTd>
                       <StyledTd>
-                        <button>입사지원</button>
+                        <button onClick={() => handlerModal(scrap)}>
+                          입사지원
+                        </button>
                       </StyledTd>
                     </>
                   ) : (
@@ -160,6 +180,16 @@ export const ScrapMain = () => {
         activePage={cPage}
         itemsCountPerPage={5}
       ></PageNavigate>
+      {modal && (
+        <Portal>
+          <ResumeModalApplication
+            onSuccess={onPostSuccess}
+            scrap={selectedScrap}
+            post={null}
+            biz={null}
+          />
+        </Portal>
+      )}
     </>
   );
 };
