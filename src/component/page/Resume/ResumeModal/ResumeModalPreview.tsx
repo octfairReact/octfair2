@@ -3,14 +3,29 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { IResumeCareer, IResumeCertification, IResumeDetail, IResumeEducation, IResumeSkill } from '../../../../models/interface/IResume';
+import { postApi } from '../../../../api/postApi';
+import { HireApplicant } from '../../../../api/api';
+import { IPreviewResume } from '../../../../models/interface/IHireApplicant';
 
+export const downloadFile = (resIdx) => {
+  axios.post('/api/manage-hire/attachment-download.do', resIdx, {
+    headers: {
+      'Content-Type': 'application/json',  // 서버가 JSON 형식의 요청을 받도록 지정
+    },
+    responseType: 'blob',  // 파일 데이터를 받기 위해 'blob' 응답 타입 사용
+  }).then((res) => {
+    const file = new Blob([res.data], { type: res.headers['content-type'] });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(file);
+    link.download = res.headers['content-disposition'].split('filename*=UTF-8\'\'')[1]; // 헤더에서 파일명 추출
+    link.click();
+    URL.revokeObjectURL(link.href);
+  })
+};
 interface IResumeModalProps {
-  // title: string;
-  // onConfirm: () => void;
-  // onClose: () => void;
-  // isVisible: boolean;
   onSuccess: () => void;
   resumeSeq: number;
   setResumeSeq: (resumeSeq: number) => void;
@@ -24,60 +39,10 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
   const navigate = useNavigate();
   const [modal, setModal] = useRecoilState<boolean>(modalState); // recoil에 저장된 state
   const [resumeInfo, setResumeInfo] = useState<IResumeDetail>();
-  const [careerInfo, setCareerInfo] = useState<ICareerDetail[] | null>();
-  const [eduInfo, setEduInfo] = useState<IEduDetail[] | null>();
-  const [skillInfo, setSkillInfo] = useState<ISkillDetail[] | null>();
-  const [certInfo, setCertInfo] = useState<ICertDetail[] | null>();
-  // const title = useRef<HTMLInputElement>();
-  // const context = useRef<HTMLInputElement>();
-  interface IResumeDetail {
-    resIdx: number,
-    empStatus: string,
-    resTitle: string,
-    shortIntro: string | null,
-    proLink: string | null,
-    perStatement: string | null,
-    updatedDate: string | null,
-    userNm: string | null,
-    phone: string | null,
-    email: string | null,
-    fileName: string | null
-  }
-  interface ICareerDetail {
-    crrIdx: number,
-    company: string,
-    dept: string,
-    position: string,
-    startDate: string,
-    endDate: string,
-    reason: string,
-    crrDesc: string,
-    resIdx: number
-  }
-  interface IEduDetail {
-    eduIdx: number,
-    resIdx: number,
-    eduLevel: string,
-    schoolName: string,
-    major: string,
-    admDate: string,
-    grdDate: string,
-    grdStatus: string
-  }
-  interface ISkillDetail {
-    skillIdx: number,
-    skillName: string,
-    skillDetail: string,
-    resIdx: number
-  }
-  interface ICertDetail {
-    certIdx: number,
-    certName: string,
-    grade: string,
-    issuer: string,
-    acqDate: string,
-    resIdx: number
-  }
+  const [careerInfo, setCareerInfo] = useState<IResumeCareer[] | null>();
+  const [eduInfo, setEduInfo] = useState<IResumeEducation[] | null>();
+  const [skillInfo, setSkillInfo] = useState<IResumeSkill[] | null>();
+  const [certInfo, setCertInfo] = useState<IResumeCertification[] | null>();
 
   useEffect(() => {
     resumeSeq && modalDetail(); // 컴포넌트 생성될 때 실행
@@ -88,49 +53,59 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
     };
   }, []);
 
-  const modalDetail = () => {
+  const modalDetail =  async () => {
     const param = {
       resIdx: resumeSeq
     }
 
-    axios.post('/api/manage-hire/previewResume.do', param).then((res) => {
-      const data = res.data;
-      console.log("모달 로그: ", data.resumeInfo);
-      setResumeInfo(data.resumeInfo);
-      setCareerInfo(data.careerInfo);
-      setEduInfo(data.eduInfo);
-      setSkillInfo(data.skillInfo);
-      setCertInfo(data.certInfo);
-    })
+    const priviewDetail = await postApi<IPreviewResume>(
+      HireApplicant.previewResume,
+      param
+    )
+    if(priviewDetail){
+      setResumeInfo(priviewDetail.resumeInfo);
+      setCareerInfo(priviewDetail.careerInfo);
+      setEduInfo(priviewDetail.eduInfo);
+      setSkillInfo(priviewDetail.skillInfo);
+      setCertInfo(priviewDetail.certInfo);
+    }
+    // axios.post('/api/manage-hire/previewResume.do', param).then((res) => {
+    //   const data = res.data;
+    //   console.log("모달 로그: ", data.resumeInfo);
+    //   setResumeInfo(data.resumeInfo);
+    //   setCareerInfo(data.careerInfo);
+    //   setEduInfo(data.eduInfo);
+    //   setSkillInfo(data.skillInfo);
+    //   setCertInfo(data.certInfo);
+    // })
   }
 
   const [show, setShow] = useState(true);
 
-  // const searchDetail = s
 
-  const handlerModal = () => {
-    setModal(!modal);
+
+  const handleClose = () => setModal(!modal);
+
+  const handlePrint = () => {
+    const printContent = document.getElementById("previewResumeContent")?.innerHTML;
+    const originContent = document.body.innerHTML;
+    window.onbeforeprint = () => {
+      if (printContent) {
+        document.body.innerHTML = printContent;
+      }
+    };
+
+    window.onafterprint = () => {
+      document.body.innerHTML = originContent;
+      window.location.reload();
+    };
+    window.print();
+  }
+
+  const handleNavigation = (path) => {
+    navigate(path);
   };
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const downloadFile =  (resIdx) => {  
-    axios.post('/api/manage-hire/attachment-download.do', resIdx,{
-      headers: {
-        'Content-Type': 'application/json',  // 서버가 JSON 형식의 요청을 받도록 지정
-      },
-      responseType: 'blob',  // 파일 데이터를 받기 위해 'blob' 응답 타입 사용
-    }).then((res) => {
-        const file = new Blob([res.data], { type: res.headers['content-type'] });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(file);
-        link.download = res.headers['content-disposition'].split('filename*=UTF-8\'\'')[1]; // 헤더에서 파일명 추출
-        link.click(); 
-        URL.revokeObjectURL(link.href);    
-    })
-  };
-  
   return (
     <Modal
       show={show}
@@ -141,7 +116,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
         <h5 className="modal-title">이력서 미리 보기</h5>
       </Modal.Header>
       <Modal.Body>
-        <div>
+        <div id="previewResumeContent">
           <div>
             <p>{resumeInfo?.resTitle}</p>
           </div>
@@ -164,13 +139,20 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
 
             {resumeInfo?.proLink !== null ?
               <div>
-                <p >링크 : {resumeInfo?.proLink}</p>
+                <p >링크 : 
+                  <span onClick={() => handleNavigation(resumeInfo?.proLink)} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>
+                    {resumeInfo?.proLink}
+                  </span>
+                </p>
               </div>
               : null}
 
             {resumeInfo?.fileName !== null ?
-              <div onClick={()=>downloadFile(resumeInfo?.resIdx)}>
-                <p>첨부파일 : {resumeInfo?.fileName}</p>
+              <div>
+                <p>첨부파일 : 
+                <span onClick={() => downloadFile(resumeInfo?.resIdx)} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>
+                 {resumeInfo?.fileName}</span>
+                </p>
               </div>
               : null}
           </div>
@@ -186,7 +168,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 <tbody>
                   {careerInfo?.map((data) => {
                     return (
-                      <tr>
+                      <tr key={data.crrIdx}>
                         <td>{data.startDate} ~ {data.endDate}</td>
                         <td>{data.company} | {data.dept} |
                           {data.position}
@@ -213,7 +195,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 <tbody>
                   {eduInfo?.map((data) => {
                     return (
-                      <tr>
+                      <tr key={data.eduIdx}>
                         <td>{data.grdStatus}</td>
                         <td>{data.schoolName}
                           {data.major !== null ? (
@@ -242,7 +224,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 <tbody>
                   {skillInfo?.map((data) => {
                     return (
-                      <tr>
+                      <tr key={data.skillIdx}>
                         <td>{data.skillName}</td>
                         <td>{data.skillDetail}</td>
                       </tr>
@@ -264,7 +246,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 <tbody>
                   {certInfo?.map((data) => {
                     return (
-                      <tr>
+                      <tr key={data.certIdx}>
                         <td>{data.acqDate}</td>
                         <td>{data.certName}</td>
                         <td>{data.grade}</td>
@@ -287,10 +269,10 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 </thead>
                 <tbody>
                   <tr>
-                    <td style={{borderBottom: "1px solid #ccc"}}>
-                    <p style={{padding: "20px", whiteSpace: "pre-line"}}>
-                      {resumeInfo?.perStatement}
-                    </p>  
+                    <td style={{ borderBottom: "1px solid #ccc" }}>
+                      <p style={{ padding: "20px", whiteSpace: "pre-line" }}>
+                        {resumeInfo?.perStatement}
+                      </p>
                     </td>
                   </tr>
                 </tbody>
@@ -303,7 +285,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
         <Button variant="secondary" onClick={handleClose}>
           닫기
         </Button>
-        <Button variant="primary" onClick={handleClose}>
+        <Button variant="primary" onClick={handlePrint}>
           인쇄
         </Button>
       </Modal.Footer>
