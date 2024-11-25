@@ -14,19 +14,28 @@ import {
 } from "../../../../../models/interface/IScrap";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { useNavigate } from "react-router-dom";
-import { ScrapSearch } from "../ScrapSearch/ScrapSearch";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { modalState } from "../../../../../stores/modalState";
+import { Portal } from "../../../../common/potal/Portal";
+import { ResumeModalApplication } from "../../../Resume/ResumeModal/ResumeModalApplication";
 
 export const ScrapMain = () => {
   const navigate = useNavigate();
   const [scrapList, setScrapList] = useState<IScrap[]>();
   const [listCount, setListCount] = useState<number>(0);
   const [cPage, setCpage] = useState<number>();
-  const { searchKeyWord, setSelectedScrapIdx, selectedScrapIdx } =
+  const [modal, setModal] = useRecoilState<boolean>(modalState);
+  const [selectedScrap, setSelectedScrap] = useState<IScrap>();
+
+  // const { searchKeyWord, setSelectedScrapIdx, selectedScrapIdx } =
+  const { searchKeyWord, setSelectedScrapIdxList, selectedScrapIdxList } =
     useContext(ScrapContext);
 
   useEffect(() => {
     searchScrapList();
-  }, [searchKeyWord]);
+    // }, [searchKeyWord, selectedScrapIdx]);
+  }, [searchKeyWord, selectedScrapIdxList]);
 
   const searchScrapList = async (currentPage?: number) => {
     currentPage = currentPage || 1;
@@ -51,27 +60,60 @@ export const ScrapMain = () => {
     }
   };
 
-  const onScrapDeleteSuccess = async () => {
-    await searchScrapList();
+  const handlerCheckboxChange = (scrapIdx: number) => {
+    setSelectedScrapIdxList(
+      (prev) =>
+        prev.includes(scrapIdx)
+          ? prev.filter((idx) => idx !== scrapIdx) // 이미 선택된 경우 해제
+          : [...prev, scrapIdx] // 선택되지 않은 경우 배열에 추가
+    );
   };
 
-  const handleRadioChange = (scrapIdx: number) => {
-    setSelectedScrapIdx(scrapIdx); // 선택된 행 업데이트
-    console.log(scrapIdx);
+  const handlerSelectAllCheckbox = () => {
+    if (selectedScrapIdxList.length === scrapList.length) {
+      setSelectedScrapIdxList([]); // 전체 해제
+    } else {
+      setSelectedScrapIdxList(scrapList?.map((scrap) => scrap.scrapIdx) || []); // 전체 선택
+    }
   };
+
+  // const handlerRadioChange = (scrapIdx: number) => {
+  //   setSelectedScrapIdx(scrapIdx); // 선택된 행 업데이트
+  //   console.log(scrapIdx);
+  // };
 
   const handlerNavigatePostDetail = (postIdx: number) => {
     navigate(`/react/jobs/post-detail/${postIdx}`);
   };
 
+  const handlerModal = (scrap) => {
+    setModal(!modal);
+    setSelectedScrap(scrap);
+    console.log(scrap);
+  };
+
+  const onPostSuccess = () => {
+    setModal(!modal);
+    searchScrapList();
+  };
+
   return (
     <>
-      <ScrapSearch onSuccess={onScrapDeleteSuccess} />
       <p>총 개수:{listCount} </p>
       <ScrapMainStyledTable>
         <thead>
           <tr>
-            <StyledTh size={5}> </StyledTh>
+            <StyledTh size={5}>
+              <input
+                type="checkbox"
+                onChange={handlerSelectAllCheckbox}
+                checked={
+                  // 체크된게 전체 길이와 같은지 (on/off) + 존재하는지 체크
+                  selectedScrapIdxList.length === scrapList?.length &&
+                  scrapList?.length > 0
+                }
+              />
+            </StyledTh>
             <StyledTh size={10}>기업명</StyledTh>
             <StyledTh size={40}>공고 제목</StyledTh>
             <StyledTh size={10}>자격 요건</StyledTh>
@@ -82,15 +124,24 @@ export const ScrapMain = () => {
         </thead>
         <tbody>
           {scrapList?.length > 0 ? (
-            scrapList?.map((scrap, index) => {
+            scrapList?.map((scrap) => {
               return (
                 <tr>
                   <StyledTd>
-                    <input
+                    {/* 라디오버튼 */}
+                    {/* <input
                       type="radio"
                       name="scrapSelect"
                       checked={selectedScrapIdx === scrap.scrapIdx}
-                      onChange={() => handleRadioChange(scrap.scrapIdx)}
+                      onChange={() => handlerRadioChange(scrap.scrapIdx)}
+                    /> */}
+
+                    {/* 체크박스 */}
+                    <input
+                      type="checkbox"
+                      name="scrapSelect"
+                      onChange={() => handlerCheckboxChange(scrap.scrapIdx)}
+                      checked={selectedScrapIdxList.includes(scrap.scrapIdx)}
                     />
                   </StyledTd>
                   {scrap.postTitle ? (
@@ -105,7 +156,9 @@ export const ScrapMain = () => {
                       <StyledTd>{scrap.postWorkLocation}</StyledTd>
                       <StyledTd>{scrap.postEndDate}</StyledTd>
                       <StyledTd>
-                        <button>입사지원</button>
+                        <button onClick={() => handlerModal(scrap)}>
+                          입사지원
+                        </button>
                       </StyledTd>
                     </>
                   ) : (
@@ -127,6 +180,16 @@ export const ScrapMain = () => {
         activePage={cPage}
         itemsCountPerPage={5}
       ></PageNavigate>
+      {modal && (
+        <Portal>
+          <ResumeModalApplication
+            onSuccess={onPostSuccess}
+            scrap={selectedScrap}
+            post={null}
+            biz={null}
+          />
+        </Portal>
+      )}
     </>
   );
 };

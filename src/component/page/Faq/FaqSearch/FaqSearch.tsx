@@ -3,8 +3,8 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { useContext, useEffect, useState } from 'react';
 import { FaqContext } from '../../../../api/provider/FaqProvider';
-import { Button } from 'react-bootstrap';
 import { FaqSearchStyled } from './styled';
+import { Button } from '../../../common/Button/Button';
 
 export const FaqSearch = () => {
   const navigate = useNavigate();

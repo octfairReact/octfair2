@@ -5,16 +5,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { Portal } from "../../../common/potal/Portal";
 import { ResumeModalPreview } from "../ResumeModal/ResumeModalPreview";
-import { useContext, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../stores/modalState";
 import { postApi } from '../../../../api/postApi';
-import { IResumeCareer, IResumeCareerReponse, IResumeCertification, IResumeCertificationReponse, IResumeDetail, IResumeDetailReponse, IResumeEducation, IResumeEducationReponse, IResumeSkill, IResumeSkillReponse } from '../../../../models/interface/IResume';
+import { IPostResponse, IResumeDetail, IResumeDetailReponse, IResumeSkill } from '../../../../models/interface/IResume';
 import { Resume } from '../../../../api/api';
 import { StyledTableResume } from '../Style/StyledTableResume';
-// import { ResumeContext } from '../../../../api/provider/ResumeProvider';
-import { ResumeCareerAdd } from './ResumeCareerAdd';
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ResumeCareer } from './ResumeCareer';
 import { ResumeEdu } from './ResumeEdu';
 import { ResumeSkill } from './ResumeSkill';
@@ -24,21 +22,50 @@ export const ResumeDetail = () => {
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [resumeDetail, setResumeDetail] = useState<IResumeDetail>();
 
-  const [skillList, setSkillList] = useState<IResumeSkill[]>();
   const [resumeSeq, setResumeSeq] = useState<number>();
-  const [imageUrl, setImageUrl] = useState<string>();
-  const [fileData, setFileData] = useState<File>();
   const [careerVisible, setCareerVisible] = useState(true);
+  const [fileData, setFileData] = useState<File>();
   // const { searchKeyWord } = useContext(ResumeContext);
   const location = useLocation();
   const navigate = useNavigate();
 
+  const resTitle = useRef<HTMLInputElement>();
+  const pfoLink = useRef<HTMLInputElement>();
+  const shortIntro = useRef(null);
+  const perStatement = useRef(null);
+
+  const fileNm = useRef<HTMLInputElement>();
+  const fileLoc = useRef<HTMLInputElement>();
+  const vrfileLoc = useRef<HTMLInputElement>();
+  const fileSize = useRef<HTMLInputElement>();
+  const fileExtension = useRef<HTMLInputElement>();
+
+  const crrDesc   = useRef(null);
+
   useEffect(() => {
-    if (location?.state){
-      setResumeSeq(location.state.idx);
-      searchDetail(location.state.idx);
-    }
+    location.state.idx && searchDetail(location.state.idx);
+    !location.state.idx && insertNew();
+    
+    // if ("new" === location?.state?.pageForm){
+    //   // setResumeSeq(location.state.idx);
+    //   insertNew();
+    // } else {
+    //   setResumeSeq(location.state.idx);
+    //   searchDetail(location.state.idx);
+    // }
+
+    // if (location?.state?.pageFrom) {
+    //   setPageFrom(location.state.pageFrom);
+    // }
   }, []);
+
+  const insertNew = async () => {
+    const searchParam = {};
+    const newList = await postApi<IResumeDetailReponse>( Resume.getNew, searchParam );
+
+    console.log(newList);
+    if (newList) { setResumeDetail(newList.payload); }
+  }
 
   const searchDetail = async (resumeSeq: number) => {
     const searchParam = { resIdx: resumeSeq };
@@ -51,36 +78,150 @@ export const ResumeDetail = () => {
     navigate('/react/apply/resume.do');
   }
 
-  const handlerSave = () => {}
+  // const handlerFileSave = async () => {
+  //   const formData = new FormData();
+  //   formData.append("file", fileData);
+  //   formData.append('res_title', resTitle.current.value);
+  //   formData.append('short_intro', shortIntro.current.value);
+  //   formData.append('pfo_link', pfoLink.current.value);
+  //   formData.append('per_statement', perStatement.current.value);
 
-  const handlerCancel = () => {}
+  //   // const params = {
+  //   //   res_title: resTitle.current.value,
+  //   //   short_intro: shortIntro.current.value,
+  //   //   pfo_link: pfoLink.current.value,
+  //   //   per_statement: perStatement.current.value,
+  //   //   fileInfo: {
+  //   //     file_nm: '',
+  //   //     file_loc: '',
+  //   //     vrfile_loc: '',
+  //   //     file_size: '',
+  //   //     fileExtension: '',
+  //   //     // file_nm: fileNm.current.value,
+  //   //     // file_loc: fileLoc.current.value,
+  //   //     // vrfile_loc: vrfileLoc.current.value,
+  //   //     // file_size: fileSize.current.value,
+  //   //     // fileExtension: fileExtension.current.value,
+  //   //   }
+  //   // }
+
+  //   formData && fileForm.append("file", fileData);
+  //   fileForm.append(
+  //     "text",
+  //     new Blob([JSON.stringify(params)], { type: "application/json" })
+  //   );
+
+  //   console.log(fileForm);
+
+  //   axios
+  //     .post("/api/apply/resumeUpdate.do", fileForm)
+  //     .then((res: AxiosResponse<IPostResponse>) => {
+  //       console.log(res);
+  //       // res.data.result === "success" && onSuccess();
+  //     });
+
+
+  //   // console.log(params);
+
+  //   // const saveList = await postApi<IResumeDetailReponse>(Resume.getUpdate, params);
+
+  //   // if (saveList.payload) {
+  //   //   console.log(saveList);
+  //   //   console.log(saveList.payload);
+  //   //   alert("저장 메시지");
+  //   // }
+
+  // }
+
+  const handlerSave = async () => {
+    const fileForm = new FormData();
+    const params = {
+      res_title: resTitle.current.value,
+      short_intro: shortIntro.current.value,
+      pfo_link: pfoLink.current.value,
+      per_statement: perStatement.current.value,
+      fileInfo: {
+        file_nm: '',
+        file_loc: '',
+        vrfile_loc: '',
+        file_size: '',
+        fileExtension: '',
+        // file_nm: fileNm.current.value,
+        // file_loc: fileLoc.current.value,
+        // vrfile_loc: vrfileLoc.current.value,
+        // file_size: fileSize.current.value,
+        // fileExtension: fileExtension.current.value,
+      }
+    }
+
+    fileData && fileForm.append("file", fileData);
+    fileForm.append(
+      "text",
+      new Blob([JSON.stringify(params)], { type: "application/json" })
+    );
+
+    console.log(fileForm);
+
+    axios
+      .post("/api/apply/resumeUpdate.do", fileForm)
+      .then((res: AxiosResponse<IPostResponse>) => {
+        console.log(res);
+        // res.data.result === "success" && onSuccess();
+      });
+
+
+    // console.log(params);
+
+    // const saveList = await postApi<IResumeDetailReponse>(Resume.getUpdate, params);
+
+    // if (saveList.payload) {
+    //   console.log(saveList);
+    //   console.log(saveList.payload);
+    //   alert("저장 메시지");
+    // }
+
+  }
 
   const handlerPreview = (resumeSeq: number) => {
     setModal(!modal);
     setResumeSeq(resumeSeq);
   }
 
-  const downloadFile = async () => {
-    const param = new URLSearchParams();
-    param.append("resumeSeq", resumeSeq.toString());
 
-    const postAction: AxiosRequestConfig = {
-      url: "/api/apply/fileDownload.do",
-      method: "POST",
-      data: param,
-      responseType: "blob",
-    };
+  // const handlerFile = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const fileInfo = e.target.files;
+  //   if (fileInfo?.length > 0) {
+  //     const fileInfoSplit = fileInfo[0].name.split(".");
+  //     const fileExtension = fileInfoSplit[1].toLowerCase();
 
-    await axios(postAction).then((res) => {
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", resumeDetail?.fileName as string);
-      document.body.appendChild(link);
-      link.click();
+  //     if (
+  //       fileExtension === "jpg" ||
+  //       fileExtension === "gif" ||
+  //       fileExtension === "png"
+  //     ) {
+  //       setImageUrl(URL.createObjectURL(fileInfo[0]));
+  //     } else {
+  //       setImageUrl("");
+  //     }
 
-      link.remove(); // 다운로드 후 a태그 삭제
-    });
+  //     setFileData(fileInfo[0]);
+  //   }
+  // }
+
+  const downloadFile = async (resIdx: number) => {
+    axios.post('/api/apply/fileDownload.do', { resIdx: resIdx },{
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      responseType: 'blob',
+    }).then((res) => {
+        const file = new Blob([res.data], { type: res.headers['content-type'] });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(file);
+        link.download = res.headers['content-disposition'].split('filename*=UTF-8\'\'')[1]; // 헤더에서 파일명 추출
+        link.click(); 
+        URL.revokeObjectURL(link.href);    
+    })
   };
 
   const onPostSuccess = () => {
@@ -101,12 +242,6 @@ export const ResumeDetail = () => {
           <div className="resumeDetail_body_wrap">
 
             <div className="resumeDetail_body_basicInfo">
-              <div>
-                {/* <input
-                  style={{ border: "none"; font-size: "30px"; margin-bottom: "20px"; padding: "5px" }}
-                  id="resumetitle" type="text" value="${result.resTitle}" data-num="${result.resIdx}" placeholder="이력서 제목"> */}
-              </div>
-
               <div className="mb-3">
                 <input 
                   id="resumetitle" 
@@ -114,6 +249,7 @@ export const ResumeDetail = () => {
                   type="text" 
                   placeholder="이력서 제목" 
                   defaultValue={resumeDetail?.resTitle}
+                  ref={resTitle}
                 />
                 <input 
                   id="userName" 
@@ -121,6 +257,7 @@ export const ResumeDetail = () => {
                   type="text" 
                   placeholder="이름" 
                   defaultValue={resumeDetail?.userNm}
+                  readOnly 
                 />
                 <input 
                   id="userEmail" 
@@ -128,6 +265,7 @@ export const ResumeDetail = () => {
                   type="email" 
                   placeholder="이메일" 
                   defaultValue={resumeDetail?.email}
+                  readOnly 
                 />
                 <input 
                   id="userPhone" 
@@ -135,6 +273,7 @@ export const ResumeDetail = () => {
                   type="text" 
                   placeholder="연락처" 
                   defaultValue={resumeDetail?.phone}
+                  readOnly 
                 />
               </div>
             </div>
@@ -154,26 +293,27 @@ export const ResumeDetail = () => {
                 </p> */}
               </div>
               <div>
-              {resumeDetail? (
-                <div className="mb-3">
-                  <textarea 
-                    className="form-control" id="short_intro" 
-                    placeholder="소개글을 입력해 주세요." 
-                    rows={10} 
-                    defaultValue={resumeDetail.shortIntro} 
-                  />
-                </div>
-              ) : (
-                <div className="mb-3">
-                  <textarea 
-                    className="form-control" id="short_intro" 
-                    placeholder="소개글을 입력해 주세요." 
-                    rows={10} 
-                    defaultValue={""} 
-                  />
-                </div>
-              )}
-                
+                {resumeDetail? (
+                  <div className="mb-3">
+                    <textarea 
+                      className="form-control" id="short_intro" 
+                      placeholder="소개글을 입력해 주세요." 
+                      rows={10} 
+                      defaultValue={resumeDetail.shortIntro} 
+                      ref={shortIntro} 
+                    />
+                  </div>
+                ) : (
+                  <div className="mb-3">
+                    <textarea 
+                      className="form-control" id="short_intro" 
+                      placeholder="소개글을 입력해 주세요." 
+                      rows={10} 
+                      defaultValue={""} 
+                      ref={shortIntro} 
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
@@ -205,6 +345,7 @@ export const ResumeDetail = () => {
                   type="text" 
                   placeholder="https://" 
                   defaultValue={resumeDetail?.proLink}
+                  ref={pfoLink} 
                 />
               </div>
             </div>
@@ -224,6 +365,7 @@ export const ResumeDetail = () => {
                   placeholder="자기소개서를 입력해 주세요."
                   rows={10}
                   defaultValue={resumeDetail?.perStatement}
+                  ref={perStatement} 
                 />
               </div>
             </div>
@@ -239,35 +381,22 @@ export const ResumeDetail = () => {
               </div>
               <div>
                 {resumeDetail?.fileName ? (
-                  <div className="input-group mb-3" onClick={downloadFile}>
-                    <input 
-                      type="text" 
-                      id="resumeAttach" 
-                      className="form-control" 
-                      style={{ cursor: "pointer" }}  
-                      defaultValue={resumeDetail?.fileName}
+                  <div className="input-group mb-3" onClick={() => downloadFile(resumeDetail?.resIdx)}>
+                    <div className="form-control" style={{ cursor: "pointer" }}>
+                      {resumeDetail?.fileName}
+                    </div>
+                    <input
+                      type="file"
+                      id="resumeAttach"
+                      style={{ display: "none" }}
+                      // onChange={handlerFile}
                     />
                   </div>
                 ) : (
                   <div className="input-group mb-3">
-                    {/* <input type="file" className="form-control" id="inputGroupFile01" multiple /> */}
                     <input type="file" className="form-control" id="resumeAttach" />
                   </div>
                 )}
-                
-                {/* <c:if test="${empty result.fileName}">
-                  <input id="resumeAttach" type="file">
-                </c:if>
-                <c:if test="${not empty result.fileName}">
-                <div className="attach-container">
-                    <a href="attachment-download?resumeNum=${result.resIdx}"><span className="attach-fileName">${result.fileName}</span></a>
-                    <button className="attach-delete" id="attach-delete" onclick="deleteAttach()">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="25px" viewBox="0 -960 960 960" width="25px" fill="#5f6368">
-                            <path d="M312-144q-29.7 0-50.85-21.15Q240-186.3 240-216v-480h-48v-72h192v-48h192v48h192v72h-48v479.57Q720-186 698.85-165T648-144H312Zm336-552H312v480h336v-480ZM384-288h72v-336h-72v336Zm120 0h72v-336h-72v336ZM312-696v480-480Z" />
-                        </svg>
-                    </button>
-                </div>
-                </c:if> */}
               </div>
             </div>
 

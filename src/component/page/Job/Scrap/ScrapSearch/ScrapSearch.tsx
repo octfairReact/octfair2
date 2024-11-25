@@ -7,11 +7,7 @@ import { postNoticeApi } from "../../../../../api/postNoticeApi";
 import { Scrap } from "../../../../../api/api";
 import { IPostResponse } from "../../../../../models/interface/IScrap";
 
-interface IScrapSearchProps {
-  onSuccess: () => void;
-}
-
-export const ScrapSearch: React.FC<IScrapSearchProps> = ({ onSuccess }) => {
+export const ScrapSearch = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState<{
     searchTitle: string;
@@ -23,7 +19,8 @@ export const ScrapSearch: React.FC<IScrapSearchProps> = ({ onSuccess }) => {
     searchEdDate: "",
   });
 
-  const { setSearchKeyWord, selectedScrapIdx, setSelectedScrapIdx } =
+  // const { setSearchKeyWord, selectedScrapIdx, setSelectedScrapIdx } =
+  const { setSearchKeyWord, selectedScrapIdxList, setSelectedScrapIdxList } =
     useContext(ScrapContext);
 
   useEffect(() => {
@@ -37,22 +34,31 @@ export const ScrapSearch: React.FC<IScrapSearchProps> = ({ onSuccess }) => {
   };
 
   const handlerDelete = async () => {
-    if (selectedScrapIdx == null) {
+    // if (selectedScrapIdx == null) {
+    if (selectedScrapIdxList.length === 0) {
       alert("삭제할 스크랩을 선택해주세요.");
       return;
     }
 
-    console.log("selectedScrapIdx : ", selectedScrapIdx);
-    const deleteApi = await postNoticeApi<IPostResponse>(Scrap.getDelete, {
-      scrapIdx: selectedScrapIdx,
-    });
+    // console.log("selectedScrapIdx : ", selectedScrapIdx);
+    // const deleteApi = await postNoticeApi<IPostResponse>(Scrap.getDelete, {
+    //   scrapIdx: selectedScrapIdx,
+    // });
 
-    if (deleteApi?.result === "success") {
+    // if (deleteApi?.result === "success") {
+    //   alert("삭제되었습니다.");
+
+    // setSelectedScrapIdx(null);
+
+    const deletedApi = selectedScrapIdxList.map((scrapIdx) =>
+      postNoticeApi<IPostResponse>(Scrap.getDelete, { scrapIdx })
+    );
+
+    const results = await Promise.all(deletedApi);
+
+    if (results.every((res) => res?.result === "success")) {
       alert("삭제되었습니다.");
-
-      setSelectedScrapIdx(null);
-
-      onSuccess();
+      setSelectedScrapIdxList([]);
     }
   };
 

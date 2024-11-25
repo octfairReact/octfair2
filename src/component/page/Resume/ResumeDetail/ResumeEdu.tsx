@@ -5,6 +5,7 @@ import { postApi } from "../../../../api/postApi";
 import { Resume } from "../../../../api/api";
 import { useLocation } from "react-router-dom";
 import { ResumeEduAdd } from "./ResumeEduAdd";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 export const ResumeEdu = () => {
   const [educationList, setEducationList] = useState<IResumeEducation[]>();
@@ -29,7 +30,22 @@ export const ResumeEdu = () => {
 
   const handlerSave = () => {}
   const handlerCancel = () => {}
+  const handlerDelete = async (eduIdx: number) => {
+    const searchParam = { 
+      resIdx: resumeSeq,
+      eduIdx: eduIdx, 
+    };
+    const deleteList = await postApi<IResumeEducationReponse>(Resume.deleteEdu, searchParam);
 
+    if (deleteList) {
+      searchEduList(resumeSeq);
+    }
+  }
+
+  const handlerSetVisible = (state: boolean) => {
+    setAddVisible(state);
+  }
+ 
   return (
     <div className="resumeDetail_body">
       <div className="resumeDetail_body_haeder">학력</div>
@@ -50,7 +66,7 @@ export const ResumeEdu = () => {
           + 추가
         </button>
 
-          { addVisible && <ResumeEduAdd/> }
+          { addVisible && <ResumeEduAdd setVisibleState={handlerSetVisible} /> }
           { !addVisible && 
           
             <div className="list" id="educationList">
@@ -84,7 +100,7 @@ export const ResumeEdu = () => {
                           <td>{edu.schoolName}</td>
                           <td>{edu.major}</td>
                           <td>{edu.grdStatus}</td>
-                          <td>삭제</td>
+                          <td onClick={() => handlerDelete(edu.eduIdx)}><RiDeleteBin6Line /></td>
                         </tr>
                       </tbody>
                     );

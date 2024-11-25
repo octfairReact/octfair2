@@ -21,19 +21,15 @@ export const QnaMain = () => {
   const [cPage, setCPage] = useState<number>();
   const { searchKeyWord } = useContext(QnaContext);
   const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
-  const [selectedQnaType, setSelectedQnaType] = useState<string>();
+  const [selectedQnaType, setSelectedQnaType] = useState<string>(userInfo.userType === 'M' ? 'A' : userInfo.userType);
 
   useEffect(() => {
     searchQnaList();
   }, [searchKeyWord, selectedQnaType]);
 
-  useEffect(() => {
-    setSelectedQnaType(userInfo.userType);
-  }, []);
-
   const searchQnaList = async (currentPage?: number) => {
     currentPage = currentPage || 1;
-
+    console.log(selectedQnaType);
     const searchParam = {
       ...searchKeyWord,
       currentPage: currentPage.toString(),
@@ -83,7 +79,12 @@ export const QnaMain = () => {
           {qnaList?.length > 0 ? (
             qnaList.map((qna) => {
               return (
-                <tr key={qna.qnaIdx} onClick={() => handlerModal(qna.qnaIdx)}>
+                <tr
+                  key={qna.qnaIdx}
+                  onClick={() => {
+                    // userInfo.userType === 'M' ? handlerModal(qna.qnaIdx) : ;
+                  }}
+                >
                   <StyledTd>{qna.qnaIdx}</StyledTd>
                   <StyledTd>{qna.title}</StyledTd>
                   <StyledTd>{qna.author}</StyledTd>
