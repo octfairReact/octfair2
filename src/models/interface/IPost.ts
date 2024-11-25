@@ -3,6 +3,7 @@ export interface IPost {
   title: string;
   workLocation: string;
   expRequired: string;
+  startDate: string;
   endDate: string;
   postDate: string;
   bizIdx: number;
@@ -11,7 +12,7 @@ export interface IPost {
 export interface IPostDetail extends IPost {
   appStatus: string;
   benefits: string | null;
-  duties: string;
+  duties: string| null;
   expYears: number | null;
   fileExt: string | null;
   fileName: string | null;
@@ -24,7 +25,7 @@ export interface IPostDetail extends IPost {
   prefQualifications: string | null;
   reqQualifications: string | null;
   salary: string | null;
-  startDate: string;
+  startDate: string| null;
 }
 
 export interface IBizDetail {
