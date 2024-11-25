@@ -4,7 +4,6 @@ export const postApi = async <T>(api: string, param: object): Promise<T> => {
   try {
     const result: AxiosResponse<T> = await axios.post(api, param);
     // HTTP status 코드 체크
-    console.log("postApi result : ", result);
     if (result.status >= 200 && result.status < 400) {
       return result.data;
     } else {

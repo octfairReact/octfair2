@@ -77,4 +77,3 @@ export const HireApplicant = {
   viewUpadate: "/api/manage-hire/viewUpdate.do",
   previewResume: "/api/manage-hire/previewResume.do",
 }
-

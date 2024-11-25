@@ -13,7 +13,7 @@ export const ResumeAdd = () => {
   // }, [navigate]);
 
   const handlerAdd = () => {
-    navigate('/react/apply/resumeDetail.do');
+    navigate('/react/apply/resumeDetail.do', { state: { pageFrom: 'new', idx: '' } });
   };
 
   return (
