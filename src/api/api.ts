@@ -59,7 +59,9 @@ export const Resume = {
 
 export const SignUp = {
   register: "/register.do",
-  checkId: "/check_loginId.do",
+  getList: "/api/apply/resumeList.do",
+  getCopy: "/api/apply/resumeCopy.do",
+  getDelete: "/api/apply/resumeDelete.do",
 };
 
 export const HirePost = {
