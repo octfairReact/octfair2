@@ -128,6 +128,20 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
     });
   };
 
+  const pwConfirm = () => {
+    const param = {
+      password: password.current.value,
+      qnaSeq,
+    };
+    return () => {
+      <>
+        <label>
+          비밀번호<input type="password" ref={password}></input>
+        </label>
+      </>;
+    };
+  };
+
   return (
     <QnaModalStyled>
       <div className="container">
@@ -154,11 +168,13 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
           )}
         </div>
         <label>
-          비밀번호<input type="text" ref={password} defaultValue={qnaDetail?.password}></input>
+          비밀번호<input type="password" ref={password} defaultValue={qnaDetail?.password}></input>
         </label>
-        <label>
-          답변<input type="text" ref={ans_content} defaultValue={qnaDetail?.ans_content}></input>
-        </label>
+        {(qnaDetail?.ans_content || userInfo.userType === 'M') && (
+          <label>
+            답변<input type="text" ref={ans_content} defaultValue={qnaDetail?.ans_content || ''}></input>
+          </label>
+        )}
         <div className={'button-container'}>
           {<button onClick={qnaSeq ? handlerFileUpdate : handlerFileSave}>{qnaSeq ? '수정' : '등록'}</button>}
           {qnaSeq && <button onClick={handlerDelete}>삭제</button>}

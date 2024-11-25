@@ -8,7 +8,6 @@ import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
 import axios, { AxiosResponse } from 'axios';
 import { postApi } from '../../../../api/postApi';
-
 interface IFaqModalProps {
   onSuccess: () => void;
   faqSeq: number;
@@ -64,7 +63,7 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
     const textData = {
       title: title.current.value,
       context: context.current.value,
-      faq_type: faq_type.current.value,
+      // faq_type: faq_type.current.value,
       faqSeq,
     };
     dataForm.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
@@ -83,9 +82,14 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
   return (
     <FaqModalStyled>
       <div className="container">
-        <label>
-          유형<input type="text" ref={faq_type} defaultValue={faqDetail?.faq_type}></input>
-        </label>
+        <>
+          <label>
+            <input type="radio" name="faq_type" value="1" checked={faqDetail?.faq_type === '1'} />
+            개인회원
+            <input type="radio" name="faq_type" value="2" checked={faqDetail?.faq_type === '2'} />
+            기업회원
+          </label>
+        </>
         <label>
           제목<input type="text" ref={title} defaultValue={faqDetail?.title}></input>
         </label>
