@@ -2,23 +2,16 @@ import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { HireApplicantContext } from '../../../../../api/provider/HireApplicantProvider.';
+import { IApplicantSearch, IBiz } from '../../../../../models/interface/IHireApplicant';
 
 const HireApplicantSearch = () => {
   const navigate = useNavigate();
   const [bizList, setBizList] = useState<IBiz[]>();
-  const [searchValue, setSearchValue] = useState<{
-    postIdx : string,
-		keyword : string,
-  }>({
+  const [searchValue, setSearchValue] = useState<IApplicantSearch>({
     postIdx: "",
     keyword: "",
   });
 const { setSearchKeyWord } = useContext(HireApplicantContext);
-
-  interface IBiz {
-    postIdx: number,
-    title: string,
-  }
 
   useEffect(() => {
     window.location.search &&
@@ -50,8 +43,6 @@ const { setSearchKeyWord } = useContext(HireApplicantContext);
   }
   const handlerSearch = (e) => {
     setSearchValue({...searchValue, keyword : e.target.value})
-    // console.log(searchValue);    
-    // setSearchKeyWord(searchValue);
   };
 
   return (

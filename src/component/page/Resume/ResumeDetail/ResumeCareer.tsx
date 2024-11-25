@@ -5,6 +5,7 @@ import { postApi } from "../../../../api/postApi";
 import { Resume } from "../../../../api/api";
 import { useLocation } from "react-router-dom";
 import { ResumeCareerAdd } from "./ResumeCareerAdd";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 export const ResumeCareer = () => {
   const [careerList, setCareerList] = useState<IResumeCareer[]>();
@@ -29,8 +30,19 @@ export const ResumeCareer = () => {
     if (careerList) { setCareerList(careerList.payload); }
   }
 
-  const handlerSave = () => {}
-  const handlerCancel = () => {}
+  const handlerDelete = async (crrIdx: number) => {
+    const searchParam = { 
+      crrIdx: crrIdx,
+      resIdx: resumeSeq,
+
+    };
+
+    const deleteList = await postApi<IResumeCareerReponse>(Resume.deleteCareer, searchParam);
+
+    if (deleteList) {
+      searchCareerList(resumeSeq);
+    }
+  }
 
   const handlerSetVisible = (state: boolean) => {
     setAddVisible(state);
@@ -95,7 +107,12 @@ export const ResumeCareer = () => {
                       <td>{career.dept}</td>
                       <td>{career.position}</td>
                       <td>{career.reason}</td>
-                      <td rowSpan={2}>삭제</td>
+                      <td 
+                        rowSpan={2}
+                        onClick={() => handlerDelete(career.crrIdx)}
+                      >
+                        <RiDeleteBin6Line />
+                      </td>
                     </tr>
                     <tr>
                       <td colSpan={4} style={{ whiteSpace: "pre-wrap", textAlign: "left" }}>{career.crrDesc}</td>

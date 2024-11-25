@@ -1,18 +1,22 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button } from "react-bootstrap"
 import { postApi } from "../../../../api/postApi";
 import { IResumeDetailReponse } from "../../../../models/interface/IResume";
 import { Resume } from "../../../../api/api";
+import { useLocation } from "react-router-dom";
 
 export const ResumeCareerAdd = (props) => {
+  const [resumeSeq, setResumeSeq] = useState<number>();
+  const location = useLocation();
+  // const {formCheck} = useForm()
+
   const company = useRef<HTMLInputElement>();
   const dept      = useRef<HTMLInputElement>();
   const position  = useRef<HTMLInputElement>();
   const startDate = useRef<HTMLInputElement>();
   const endDate   = useRef<HTMLInputElement>();
   const reason    = useRef<HTMLInputElement>();
-  const resIdx    = useRef<HTMLInputElement>();
-  // const crrDesc   = useRef(null);
+  const crrDesc   = useRef(null);
 
   const handlerSave = async () => {
     //추가
@@ -21,26 +25,22 @@ export const ResumeCareerAdd = (props) => {
       company: company.current.value,
       dept: dept.current.value,
       position: position.current.value,
-      startDate: startDate.current.value,
-      endDate: endDate .current.value,
+      startDate: startDate.current.value + "-01",
+      endDate: endDate.current.value + "-01",
       reason: reason.current.value,
-      // crrDesc: crrDesc?.current.value,
-      // resIdx: resIdx .current.value,
-      
-      // loginId: userInfo.loginId,
+      crrDesc: crrDesc?.current.value,
+      resIdx: location.state.idx,
     };
-
-    console.log(" *** param ***");
-    console.log(param);
     
-    // const saveCareer = await postApi<IResumeDetailReponse>(Resume.addCareer, param);
+    const saveCareer = await postApi<IResumeDetailReponse>(Resume.addCareer, param);
 
-    // if (saveCareer.payload) {
-    //   console.log(saveCareer);
-    //   console.log(saveCareer.payload);
-    // }
+    if (saveCareer.payload) {
+      console.log(saveCareer);
+      console.log(saveCareer.payload);
+      props.setVisibleState(false);
+      alert("추가되었습니다.");
+    }
 
-    props.setVisibleState(false);
   }
 
   const handlerCancel = () => {
@@ -123,7 +123,7 @@ export const ResumeCareerAdd = (props) => {
               <textarea 
                 className="form-control" 
                 id="crrDesc" 
-                // ref={crrDesc} 
+                ref={crrDesc} 
                 placeholder="　담당 업무를 입력해 주세요.&#13;&#10;
                 - 진행한 업무를 다 적기보다는 경력 사항별로 중요한 내용만 엄선해서 작성하는 것이 중요합니다!&#13;&#10;
                 - 경력별 프로젝트 내용을 적을 경우, 역할/팀구성/기여도/성과를 기준으로 요약해서 작성해 보세요!"

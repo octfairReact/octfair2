@@ -1,26 +1,36 @@
-import { useRef, useState } from "react";
-import { SignUpModalStyled } from "../style/styled";
+import { SignUpModalStyled } from "../../style/styled";
 import { useRecoilState } from "recoil";
-import { modalState } from "../../../../stores/modalState";
-
-import { SignUp } from "../../../../api/api";
-import { postSignUpApi } from "../../../../api/postSignUpApi";
-import { IPostResponse, SignUpOtherUserDetail, SignUpPasswordDetail } from "../../../../models/interface/ISignUp";
-import { loginIdSchema, userTypeToCheckPwSchema, userNameToDaSchema } from "../Validate/Schemas";
-import { UserInit } from "../Init/User";
-import PostCode from "../Init/PostCode";
+import { modalState } from "../../../../../stores/modalState";
+import { SignUp } from "../../../../../api/api";
+import { postSignUpApi } from "../../../../../api/postSignUpApi";
+import { IPostResponse, SignUpOtherUserDetail, SignUpUserTypeToCheckPw } from "../../../../../models/interface/ISignUp";
+import { loginIdSchema, otherUserDataSchema } from "../../Validate/Schemas";
+import { UserInit } from "../../Init/User";
+import PostCode from "../../Init/PostCode";
 import { Address } from "react-daum-postcode";
-
+import { userTypeToCheckPwSchema } from "../../Validate/Schemas";
+import { useEffect } from "react";
 
 export const SignUpModal = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
 
-    //UserInit.ts에서 유저 정보 초기값 불러오기
+    //User.ts에서 유저 정보 초기값 불러오기
     const { state, refs } = UserInit();
-    const { userType, setUserType, userGender, setUserGender, addressData, setAddressData, zipCode, setZipCode } = state;
-    const { loginId, password, checkPassword, name, birth, phone, email, userDetailAddress } =
-        refs;
+    const {
+        userType,
+        setUserType,
+        userGender,
+        setUserGender,
+        address,
+        setAddress,
+        zipCode,
+        setZipCode,
+        checkLoginIdExist,
+        setCheckLoginIdExist,
+    } = state;
+    const { loginId, password, checkPassword, name, birth, phone, email, userDetailAddress } = refs;
 
+    useEffect(() => {}, []);
     //select-option으로 값 바뀌는 userType과 Gender 값 세팅
     const handleUserType = (e) => {
         setUserType(e.target.value);
@@ -47,6 +57,7 @@ export const SignUpModal = () => {
             if (checkIdResponse.result === "success") {
                 alert("중복된 ID입니다");
             } else {
+                setCheckLoginIdExist("AVAILABLE");
                 alert("사용 가능한 ID입니다");
             }
         } catch (error) {
@@ -57,34 +68,26 @@ export const SignUpModal = () => {
     // 우편번호 api 및 input
     const handleAddressComplete = (data: Address) => {
         // 검색된 주소로 `zipCode`와 `userAddress` 상태 업데이트
-        setAddressData({
-            zipCode: data.zonecode, // zonecode는 우편번호
-            userAddress: data.address, // address는 전체 주소 // address는 전체 주소
-        });
+        const userAddress = data.address;
+        const useZipCode = data.zonecode;
 
-        setZipCode(addressData.zipCode);
+        if (userAddress !== "" || useZipCode !== "") {
+            setAddress(userAddress);
+            setZipCode(useZipCode);
+        }
     };
 
     const handlerSave = async (e) => {
         e.preventDefault();
 
-        //폼 완성 전 제출하려 할 때 이미 중복 검사를 완료해 폼을 제출할 땐 굳이 중복 검사가 필요없도록 전반부에 배치
-        const loginIdParam = { loginId: loginId.current.value };
-
-        const checkId1 = await postSignUpApi<IPostResponse>(SignUp.checkId, loginIdParam);
-        if (checkId1.result === "success") {
-            alert("중복된 ID입니다");
-            return;
-        }
-
-        //SignUpOtherUserDetails
-        //= zod userSchema.safeParse용으로 zipCode(number)까지 string으로 타입 통일된 인터페이스
-        const userTypeToCheckPassword: SignUpPasswordDetail = {
+        //SignUpOtherUserDetails = zod userSchema.safeParse용으로 zipCode(number)까지 string으로 타입 통일된 인터페이스
+        const userTypeToCheckPw: SignUpUserTypeToCheckPw = {
             userType: userType,
             loginId: loginId.current.value,
             password: password.current.value,
             checkPassword: checkPassword.current.value,
         };
+
         const nameToDetailAddress: SignUpOtherUserDetail = {
             name: name.current.value,
             userGender: userGender,
@@ -92,12 +95,12 @@ export const SignUpModal = () => {
             email: email.current.value,
             birth: birth.current.value,
             zipCode: zipCode,
-            address: addressData.userAddress,
+            address: address,
             detailAddress: userDetailAddress.current.value,
         };
 
-        const validUserTypeToCheckPw = userTypeToCheckPwSchema.safeParse(userTypeToCheckPassword);
-        const validNameToDa = userNameToDaSchema.safeParse(nameToDetailAddress);
+        const validUserTypeToCheckPw = userTypeToCheckPwSchema.safeParse(userTypeToCheckPw);
+        const validNameToDa = otherUserDataSchema.safeParse(nameToDetailAddress);
 
         if (validUserTypeToCheckPw.success) {
             // validUserTypeToCheckPw이 성공한 경우 validNameToDa 검사
@@ -122,9 +125,14 @@ export const SignUpModal = () => {
             email: email.current.value,
             birthday: birth.current.value,
             zipCode: zipCode,
-            address: addressData.userAddress,
+            address: address,
             detailAddress: userDetailAddress.current.value,
         };
+
+        if (checkLoginIdExist !== "AVAILABLE") {
+            alert("ID 중복 검사를 진행해주세요");
+            return;
+        }
 
         const save = await postSignUpApi<IPostResponse>(SignUp.register, param);
         if (save.result === "SUCCESS") {
@@ -224,11 +232,7 @@ export const SignUpModal = () => {
                         <tr>
                             <th>주소</th>
                             <td>
-                                <input
-                                    type="text"
-                                    value={addressData.userAddress}
-                                    onChange={(e) => setAddressData({ ...addressData, userAddress: e.target.value })}
-                                ></input>
+                                <input type="text" value={address} onChange={(e) => setAddress(e.target.value)}></input>
                             </td>
                         </tr>
                         <tr>

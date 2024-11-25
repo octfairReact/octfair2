@@ -20,10 +20,11 @@ export const FaqMain = () => {
   const [cPage, setCPage] = useState<number>();
   const { searchKeyWord } = useContext(FaqContext);
   const [style, setStyle] = useState<number>(null);
+  const [selectedFaqType, setSelectedFaqType] = useState<string>();
 
   useEffect(() => {
     searchFaqList();
-  }, [searchKeyWord]);
+  }, [searchKeyWord, selectedFaqType]);
 
   const searchFaqList = async (currentPage?: number) => {
     currentPage = currentPage || 1;
@@ -32,6 +33,7 @@ export const FaqMain = () => {
       ...searchKeyWord,
       currentPage: currentPage.toString(),
       pageSize: '5',
+      faq_type: selectedFaqType,
     };
 
     const searchList = await postApi<IFaqListResponse>(Faq.getListBody, searchParam);
@@ -57,11 +59,15 @@ export const FaqMain = () => {
     setStyle((style) => (style === faq_idx ? null : faq_idx));
   };
 
+  const changeFaqType = (faq_type: string) => {
+    setSelectedFaqType(faq_type);
+  };
+
   return (
     <>
       <div>
-        <Button>개인회원</Button>
-        <Button>기업회원</Button>
+        <Button onClick={() => changeFaqType('1')}>개인회원</Button>
+        <Button onClick={() => changeFaqType('2')}>기업회원</Button>
       </div>
       <StyledTable>
         <thead>

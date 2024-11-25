@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { useContext, useEffect, useState } from 'react';
 import { QnaContext } from '../../../../api/provider/QnaProvider';
-import { Button } from 'react-bootstrap';
+import { Button } from '../../../common/Button/Button';
 
 export const QnaSearch = () => {
   const navigate = useNavigate();

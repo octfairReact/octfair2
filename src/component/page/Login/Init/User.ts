@@ -5,8 +5,10 @@ export function UserInit() {
     // useState
     const [userType, setUserType] = useState<string>("");
     const [userGender, setUserGender] = useState<string>("");
-    const [addressData, setAddressData] = useState({ zipCode: "", userAddress: "" });
+    // const [addressData, setAddressData] = useState({ zipCode: "", userAddress: "" });
+    const [address, setAddress] = useState<string>("");
     const [zipCode, setZipCode] = useState<string>("");
+    const [checkLoginIdExist, setCheckLoginIdExist] = useState<string>("");
 
     // useRef
     const loginId = useRef<HTMLInputElement>(null);
@@ -19,7 +21,20 @@ export function UserInit() {
     const userDetailAddress = useRef<HTMLInputElement>(null);
 
     return {
-        state: { userType, setUserType, userGender, setUserGender, addressData, setAddressData, zipCode, setZipCode },
+        state: {
+            userType,
+            setUserType,
+            userGender,
+            setUserGender,
+            // addressData,
+            // setAddressData,
+            address,
+            setAddress,
+            zipCode,
+            setZipCode,
+            checkLoginIdExist,
+            setCheckLoginIdExist,
+        },
         refs: {
             loginId,
             password,
