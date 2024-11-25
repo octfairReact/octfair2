@@ -67,3 +67,15 @@ export const SignUp = {
 export const HirePost = {
   getList: "/api/manage-hire/post-list",
 };
+
+export const History = {
+  getList: "/api/apply/historySearchRest.do",
+  deleteApply: "/api/apply/cancleApply.do",
+}
+
+export const HireApplicant = {
+  getList: "/api/manage-hire/applicantList.do",
+  updateStatus: "/api/manage-hire/statusUpdate.do",
+  viewUpadate: "/api/manage-hire/viewUpdate.do",
+  previewResume: "/api/manage-hire/previewResume.do",
+}

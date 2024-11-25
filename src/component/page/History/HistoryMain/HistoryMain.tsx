@@ -4,13 +4,17 @@ import { ApplyContext } from "../../../../api/provider/ApplyProvider";
 import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { hModalState } from "../../../../stores/modalState";
+import { modalState } from "../../../../stores/modalState";
 import { Portal } from "../../../common/potal/Portal";
 import {
 	StyledTable,
 	StyledTd,
 	StyledTh,
   } from "../../../common/styled/StyledTable";
+import { ResumeModalPreview } from "../../Resume/ResumeModal/ResumeModalPreview";
+import { IApply, IApplyResponse } from "../../../../models/interface/IHistory";
+import { History } from "../../../../api/api";
+import { postApi } from "../../../../api/postApi";
 
 export const HistoryMain = () => {
     const [applyList,setApplyList] = useState<IApply[]>();
@@ -18,72 +22,66 @@ export const HistoryMain = () => {
     const navigate = useNavigate();
     const [cPage, setCPage] = useState<number>();
   	const [listCount, setListCount] = useState<number>(0);
- 	const [hModal, setHModal] = useRecoilState<boolean>(hModalState);
-	const [historySeq, setHistorySeq] = useState<number>();
+ 	const [modal, setModal] = useRecoilState<boolean>(modalState);
+	const [resSeq, setResSeq] = useState<number>();
 
-    interface IApply {
-    appId: number;
-	userIdx: number;
-	postingId: number;
-	applyDate: Date;
-	viewed: string;
-	status: string;
-	resIdx: number;
-	postTitle: string;
-	bizIdx: number;
-	bizName: string;
-    }
+    
     useEffect(() => {
         searchApplyList();
-        // historyApplyList();
     },[searchKeyWord])
 
-    // const historyApplyList = () => {        
-    //     axios.post('/api/apply/historyRest.do',).then((res) => {
-    //         const data = res.data;
-    //         setApplyList(data.result)            
-    //     })
-    // }
-
-    const searchApplyList = (currentPage?: number) => {
+    const searchApplyList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
         const searchParam = {
             ...searchKeyWord,  
 			currentPage: currentPage.toString(),
       		pageSize: "5",
           };
-        axios.post('/api/apply/historySearchRest.do',searchParam).then((res) => {
-            const data = res.data;
-            setApplyList(data.result); 
-			setListCount(data.historyCnt);
-      		setCPage(currentPage);          
-        })
+		const searchList = await postApi<IApplyResponse>(
+			History.getList,
+			searchParam
+		);
+		if (searchList) {
+			setApplyList(searchList.result);
+			setListCount(searchList.historyCnt);
+			setCPage(currentPage); 
+		}
+        // axios.post('/api/apply/historySearchRest.do',searchParam).then((res) => {
+        //     const data = res.data;
+        //     setApplyList(data.result); 
+		// 	setListCount(data.historyCnt);
+      	// 	setCPage(currentPage);          
+        // })
     }
 
-	const cancleApply = (applyId: number) => {
+	const cancleApply = async (applyId: number) => {
 		const param = {
 			appId: applyId,
 		}
-		axios.post('/api/apply/cancleApply.do',null,{ params: param }).then((res) => {
-			if(res.data.result=='success'){
+		const res = await postApi<{result: string}>(
+			History.deleteApply,
+			param
+		);
+		console.log(res.result);
+		if(res.result=='success'){
 				alert("지원취소 완료하였습니다.");
 			}else{
 				alert("지원취소에 실패하였습니다.");
 			}
-        })
+        
 	}
 
 	const handleNavigation = (path) => {
 		navigate(path);
 	  };
 
-	const handlerModal = (historySeq: number) => {
-		setHModal(!hModal);
-		setHistorySeq(historySeq);
+	const handlerModal = (resSeq: number) => {
+		setModal(!modal);
+		setResSeq(resSeq);
 	  };
 	
 	const onPostSuccess = () => {
-		setHModal(!hModal);
+		setModal(!modal);
 		searchApplyList();
 	  };
 
@@ -128,14 +126,14 @@ export const HistoryMain = () => {
 												<p style={{ fontSize: '18px', fontWeight: 'bold', color: '#868686', padding: '15px'}}>입사
 													지원 내역이 없어요.</p>
 												<p style={{fontSize: "14px"}}>
-													<a onClick={() => handleNavigation(`/react/jobs/posts.do`)} style={{color: '#3157dd'}}>현재 채용중인
-														공고 보러가기 {">"} </a>
+													<span onClick={() => handleNavigation(`/react/jobs/posts.do`)} style={{color: '#3157dd'}}>현재 채용중인
+														공고 보러가기 {">"} </span>
 												</p>
 											</StyledTd>
 										</tr>
                                     ) : ( applyList?.map((data)=> {
                                         return(                                        
-											<tr className="resume-entry">
+											<tr className="resume-entry" key={data.appId}>
 												<StyledTd className="application-date">
 													<p className="status" style={{fontSize: "10px"}}>지원완료</p>
 													<p className="date">
@@ -146,15 +144,15 @@ export const HistoryMain = () => {
 												<StyledTd className="application-details">
 													<p className="company-name"
 														style={{textAlign: 'left', paddingLeft: '50px', marginTop: '5px', fontSize: '14px'}}>
-														<a onClick={() => handleNavigation(`/react/company/companyDetailPage.do/${data.postingId}/${data.bizIdx}`)}>{data.bizName}</a>
+														<span onClick={() => handleNavigation(`/react/company/companyDetailPage.do/${data.postingId}/${data.bizIdx}`)}>{data.bizName}</span>
 													</p>
 													<p className="job-title"
 														style={{textAlign: 'left', paddingLeft: '50px', marginTop: '5px', fontSize: '15px', fontWeight: "bold"}}>
-														<a onClick={() => handleNavigation(`/react/manage-post/${data.postingId}/${data.bizIdx}`)} >{data.postTitle}</a>
+														<span onClick={() => handleNavigation(`/react/manage-post/${data.postingId}/${data.bizIdx}`)} >{data.postTitle}</span>
 													</p>
 													<p className="resume-link"
 														style={{textAlign: 'left', paddingLeft: '50px', margin: '5px 0px 5px 0px', fontSize: '13px'}}>
-														<a onClick={() => handlerModal(data.postingId)}><span>지원이력서</span></a>
+														<span onClick={() => handlerModal(data.resIdx)}><span>지원이력서</span></span>
 													</p>
 												</StyledTd>
 												<StyledTd className="job-status">
@@ -186,15 +184,15 @@ export const HistoryMain = () => {
         activePage={cPage}
         itemsCountPerPage={5}
       ></PageNavigate>
-	  {/* {hModal && (
+	  {modal && (
         <Portal>
-          <ResumePreviewModal
+          <ResumeModalPreview
             onSuccess={onPostSuccess}
-            historySeq={historySeq}
-            setHistorySeq={setHistorySeq}
+            resumeSeq={resSeq}
+            setResumeSeq={setResSeq}
           />
         </Portal>
-      )} */}
+      )}
     </>
     );
 }
