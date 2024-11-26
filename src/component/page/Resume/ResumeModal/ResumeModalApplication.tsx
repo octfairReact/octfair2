@@ -5,6 +5,7 @@ import { modalState } from "../../../../stores/modalState";
 import { IScrap } from "../../../../models/interface/IScrap";
 import { IBizDetail, IPostDetail } from "../../../../models/interface/IPost";
 import { getApi } from "../../../../api/getApi";
+import { postApi } from "../../../../api/postApi";
 
 interface ApplyResume {
   resumeIdx: number;
@@ -13,21 +14,22 @@ interface ApplyResume {
   userPhone: string | null;
   userEmail: string | null;
 }
+
 interface ApiResponse {
   loginId: string;
   userResumeList: ApplyResume[];
 }
-interface IResumeModalProps {
-  //   title: string;
-  //   contents: string;
-  //   onConfirm: () => void;
-  //   onClose: () => void;
-  //   isVisible: boolean;
 
+interface IResumeModalProps {
   onSuccess: () => void;
   scrap: IScrap | null;
   post: IPostDetail | null;
   biz: IBizDetail | null;
+}
+
+interface IpostResponse {
+  result: string;
+  message: string;
 }
 
 export const ResumeModalApplication: FC<IResumeModalProps> = ({
@@ -39,9 +41,10 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
   const handlerClose = () => setModal(false);
   const [modal, setModal] = useRecoilState<boolean>(modalState); // recoil에 저장된 state
   const [userResumes, setUserResumes] = useState<ApplyResume[] | null>(null);
+  const [selectedResumeIdx, setSelectedResumeIdx] = useState<number>();
 
   useEffect(() => {
-    getResumes();
+    if (modal) getResumes();
   }, [modal]);
 
   const getResumes = async () => {
@@ -53,6 +56,39 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
       setUserResumes(response.userResumeList);
     }
   };
+
+  const handlerRadioChange = (resumeIdx: number) => {
+    setSelectedResumeIdx(resumeIdx);
+  };
+
+  const handlerApply = () => {
+    if (!selectedResumeIdx) {
+      alert("이력서를 선택하세요.");
+      return;
+    }
+    console.log("selected resume idx: ", selectedResumeIdx);
+
+    saveApply();
+  };
+
+  const saveApply = async () => {
+    const request = {
+      // loginIdx: scrap.loginIdx,
+      postIdx: scrap.postIdx,
+    };
+    const response = await postApi<IpostResponse>(
+      "/api/jobs/saveApply.do",
+      request
+    );
+    console.log("save apply : ", response);
+
+    if (response?.result === "success") {
+      alert("이력서가 지원 완료되었습니다.");
+    } else if (response?.message === "이미 지원 완료된 공고입니다.") {
+      alert("이미 지원 완료된 공고입니다.");
+    }
+  };
+
   return (
     <>
       <Modal show={modal} onHide={handlerClose}>
@@ -62,9 +98,37 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
         <Modal.Body>
           <p>{scrap?.postBizName || biz?.bizName}</p>
           <p>{scrap?.postTitle || post?.title}</p>
+          <hr />
+          {userResumes && userResumes.length > 0 ? (
+            userResumes.map((resume) => (
+              <div
+                key={resume.resumeIdx}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "10px",
+                }}
+              >
+                <div>
+                  <p>{resume.resumeTitle}</p>
+                  <p>{resume.userEmail}</p>
+                  <p>{resume.userPhone}</p>
+                </div>
+                <input
+                  type="radio"
+                  name="scrapSelect"
+                  checked={selectedResumeIdx === resume.resumeIdx}
+                  onChange={() => handlerRadioChange(resume.resumeIdx)}
+                />
+              </div>
+            ))
+          ) : (
+            <p>등록된 이력서가 없습니다.</p>
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handlerClose}>
+          <Button variant="secondary" onClick={handlerApply}>
             입사지원
           </Button>
           <Button variant="primary" onClick={handlerClose}>

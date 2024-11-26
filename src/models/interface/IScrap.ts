@@ -1,5 +1,5 @@
 export interface IScrap {
-  loginIdx: number | null;
+  loginIdx: string;
   postBizIdx: string;
   postBizName: string;
   postEndDate: string;
