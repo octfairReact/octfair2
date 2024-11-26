@@ -1,4 +1,4 @@
-import { Alert, Button } from "react-bootstrap"
+import { Alert } from "react-bootstrap"
 import { IResumeCareer, IResumeCareerReponse } from "../../../../models/interface/IResume";
 import { useEffect, useState } from "react";
 import { postApi } from "../../../../api/postApi";
@@ -14,17 +14,15 @@ export const ResumeCareer = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // resumeSeq && searchDetail();
-
     if (location?.state){
       setResumeSeq(location.state.idx);
-      searchCareerList(location.state.idx);
+      searchCareerList();
     }
   }, []);
 
 
-  const searchCareerList = async (resumeSeq: number) => {
-    const searchParam = { resIdx: resumeSeq };
+  const searchCareerList = async () => {
+    const searchParam = { resIdx: location.state.idx };
     const careerList = await postApi<IResumeCareerReponse>( Resume.getCareer, searchParam );
 
     if (careerList) { setCareerList(careerList.payload); }
@@ -34,19 +32,27 @@ export const ResumeCareer = () => {
     const searchParam = { 
       crrIdx: crrIdx,
       resIdx: resumeSeq,
-
     };
 
     const deleteList = await postApi<IResumeCareerReponse>(Resume.deleteCareer, searchParam);
 
     if (deleteList) {
-      searchCareerList(resumeSeq);
+      alert("삭제되었습니다.");
+      searchCareerList();
     }
   }
 
   const handlerSetVisible = (state: boolean) => {
     setAddVisible(state);
   }
+
+  const monthFormat = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    return `${year}.${month}`;
+  };
 
   return (
     <div className="resumeDetail_body">
@@ -71,76 +77,81 @@ export const ResumeCareer = () => {
         >
           + 추가
         </button>
-        {/* <ul> */}
-        {/* {careerVisible &&  */}
-        { addVisible && <ResumeCareerAdd setVisibleState={handlerSetVisible} /> }
-        { !addVisible && 
-
-          <div className="list" id="careerList">
-          {careerList?.length > 0 ? (
-            <table className="table table-bordered">
-              <colgroup>
-                <col width={"20%"} />
-                <col width={"25%"} />
-                <col width={"15%"} />
-                <col width={"15%"} />
-                <col width={"15%"} />
-                <col width={"10%"} />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th scope="col">기간</th>
-                  <th scope="col">회사명</th>
-                  <th scope="col">부서명</th>
-                  <th scope="col">직급/직책</th>
-                  <th scope="col">퇴사사유</th>
-                  <th scope="col">삭제</th>
-                </tr>
-              </thead>
-              
-              {careerList?.map((career, index) => {
-                return (
-                  <tbody key={index}>
-                    <tr>
-                      <td rowSpan={2}>{career.startDate}~{career.endDate}</td>
-                      <td>{career.company}</td>
-                      <td>{career.dept}</td>
-                      <td>{career.position}</td>
-                      <td>{career.reason}</td>
-                      <td 
-                        rowSpan={2}
-                        onClick={() => handlerDelete(career.crrIdx)}
-                      >
-                        <RiDeleteBin6Line />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colSpan={4} style={{ whiteSpace: "pre-wrap", textAlign: "left" }}>{career.crrDesc}</td>
-                    </tr>
-                  </tbody>
-                );
-              })}
-              
-            </table>
-          ) : (
-            <table className="table">
-              <tbody>
-                <tr>
-                  <td className="res-comment">
-                    경력 사항을 추가할 수 있습니다.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          )}
-
-          </div>
         
+        { addVisible && 
+          <ResumeCareerAdd 
+            setVisibleState={handlerSetVisible} 
+            searchCareerList={searchCareerList}
+          /> 
+        }
+        { !addVisible && 
+          <div className="list" id="careerList">
+            {careerList?.length > 0 ? (
+              <table className="table table-bordered">
+                <colgroup>
+                  <col width={"20%"} />
+                  <col width={"25%"} />
+                  <col width={"15%"} />
+                  <col width={"15%"} />
+                  <col width={"15%"} />
+                  <col width={"10%"} />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">기간</th>
+                    <th scope="col">회사명</th>
+                    <th scope="col">부서명</th>
+                    <th scope="col">직급/직책</th>
+                    <th scope="col">퇴사사유</th>
+                    <th scope="col">삭제</th>
+                  </tr>
+                </thead>
+                
+                {careerList?.map((career, index) => {
+                  return (
+                    <tbody key={index}>
+                      <tr>
+                        <td rowSpan={2}>
+                          {monthFormat(career.startDate)} ~ {monthFormat(career.endDate)}
+                        </td>
+                        <td>{career.company}</td>
+                        <td>{career.dept}</td>
+                        <td>{career.position}</td>
+                        <td>{career.reason}</td>
+                        <td 
+                          rowSpan={2}
+                          onClick={() => handlerDelete(career.crrIdx)}
+                        >
+                          <RiDeleteBin6Line />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td 
+                          colSpan={4} 
+                          style={{ whiteSpace: "pre-wrap", textAlign: "left" }}
+                        >
+                          {career.crrDesc}
+                        </td>
+                      </tr>
+                    </tbody>
+                  );
+                })}
+                
+              </table>
+            ) : (
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <td className="res-comment">
+                      경력 사항을 추가할 수 있습니다.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
+          </div>
         }
           
-        {/* } */}
-          
-        {/* </ul> */}
       </div>
     </div>
   );

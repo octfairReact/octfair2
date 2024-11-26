@@ -14,6 +14,10 @@ export const ResumeAddStyled = styled.div`
         position: relative;
     }
 
+    button {
+        margin-right: 15px;
+    }
+
     @media (max-width: 1000px) {
     }
 `;
