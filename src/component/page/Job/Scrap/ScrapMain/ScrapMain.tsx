@@ -14,7 +14,6 @@ import {
 } from "../../../../../models/interface/IScrap";
 import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
@@ -51,7 +50,7 @@ export const ScrapMain = () => {
       searchParam
     );
 
-    // console.log(searchList);
+    console.log("searchscraplist : ", searchList);
 
     if (searchList) {
       setScrapList(searchList.scrapList);
