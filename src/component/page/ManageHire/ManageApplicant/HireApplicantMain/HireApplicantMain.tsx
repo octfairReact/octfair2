@@ -10,8 +10,8 @@ import { Portal } from '../../../../common/potal/Portal';
 import { IApplicant, IApplicantResponse } from '../../../../../models/interface/IHireApplicant';
 import { HireApplicant } from '../../../../../api/api';
 import { postApi } from '../../../../../api/postApi';
-import { Await } from 'react-router-dom';
-import { arch } from 'os';
+import { Table } from "react-bootstrap";
+
 
 const HireApplicantMain = () => {
   const [applicantList, setApplicantList] = useState<IApplicant[]>();
@@ -149,22 +149,21 @@ const HireApplicantMain = () => {
     <>
     <HireApplicantMainStyled>
       <div id="listTable">
-        <table className="col"
-        style={{width: '1000px', border: "1px solid"}}
-        >
+        <Table className="col" style={{border: "1px solid"}} >
           <thead id="resultList">
             <tr>
               <th colSpan={3} className="header" style={{ textAlign: "left" }}>지원자 <span>{listCount}</span>
                 명
               </th>
             </tr>
+          </thead>
             {applicantList?.length <= 0 ? (
               <tr className="row-separator">
                 <td>지원자가 없습니다.</td>
-              </tr>
+              </tr>           
             ) : (applicantList?.map((list) => {
               return (
-                <div key={list.appId}>
+                <tbody key={list.appId}>
                   <tr className="row-separator">
                     <td rowSpan={4}>
                       <span className="highlight">{list.name}</span> <br />
@@ -216,13 +215,11 @@ const HireApplicantMain = () => {
                     <td> <span className="highlight">이메일:</span>{list.email}</td>
                   </tr>
                   
-                </div>
+                </tbody>
               )
             })
-            )}
-
-          </thead>
-        </table>
+            )}          
+        </Table>
       </div>
       </HireApplicantMainStyled>
       <PageNavigate

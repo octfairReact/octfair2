@@ -7,8 +7,8 @@ import { ResumeDetail } from "./ResumeDetail";
 export const ResumeWrite = () => {
   return (
     <ResumeProvider>
-      <ResumeReturn />
       <ContentBox>이력서 수정/작성</ContentBox>
+      <ResumeReturn />
       <ResumeDetail/>
     </ResumeProvider>
   );

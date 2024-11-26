@@ -57,6 +57,7 @@ export const Resume = {
     deleteEdu: "/api/apply/deleteEdu.do",
     deleteSkill: "/api/apply/deleteSkill.do",
     deleteCert: "/api/apply/deleteCert.do",
+    deleteFile: "/api/apply/deleteFile.do",
 };
 
 export const SignUp = {
@@ -81,6 +82,7 @@ export const HireApplicant = {
     updateStatus: "/api/manage-hire/statusUpdate.do",
     viewUpadate: "/api/manage-hire/viewUpdate.do",
     previewResume: "/api/manage-hire/previewResume.do",
+    getBizList: "/api/manage-hire/applicant.do",
 };
 
 export const MyPage = {

@@ -5,39 +5,62 @@ import { postApi } from "../../../../api/postApi";
 import { IResumeDetailReponse } from "../../../../models/interface/IResume";
 import { Resume } from "../../../../api/api";
 
-export const ResumeCertAdd = (props) => {
+export const ResumeCertAdd = ({ setVisibleState, searchCertList }) => {
   const location = useLocation();
-
   const certName = useRef<HTMLInputElement>();
   const grade = useRef<HTMLInputElement>();
   const issuer = useRef<HTMLInputElement>();
   const acqDate = useRef<HTMLInputElement>();
 
   const handlerSave = async () => {
+    const today = new Date();
+    const _certName = certName.current.value;
+    const _grade = grade.current.value;
+    const _issuer = issuer.current.value;
+    const _acqDate = acqDate.current.value;
+
+    if (today < new Date(_acqDate)) {
+      alert("취득일은 오늘보다 미래일 수 없습니다.");
+      return;
+    }
+
+    if (!_certName || !_grade || !_issuer || !_acqDate) {
+      alert("모든 항목을 입력하세요.");
+      return;
+    }
+
     const param = {
-      certName: certName.current.value,
-      grade: grade.current.value,
-      issuer: issuer.current.value,
-      acqDate: acqDate.current.value + "-01",
+      certName: _certName,
+      grade: _grade,
+      issuer: _issuer,
+      acqDate: _acqDate + "-01",
       resIdx: location.state.idx,
     }
 
     const saveCert = await postApi<IResumeDetailReponse>(Resume.addCert, param);
     if (saveCert.payload) {
-      props.setVisibleState(false);
+      alert("추가되었습니다.");
+      setVisibleState(false);
+      searchCertList();
     }
   }
 
   const handlerCancel = () => {
-    props.setVisibleState(false);
+    setVisibleState(false);
   }
 
   return (
     <div id="certificationInputTable">
       <table className="table table-bordered">
+        <colgroup>
+          <col width={"25%"} />
+          <col width={"20%"} />
+          <col width={"25%"} />
+          <col width={"30%"} />
+        </colgroup>
         <tbody>
           <tr>
-            <td width={"20%"}>
+            <td>
               <input 
                 id="certName" 
                 className="form-control" 
@@ -47,7 +70,7 @@ export const ResumeCertAdd = (props) => {
                 ref={certName} 
               />
             </td>
-            <td width={"20%"}>
+            <td>
               <input 
                 id="grade" 
                 className="form-control" 
@@ -57,7 +80,7 @@ export const ResumeCertAdd = (props) => {
                 ref={grade} 
               />
             </td>
-            <td width={"20%"}>
+            <td>
               <input 
                 id="issuer" 
                 className="form-control" 
@@ -75,7 +98,6 @@ export const ResumeCertAdd = (props) => {
                 className="form-control" 
                 style={{ width: "70%", float: "right" }}
                 ref={acqDate} 
-              // defaultValue={""}
               />
             </td>
           </tr>
@@ -98,8 +120,6 @@ export const ResumeCertAdd = (props) => {
         >
           <span>저장</span>
         </Button>
-        {/* <a className="btnType gray cancleBtn" id="certification" href="#"><span>취소</span></a> 
-        <a className="btnType blue" href="javascript:insertCert()"><span>저장</span></a> */}
       </div>
     </div>
   );

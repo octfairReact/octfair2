@@ -31,6 +31,10 @@ export interface IBiz {
     title: string,
   }
 
+export interface IBizSearch {
+    MDetail: IBiz[];
+  }  
+
 export interface IApplicantResponse{
     list: IApplicant[];
     count: number;

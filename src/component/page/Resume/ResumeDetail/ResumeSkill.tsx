@@ -1,5 +1,5 @@
-import { Alert, Button } from "react-bootstrap"
-import { IResumeCareer, IResumeCareerReponse, IResumeSkill, IResumeSkillReponse } from "../../../../models/interface/IResume";
+import { Alert } from "react-bootstrap"
+import { IResumeSkill, IResumeSkillReponse } from "../../../../models/interface/IResume";
 import { useEffect, useState } from "react";
 import { postApi } from "../../../../api/postApi";
 import { Resume } from "../../../../api/api";
@@ -16,19 +16,17 @@ export const ResumeSkill = () => {
   useEffect(() => {
     if (location?.state){
       setResumeSeq(location.state.idx);
-      searchSkillList(location.state.idx);
+      searchSkillList();
     }
   }, []);
 
-  const searchSkillList = async (resumeSeq: number) => {
-    const searchParam = { resIdx: resumeSeq };
+  const searchSkillList = async () => {
+    const searchParam = { resIdx: location.state.idx };
     const skillList   = await postApi<IResumeSkillReponse>( Resume.getSkill, searchParam );
     
     if (skillList) { setSkillList(skillList.payload); }
   }
 
-  const handlerSave = () => {}
-  const handlerCancel = () => {}
   const handlerDelete = async (skillIdx: number) => {
     const searchParam = { 
       resIdx: resumeSeq,
@@ -37,7 +35,8 @@ export const ResumeSkill = () => {
     const deleteList = await postApi<IResumeSkillReponse>(Resume.deleteSkill, searchParam);
 
     if (deleteList) {
-      searchSkillList(resumeSeq);
+      alert("삭제되었습니다.");
+      searchSkillList();
     }
   }
 
@@ -66,54 +65,57 @@ export const ResumeSkill = () => {
         >
           + 추가
         </button>
-      </div>
 
-      { addVisible && <ResumeSkillAdd setVisibleState={handlerSetVisible} /> }
-      { !addVisible && 
-      
-        <div className="list" id="skillList">
-        {skillList?.length > 0 ? (
-          <table className="table table-bordered">
-            <colgroup>
-              <col width={"20%"} />
-              <col width={"70%"} />
-              <col width={"10%"} />
-            </colgroup>
-            <thead>
-              <tr>
-                <th scope="col">스킬명</th>
-                <th scope="col">스킬 상세 내용</th>
-                <th scope="col">삭제</th>
-              </tr>
-            </thead>
-            
-            {skillList?.map((skill, index) => {
-              return (
-                <tbody key={index}>
+        { addVisible && 
+          <ResumeSkillAdd 
+            setVisibleState={handlerSetVisible} 
+            searchSkillList={searchSkillList} 
+          /> 
+        }
+        { !addVisible && 
+          <div className="list" id="skillList">
+            {skillList?.length > 0 ? (
+              <table className="table table-bordered">
+                <colgroup>
+                  <col width={"20%"} />
+                  <col width={"70%"} />
+                  <col width={"10%"} />
+                </colgroup>
+                <thead>
                   <tr>
-                    <td>{skill.skillName}</td>
-                    <td style={{ whiteSpace: "pre-wrap", textAlign: "left" }}>{skill.skillDetail}</td>
-                    <td onClick={() => handlerDelete(skill.skillIdx)}><RiDeleteBin6Line /></td>
+                    <th scope="col">스킬명</th>
+                    <th scope="col">스킬 상세 내용</th>
+                    <th scope="col">삭제</th>
+                  </tr>
+                </thead>
+                
+                {skillList?.map((skill, index) => {
+                  return (
+                    <tbody key={index}>
+                      <tr>
+                        <td>{skill.skillName}</td>
+                        <td style={{ whiteSpace: "pre-wrap", textAlign: "left" }}>{skill.skillDetail}</td>
+                        <td onClick={() => handlerDelete(skill.skillIdx)}><RiDeleteBin6Line /></td>
+                      </tr>
+                    </tbody>
+                  );
+                })}
+              </table>
+            ) : (
+              <table className="table">
+                <tbody>
+                  <tr>
+                    <td className="res-comment">
+                      보유 스킬을 추가할 수 있습니다.
+                    </td>
                   </tr>
                 </tbody>
-              );
-            })}
-            
-          </table>
-        ) : (
-          <table className="table">
-            <tbody>
-              <tr>
-                <td className="res-comment">
-                  보유 스킬을 추가할 수 있습니다.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        )}
-      </div>
-      }
+              </table>
+            )}
+          </div>
+        }
 
+      </div>
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { IResumeDetailReponse } from "../../../../models/interface/IResume";
 import { Resume } from "../../../../api/api";
 import { useLocation } from "react-router-dom";
 
-export const ResumeCareerAdd = (props) => {
+export const ResumeCareerAdd = ({ setVisibleState, searchCareerList}) => {
   const [resumeSeq, setResumeSeq] = useState<number>();
   const location = useLocation();
   // const {formCheck} = useForm()
@@ -19,32 +19,47 @@ export const ResumeCareerAdd = (props) => {
   const crrDesc   = useRef(null);
 
   const handlerSave = async () => {
-    //추가
-    //추가되었습니다 안내
+    const today = new Date();
+    const _company = company.current.value;
+    const _dept = dept.current.value;
+    const _position = position.current.value;
+    const _startDate = startDate.current.value;
+    const _endDate = endDate.current.value;
+    const _reason = reason.current.value;
+    const _crrDesc = crrDesc.current.value;
+
+    if (today < new Date(_endDate)) {
+      alert("퇴사일은 오늘보다 미래일 수 없습니다.");
+      return;
+    }
+
+    if (!_company || !_dept || !_position || !_startDate || !_endDate || !_reason || !_crrDesc) {
+      alert("모든 필드를 입력하세요.");
+      return;
+    }
+
     const param = {
-      company: company.current.value,
-      dept: dept.current.value,
-      position: position.current.value,
-      startDate: startDate.current.value + "-01",
-      endDate: endDate.current.value + "-01",
-      reason: reason.current.value,
-      crrDesc: crrDesc?.current.value,
+      company: _company,
+      dept: _dept,
+      position: _position,
+      startDate: _startDate + "-01",
+      endDate: _endDate + "-01",
+      reason: _reason,
+      crrDesc: _crrDesc,
       resIdx: location.state.idx,
     };
     
     const saveCareer = await postApi<IResumeDetailReponse>(Resume.addCareer, param);
 
     if (saveCareer.payload) {
-      console.log(saveCareer);
-      console.log(saveCareer.payload);
-      props.setVisibleState(false);
+      setVisibleState(false);
       alert("추가되었습니다.");
+      searchCareerList();
     }
-
   }
 
   const handlerCancel = () => {
-    props.setVisibleState(false);
+    setVisibleState(false);
   }
 
   return (
@@ -153,8 +168,6 @@ export const ResumeCareerAdd = (props) => {
         >
           <span>저장</span>
         </Button>
-        {/* <a className="btnType gray cancleBtn" id="career" href="#"><span>취소</span></a>
-        <a className="btnType blue" href="javascript:insertCareer()"><span>저장</span></a> */}
       </div>
     </div>
   );

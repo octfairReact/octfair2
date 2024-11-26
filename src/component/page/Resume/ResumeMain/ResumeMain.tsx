@@ -7,7 +7,7 @@ import { postApi } from '../../../../api/postApi';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import { Resume } from '../../../../api/api';
 import { Button } from 'react-bootstrap';
-// import { Button } from "../../../common/Button/Button";
+import axios from 'axios';
 
 export const ResumeMain = () => {
   const [resumeList, setResumeList] = useState<IResume[]>();
@@ -52,9 +52,24 @@ export const ResumeMain = () => {
     }
   };
 
+  const downloadFile = async (resIdx: number) => {
+    axios.post('/api/apply/fileDownload.do', { resIdx: resIdx }, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      responseType: 'blob',
+    }).then((res) => {
+        const file = new Blob([res.data], { type: res.headers['content-type'] });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(file);
+        link.download = res.headers['content-disposition'].split('filename*=UTF-8\'\'')[1]; // 헤더에서 파일명 추출
+        link.click(); 
+        URL.revokeObjectURL(link.href);    
+    })
+  };
+
   return (
     <>
-      {/* 총 갯수 : {listCount} 현재 페이지 : {cPage} */}
       <StyledTable>
         <thead>
           <tr>
@@ -68,7 +83,31 @@ export const ResumeMain = () => {
             resumeList?.map((resume) => {
               return (
                 <tr key={resume.resIdx}>
-                  <StyledTd onClick={() => handlerDetail(resume.resIdx)}>{resume.resTitle}</StyledTd>
+                  <StyledTd>
+                    <p 
+                      onClick={() => handlerDetail(resume.resIdx)}
+                      style={{ 
+                        marginTop: "10px",
+                        marginBottom: "12px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {resume.resTitle}
+                    </p>
+                    { resume.fileName && 
+                      <p
+                        onClick={() => downloadFile(resume.resIdx)}
+                        style={{  
+                          marginBottom: "3px",
+                          fontSize: "13px",
+                          color: "#2c6dd4",
+                          fontWeight: "500",
+                        }}
+                      >
+                        첨부파일 : {resume.fileName}
+                      </p> 
+                    }
+                  </StyledTd>
                   <StyledTd>
                     <div className="input-box">
                       <Button variant="primary" style={{ margin: '3px' }} onClick={() => copyResumeList(resume.resIdx)}>
@@ -83,7 +122,14 @@ export const ResumeMain = () => {
                       </Button>
                     </div>
                   </StyledTd>
-                  <StyledTd>{resume.updatedDate}</StyledTd>
+                  <StyledTd 
+                    style={{ 
+                      fontSize: "15px",
+                      color: "gray",
+                    }}
+                  >
+                    {resume.updatedDate}
+                  </StyledTd>
                 </tr>
               );
             })

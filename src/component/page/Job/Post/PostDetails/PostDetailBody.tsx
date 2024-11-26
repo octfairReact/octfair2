@@ -12,6 +12,9 @@ import {
 import { postApi } from "../../../../../api/postApi";
 import { Post, Scrap } from "../../../../../api/api";
 import { ISaveScrapResponse } from "../../../../../models/interface/IScrap";
+import { modalState } from "../../../../../stores/modalState";
+import { Portal } from "../../../../common/potal/Portal";
+import { ResumeModalApplication } from "../../../Resume/ResumeModal/ResumeModalApplication";
 
 interface PostDetailBodyProps {
   onImagePath: (bizImage: string | null, postImage: string | null) => void;
@@ -23,6 +26,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
   const navigate = useNavigate();
   const [postDetail, setPostDetail] = useState<IPostDetail | null>(null);
   const [bizDetail, setBizDetail] = useState<IBizDetail | null>(null);
+  const [modal, setModal] = useRecoilState<boolean>(modalState);
 
   useEffect(() => {
     postDetailData(postIdx);
@@ -67,6 +71,19 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
     }
   };
 
+  const handlerModal = (postDetail, bizDetail) => {
+    setModal(!modal);
+    setPostDetail(postDetail);
+    setBizDetail(bizDetail);
+    console.log(postDetail);
+    console.log(bizDetail);
+  };
+
+  const onPostSuccess = () => {
+    setModal(!modal);
+    // postDetailData(postIdx);
+  };
+
   return (
     <>
       <Container className="mt-2">
@@ -102,9 +119,35 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
                 입사지원
               </Button>
             </div>
+<<<<<<< HEAD
           ) : (
             <></>
           )}
+=======
+            {userType === "B" ? (
+              <div></div>
+            ) : (
+              <div className="p-2 d-flex justify-content-center">
+                <Button
+                  variant="warning"
+                  size="lg"
+                  style={{ width: "150px", marginRight: "20px" }}
+                  onClick={handlerSaveScrap}
+                >
+                  스크랩
+                </Button>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  style={{ width: "150px" }}
+                  onClick={() => handlerModal(postDetail, bizDetail)}
+                >
+                  입사지원
+                </Button>
+              </div>
+            )}
+          </Stack>
+>>>>>>> 0c81be25f6c76fd9231e1f9e175a551648a472f9
         </div>
       </Container>
 
@@ -178,6 +221,16 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
           )}
         </div>
       </Container>
+      {modal && (
+        <Portal>
+          <ResumeModalApplication
+            onSuccess={onPostSuccess}
+            scrap={null}
+            post={postDetail}
+            biz={bizDetail}
+          />
+        </Portal>
+      )}
     </>
   );
 };
