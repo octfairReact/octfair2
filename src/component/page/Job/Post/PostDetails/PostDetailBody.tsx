@@ -12,6 +12,9 @@ import {
 import { postApi } from "../../../../../api/postApi";
 import { Post, Scrap } from "../../../../../api/api";
 import { ISaveScrapResponse } from "../../../../../models/interface/IScrap";
+import { modalState } from "../../../../../stores/modalState";
+import { Portal } from "../../../../common/potal/Portal";
+import { ResumeModalApplication } from "../../../Resume/ResumeModal/ResumeModalApplication";
 
 const PostDetailBody = () => {
   const { postIdx } = useParams();
@@ -19,6 +22,7 @@ const PostDetailBody = () => {
   const navigate = useNavigate();
   const [postDetail, setPostDetail] = useState<IPostDetail | null>(null);
   const [bizDetail, setBizDetail] = useState<IBizDetail | null>(null);
+  const [modal, setModal] = useRecoilState<boolean>(modalState);
 
   useEffect(() => {
     postDetailData(postIdx);
@@ -56,6 +60,19 @@ const PostDetailBody = () => {
     }
   };
 
+  const handlerModal = (postDetail, bizDetail) => {
+    setModal(!modal);
+    setPostDetail(postDetail);
+    setBizDetail(bizDetail);
+    console.log(postDetail);
+    console.log(bizDetail);
+  };
+
+  const onPostSuccess = () => {
+    setModal(!modal);
+    // postDetailData(postIdx);
+  };
+
   return (
     <>
       <Container className="mt-2">
@@ -90,7 +107,12 @@ const PostDetailBody = () => {
                 >
                   스크랩
                 </Button>
-                <Button variant="primary" size="lg" style={{ width: "150px" }}>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  style={{ width: "150px" }}
+                  onClick={() => handlerModal(postDetail, bizDetail)}
+                >
                   입사지원
                 </Button>
               </div>
@@ -156,6 +178,16 @@ const PostDetailBody = () => {
           )}
         </div>
       </Container>
+      {modal && (
+        <Portal>
+          <ResumeModalApplication
+            onSuccess={onPostSuccess}
+            scrap={null}
+            post={postDetail}
+            biz={bizDetail}
+          />
+        </Portal>
+      )}
     </>
   );
 };
