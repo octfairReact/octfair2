@@ -81,6 +81,7 @@ export const HireApplicant = {
     updateStatus: "/api/manage-hire/statusUpdate.do",
     viewUpadate: "/api/manage-hire/viewUpdate.do",
     previewResume: "/api/manage-hire/previewResume.do",
+    getBizList: "/api/manage-hire/applicant.do",
 };
 
 export const MyPage = {
