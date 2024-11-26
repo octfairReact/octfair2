@@ -17,6 +17,9 @@ import { Qna } from "../pages/Qna";
 import { Scrap } from "../pages/Scrap";
 import PostDetail from "../pages/PostDetail";
 import { MyPage } from "../pages/MyPage";
+import { Withdraw } from "../pages/Withdraw";
+import { ManageApplicant } from "../pages/ManageApplicant";
+import { ManageBusiness } from "../pages/ManageBusiness";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -62,7 +65,17 @@ const routers: RouteObject[] = [
             },
             {
                 path: "mypage",
-                children: [{ path: "update.do", element: <MyPage /> }],
+                children: [
+                    { path: "update.do", element: <MyPage /> },
+                    { path: "withdraw.do", element: <Withdraw /> },
+                ],
+            },
+            {
+                path: "manage-user",
+                children: [
+                    { path: "applicant.do", element: <ManageApplicant /> },
+                    { path: "biz.do", element: <ManageBusiness /> },
+                ],
             },
         ],
     },

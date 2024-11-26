@@ -1,13 +1,13 @@
 import { useState } from "react";
-import { FindIdPwModalStyled } from "./styled";
+import { FindIdPwModalStyled } from "../styled";
 import { Button } from "react-bootstrap";
-import { UserInit } from "../Init/User";
+import { UserInit } from "../../Login/Init/User";
 import { postSignUpApi } from "../../../../api/postSignUpApi";
 import { SignUp } from "../../../../api/api";
 import { IPostResponse, IUserInfoResponse } from "../../../../models/interface/ISignUp";
 import { useRecoilState } from "recoil";
 import { modalState2 } from "../../../../stores/modalState";
-import { loginIdEmailSchema, nameEmailSchema, passwordCheckPwSchema } from "../Validate/Schemas";
+import { loginIdEmailSchema, nameEmailSchema, passwordCheckPwSchema } from "../../../common/Validate/Schemas/Schemas";
 
 export const FindIdPwModal = () => {
     const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);

@@ -1,14 +1,14 @@
-import { SignUpModalStyled } from "../../style/styled";
+import { SignUpModalStyled } from "../styled";
 import { useRecoilState } from "recoil";
-import { modalState } from "../../../../../stores/modalState";
-import { SignUp } from "../../../../../api/api";
-import { postSignUpApi } from "../../../../../api/postSignUpApi";
-import { IPostResponse, SignUpOtherUserDetail, SignUpUserTypeToCheckPw } from "../../../../../models/interface/ISignUp";
-import { loginIdSchema, otherUserDataSchema } from "../../Validate/Schemas";
-import { UserInit } from "../../Init/User";
-import PostCode from "../../Init/PostCode";
+import { modalState } from "../../../../stores/modalState";
+import { SignUp } from "../../../../api/api";
+import { postSignUpApi } from "../../../../api/postSignUpApi";
+import { IPostResponse, SignUpOtherUserDetail, SignUpUserTypeToCheckPw } from "../../../../models/interface/ISignUp";
+import { loginIdSchema, otherUserDataSchema } from "../../../common/Validate/Schemas/Schemas";
+import { UserInit } from "../../Login/Init/User";
+import PostCode from "../../../common/PostCode/PostCode";
 import { Address } from "react-daum-postcode";
-import { userTypeToCheckPwSchema } from "../../Validate/Schemas";
+import { userTypeToCheckPwSchema } from "../../../common/Validate/Schemas/Schemas";
 import { useEffect } from "react";
 
 export const SignUpModal = () => {
@@ -28,7 +28,7 @@ export const SignUpModal = () => {
         checkLoginIdExist,
         setCheckLoginIdExist,
     } = state;
-    const { loginId, password, checkPassword, name, birth, phone, email, userDetailAddress } = refs;
+    const { loginId, password, checkPassword, name, birthday, phone, email, userDetailAddress } = refs;
 
     useEffect(() => {}, []);
     //select-option으로 값 바뀌는 userType과 Gender 값 세팅
@@ -93,7 +93,7 @@ export const SignUpModal = () => {
             userGender: userGender,
             phone: phone.current.value,
             email: email.current.value,
-            birth: birth.current.value,
+            birthday: birthday.current.value,
             zipCode: zipCode,
             address: address,
             detailAddress: userDetailAddress.current.value,
@@ -123,7 +123,7 @@ export const SignUpModal = () => {
             sex: userGender,
             phone: phone.current.value,
             email: email.current.value,
-            birthday: birth.current.value,
+            birthday: birthday.current.value,
             zipCode: zipCode,
             address: address,
             detailAddress: userDetailAddress.current.value,
@@ -201,7 +201,7 @@ export const SignUpModal = () => {
                         <tr>
                             <th>생년 월일</th>
                             <td>
-                                <input type="date" ref={birth}></input>
+                                <input type="date" ref={birthday}></input>
                             </td>
                         </tr>
                         <tr>

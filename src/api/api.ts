@@ -87,4 +87,21 @@ export const HireApplicant = {
 
 export const MyPage = {
     getDetail: "/api/mypage/userDetail.do",
+    getUpdate: "/api/mypage/updateUserInfo.do",
+    updatePw: "/api/mypage/updatePw.do",
+    deleteUser: "/api/mypage/deleteUser.do",
+};
+
+
+export const ManageApplicant = {
+    getList: "/api/manage-user/applicantListBody.do",
+    getDetail: "/api/manage-user/applicantManageDetail.do",
+    getUpdate: "/api/manage-user/applicantInfoUpdate.do",
+    getResetPw: "/api/manage-user/applicantPwReset.do",
+};
+
+export const ManageBusiness = {
+    getList: "/api/manage-user/bizList.do",
+    getDetail: "/api/manage-user/bizManageDetail.do",
+    getUpdate: "/api/manage-user/bizInfoUpdate.do",
 };

@@ -6,7 +6,7 @@ import { MyPageMain } from "../component/page/MyPage/MyPageMain/MyPageMain";
 export const MyPage = () => {
     return (
         <>
-                <ContentBox>공지사항</ContentBox>
+                <ContentBox>마이페이지</ContentBox>
                 <MyPageMain />
         </>
     );
