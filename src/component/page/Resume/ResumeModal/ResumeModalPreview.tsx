@@ -9,6 +9,7 @@ import { IResumeCareer, IResumeCertification, IResumeDetail, IResumeEducation, I
 import { postApi } from '../../../../api/postApi';
 import { HireApplicant } from '../../../../api/api';
 import { IPreviewResume } from '../../../../models/interface/IHireApplicant';
+import { ResumeModalStyled } from './ResumeModalStyled';
 
 export const downloadFile = (resIdx) => {
   axios.post('/api/manage-hire/attachment-download.do', resIdx, {
@@ -112,13 +113,14 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
       onHide={handleClose}
       size="lg"
     >
+      <ResumeModalStyled>
       <Modal.Header closeButton>
-        <h5 className="modal-title">이력서 미리 보기</h5>
+          <strong>이력서 미리 보기</strong>
       </Modal.Header>
       <Modal.Body>
-        <div id="previewResumeContent">
-          <div>
-            <p>{resumeInfo?.resTitle}</p>
+        <div id="previewResumeContent" style={{padding: '20px'}}>
+          <div style={{marginBottom: '20px'}}>
+            <p id="previewTitle">{resumeInfo?.resTitle}</p>
           </div>
           <div>
             <p>이름 : {resumeInfo?.userNm}</p>
@@ -129,8 +131,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
           <div>
             <p>연락처 : {resumeInfo?.phone}</p>
           </div>
-
-          <div>
+          <div id='introAndLink'>
             {resumeInfo?.shortIntro !== null ?
               <div>
                 <p >{resumeInfo?.shortIntro}</p>
@@ -139,7 +140,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
 
             {resumeInfo?.proLink !== null ?
               <div>
-                <p >링크 : 
+                <p >링크 : &nbsp;
                   <span onClick={() => handleNavigation(resumeInfo?.proLink)} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>
                     {resumeInfo?.proLink}
                   </span>
@@ -149,7 +150,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
 
             {resumeInfo?.fileName !== null ?
               <div>
-                <p>첨부파일 : 
+                <p>첨부파일 : &nbsp;
                 <span onClick={() => downloadFile(resumeInfo?.resIdx)} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>
                  {resumeInfo?.fileName}</span>
                 </p>
@@ -169,9 +170,9 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                   {careerInfo?.map((data) => {
                     return (
                       <tr key={data.crrIdx}>
-                        <td>{data.startDate} ~ {data.endDate}</td>
-                        <td>{data.company} | {data.dept} |
-                          {data.position}
+                        <td>{data.startDate} ~ <br /> {data.endDate}</td>
+                        <td><span className='companyPosition'>{data.company} | {data.dept} |
+                          {data.position}</span>
                           <p
                             style={{ marginTop: '20px', marginLeft: '20px', whiteSpace: 'pre-line' }}>{data.crrDesc}</p>
                         </td>
@@ -289,6 +290,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
           인쇄
         </Button>
       </Modal.Footer>
+      </ResumeModalStyled>
     </Modal >
   );
 };

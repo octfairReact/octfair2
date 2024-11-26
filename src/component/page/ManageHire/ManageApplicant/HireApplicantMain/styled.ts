@@ -3,7 +3,6 @@ import styled from 'styled-components';
 export const HireApplicantMainStyled = styled.div`
    
 
-/* 전체 컨테이너 */
 .container {
 	display: grid;
 	grid-template-columns: 2fr 1fr;

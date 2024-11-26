@@ -62,7 +62,7 @@ export const HistorySearch = () => {
 
   const handlerReset = () => {
     // CaculateStartDate("all");
-    setSearchValue({viewStatus:'all',startDate: 'all', sortOrder: 'desc', keyWord: ''});
+    setSearchValue({viewStatus:'all',startDate: '', sortOrder: 'asc', keyWord: ''});
   }
 
     return(
