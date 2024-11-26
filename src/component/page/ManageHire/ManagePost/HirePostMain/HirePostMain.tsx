@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/alt-text */
 import { useEffect, useState } from "react";
-import { Button, Modal, Spinner, Table } from "react-bootstrap";
+import { Button, Spinner, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { lodingState } from "../../../../../stores/lodingState";
@@ -71,7 +71,6 @@ const HirePostMain = ({
       (selectStatus === "completed" && isCompleted) ||
       (selectStatus === "upcoming" && isUpcoming);
 
-    // 키워드 필터링
     const keywordMatch =
       !keyword || post.title.toLowerCase().includes(keyword.toLowerCase());
 

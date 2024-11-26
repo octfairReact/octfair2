@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import { NoticeModalStyled } from "./styled";
 import { modalState } from "../../../../stores/modalState";
 import { useRecoilState } from "recoil";

@@ -1,9 +1,17 @@
-import React from 'react';
-import Slider, { Settings } from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import React from "react";
+import Slider, { Settings } from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
-const SlideImage: React.FC = () => {
+interface SlideImageProps {
+  bizImagePath: string | null;
+  postImagePath: string | null;
+}
+
+const SlideImage: React.FC<SlideImageProps> = ({
+  bizImagePath,
+  postImagePath,
+}) => {
   const settings: Settings = {
     dots: true,
     infinite: true, // 무한 반복
@@ -29,42 +37,45 @@ const SlideImage: React.FC = () => {
       },
     ],
   };
-
   return (
     <>
       <div
         style={{
-          maxWidth: '1200px', // 슬라이더 최대 너비 제한
-          margin: '0 auto', // 가운데 정렬
-          padding: '2rem 0',
-          overflow: 'hidden',
+          maxWidth: "1200px", // 슬라이더 최대 너비 제한
+          margin: "0 auto", // 가운데 정렬
+          padding: "2rem 0",
+          overflow: "hidden",
         }}
       >
         <Slider {...settings}>
-          <div>
-            <img
-              src="https://placehold.co/400"
-              alt="Slide 1"
-              style={{
-                width: '100%',
-                height: '300px',
-                objectFit: 'cover', // 이미지 잘라내기
-                borderRadius: '0px',
-              }}
-            />
-          </div>
-          <div>
-            <img
-              src="https://via.placeholder.com/800x400?text=Slide+2"
-              alt="Slide 2"
-              style={{
-                width: '100%',
-                height: '300px',
-                objectFit: 'cover', // 이미지 잘라내기
-                borderRadius: '0px',
-              }}
-            />
-          </div>
+          {bizImagePath && (
+            <div>
+              <img
+                src={bizImagePath}
+                alt="Slide 1"
+                style={{
+                  width: "100%",
+                  height: "300px",
+                  objectFit: "cover", 
+                  borderRadius: "0px",
+                }}
+              />
+            </div>
+          )}
+          {postImagePath && (
+            <div>
+              <img
+                src={postImagePath}
+                alt="Slide 1"
+                style={{
+                  width: "100%",
+                  height: "300px",
+                  objectFit: "cover", 
+                  borderRadius: "0px",
+                }}
+              />
+            </div>
+          )}
         </Slider>
       </div>
     </>

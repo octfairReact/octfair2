@@ -57,6 +57,7 @@ const routers: RouteObject[] = [
                     { path: "post.do", element: <ManageHirePost /> },
                     { path: "new-post.do", element: <NewHirePost /> },
                     { path: "applicant.do", element: <ManageHireApplicant /> },
+                    { path: "update-post.do/:postIdx", element: <NewHirePost /> },
                 ],
             },
             {

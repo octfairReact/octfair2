@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ContentBox } from "../../../common/ContentBox/ContentBox";
 import {
   Table,
@@ -14,17 +14,54 @@ import {
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./NewHirePost.css";
-import { Link, useNavigate } from "react-router-dom";
-import { IPostDetail } from "../../../../models/interface/IPost";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  IPostdatailResponse,
+  IPostDetail,
+} from "../../../../models/interface/IPost";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { ILoginInfo } from "../../../../models/interface/store/userInfo";
+import { loginInfoState } from "../../../../stores/userInfo";
+import { postApi } from "../../../../api/postApi";
+import { Post } from "../../../../api/api";
 
 const NewHirePost = () => {
-  const [formData, setFormData] = useState<IPostDetail>({} as IPostDetail);
+  const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
+  const [postData, setPostData] = useState<IPostDetail>({
+    expYears: 0,
+  } as IPostDetail);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
   const [currentProc, setCurrentProc] = useState<string>("");
   const navigate = useNavigate();
+  const { postIdx } = useParams();
+  const [isEditMode, setIsEditMode] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (postIdx) {
+      setIsEditMode(true);
+      getPostDetail(postIdx);
+    } else {
+      setIsEditMode(false);
+    }
+  }, [postIdx]);
+
+  const getPostDetail = async (postIdx: string) => {
+    const params = { postIdx };
+
+    const response = await postApi<IPostdatailResponse>(Post.getDetail, params);
+
+    console.log("API Response: ", response);
+    if (response) {
+      setPostData(response.postDetail);
+      setStartDate(new Date(response.postDetail.startDate));
+      setEndDate(new Date(response.postDetail.startDate));
+      setImageUrl(response.postDetail.logicalPath);
+    }
+  };
 
   const getMinEndDate = (startDate: Date | null) => {
     if (!startDate) return new Date();
@@ -40,35 +77,64 @@ const NewHirePost = () => {
 
   const validateForm = (): boolean => {
     const requiredFields = [
-      formData.title,
-      formData.expRequired,
-      formData.expYears,
-      formData.salary,
-      formData.openings,
-      formData.workLocation,
-      formData.posDescription,
-      formData.reqQualifications,
-      formData.duties,
-      formData.hirProcess,
-      formData.startDate,
-      formData.endDate,
+      postData.title,
+      postData.expRequired,
+      postData.expYears,
+      postData.salary,
+      postData.openings,
+      postData.workLocation,
+      postData.posDescription,
+      postData.reqQualifications,
+      postData.duties,
+      postData.hirProcess,
+      postData.startDate,
+      postData.endDate,
     ];
 
     return requiredFields.every((field) => Boolean(field));
   };
 
   const formatDate = (date: Date | null): string => {
-    if (!date) return ""; // null 값 처리
+    if (!date) return "";
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // 1월은 0부터 시작하므로 +1
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 
-  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     validateForm();
-    console.log(formData);
+    const postWithLoginId = { ...postData, loginId: userInfo.loginId };
+    const formData = new FormData();
+    formData.append(
+      "postContent",
+      new Blob([JSON.stringify(postWithLoginId)], { type: "application/json" })
+    );
+    if (fileInputRef.current?.files?.[0]) {
+      formData.append("attachFile", fileInputRef.current.files[0]);
+    }
+    try {
+      let response;
+      if (postIdx) {
+        response = await axios.post(
+          `/api/manage-hire/post-update/${postIdx}`,
+          formData
+        );
+      } else {
+        response = await axios.post("/api/manage-hire/post-new", formData);
+      }
+      if (response.data.result === "success") {
+        alert(
+          postIdx ? "채용공고가 수정되었습니다." : "채용공고가 등록되었습니다."
+        );
+        navigate(`/react/jobs/post-detail/${postIdx}`);
+      } else {
+        alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      }
+    } catch (error) {
+      alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요. " + error);
+    }
   };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,8 +160,7 @@ const NewHirePost = () => {
       alert("과정을 입력해주세요!");
       return;
     }
-
-    setFormData((prev) => ({
+    setPostData((prev) => ({
       ...prev,
       hirProcess: prev.hirProcess
         ? `${prev.hirProcess} -> ${currentProc.trim()}`
@@ -104,7 +169,7 @@ const NewHirePost = () => {
   };
 
   const resetHiringProc = () => {
-    setFormData((prev) => ({
+    setPostData((prev) => ({
       ...prev,
       hirProcess: "",
     }));
@@ -116,12 +181,44 @@ const NewHirePost = () => {
     setImageUrl("");
   };
 
-  const handlerPreviewPost = () => {};
+  const deletePost = async (postIdx: string) => {
+    try {
+      const response = await axios.post(
+        `/api/manage-hire/deleteHirePost/${postIdx}`
+      );
+      if (response.data.result === "success") {
+        alert("채용공고가 삭제되었습니다.");
+        navigate("/react/manage-hire/post.do");
+      } else {
+        alert("채용공고 삭제에 실패했습니다.");
+      }
+    } catch (error) {
+      alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    }
+  };
+
+  const deleteAttach = async (postIdx: string) => {
+    try {
+      const response = await axios.post(
+        `/api/manage-hire/deleteAttachment/${postIdx}`
+      );
+      if (response.data.result === "success") {
+        alert("첨부파일이 삭제되었습니다.");
+        getPostDetail(postIdx);
+      } else {
+        alert("첨부파일 삭제에 실패했습니다.");
+      }
+    } catch (error) {
+      alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    }
+  };
 
   return (
     <>
       <div>
-        <ContentBox>채용공고 등록</ContentBox>
+        <ContentBox>
+          {isEditMode ? "채용공고 수정" : "채용공고 등록"}
+        </ContentBox>
         <div className="mt-5"></div>
         <Form onSubmit={handleFormSubmit}>
           <Table bordered className="input-table">
@@ -134,13 +231,13 @@ const NewHirePost = () => {
                   <Form.Control
                     type="text"
                     placeholder="채용 제목을 입력하세요"
-                    value={formData.title || ""}
+                    value={postData.title || ""}
                     required
                     onChange={(e) =>
-                      setFormData({ ...formData, title: e.target.value })
+                      setPostData({ ...postData, title: e.target.value })
                     }
                   />
-                  {!formData.title && (
+                  {!postData.title && (
                     <Form.Text className="text-danger">
                       채용 제목을 입력해주세요.
                     </Form.Text>
@@ -160,11 +257,12 @@ const NewHirePost = () => {
                           type="radio"
                           label="신입"
                           value="신입"
-                          checked={formData.expRequired === "신입"}
+                          checked={postData.expRequired === "신입"}
                           onChange={(e) =>
-                            setFormData({
-                              ...formData,
+                            setPostData({
+                              ...postData,
                               expRequired: e.target.value,
+                              expYears: 0,
                             })
                           }
                         />
@@ -174,10 +272,10 @@ const NewHirePost = () => {
                           type="radio"
                           label="경력"
                           value="경력"
-                          checked={formData.expRequired === "경력"}
+                          checked={postData.expRequired === "경력"}
                           onChange={(e) =>
-                            setFormData({
-                              ...formData,
+                            setPostData({
+                              ...postData,
                               expRequired: e.target.value,
                             })
                           }
@@ -188,18 +286,19 @@ const NewHirePost = () => {
                           type="radio"
                           label="경력무관"
                           value="경력무관"
-                          checked={formData.expRequired === "경력무관"}
+                          checked={postData.expRequired === "경력무관"}
                           onChange={(e) =>
-                            setFormData({
-                              ...formData,
+                            setPostData({
+                              ...postData,
                               expRequired: e.target.value,
+                              expYears: 0,
                             })
                           }
                         />
                       </Col>
                     </Row>
                   </div>
-                  {!formData.expRequired && (
+                  {!postData.expRequired && (
                     <Form.Text className="text-danger">
                       경력을 선택해주세요.
                     </Form.Text>
@@ -210,15 +309,19 @@ const NewHirePost = () => {
                 </th>
                 <td>
                   <Form.Select
-                    value={formData.expYears || ""}
+                    value={
+                      postData.expRequired === "신입"
+                        ? 0
+                        : postData.expYears || 0
+                    }
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
+                      setPostData({
+                        ...postData,
                         expYears: Number(e.target.value),
                       })
                     }
-                    disabled={formData.expRequired !== "경력"}
-                    required
+                    disabled={postData.expRequired === "신입"}
+                    required={postData.expRequired === "경력"}
                   >
                     <option value="0">최소경력 선택</option>
                     <option value="1">1년</option>
@@ -228,7 +331,7 @@ const NewHirePost = () => {
                     <option value="10">10년</option>
                     <option value="15">15년</option>
                   </Form.Select>
-                  {!formData.expYears && (
+                  {postData.expRequired === "경력" && !postData.expYears && (
                     <Form.Text className="text-danger">
                       필요경력을 선택해주세요.
                     </Form.Text>
@@ -244,13 +347,13 @@ const NewHirePost = () => {
                   <Form.Control
                     type="text"
                     placeholder="급여를 입력하세요"
-                    value={formData.salary || ""}
+                    value={postData.salary || ""}
                     required
                     onChange={(e) =>
-                      setFormData({ ...formData, salary: e.target.value })
+                      setPostData({ ...postData, salary: e.target.value })
                     }
                   />
-                  {!formData.salary && (
+                  {!postData.salary && (
                     <Form.Text className="text-danger">
                       급여을 입력해주세요.
                     </Form.Text>
@@ -263,16 +366,16 @@ const NewHirePost = () => {
                   <Form.Control
                     type="text"
                     placeholder="모집 인원을 입력하세요"
-                    value={formData.openings || ""}
+                    value={postData.openings || ""}
                     required
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
+                      setPostData({
+                        ...postData,
                         openings: e.target.value,
                       })
                     }
                   />
-                  {!formData.openings && (
+                  {!postData.openings && (
                     <Form.Text className="text-danger">
                       모집인원을 입력해주세요.
                     </Form.Text>
@@ -287,13 +390,13 @@ const NewHirePost = () => {
                   <Form.Control
                     type="text"
                     placeholder="근무 지역을 입력하세요"
-                    value={formData.workLocation || ""}
+                    value={postData.workLocation || ""}
                     onChange={(e) =>
-                      setFormData({ ...formData, workLocation: e.target.value })
+                      setPostData({ ...postData, workLocation: e.target.value })
                     }
                     required
                   />
-                  {!formData.workLocation && (
+                  {!postData.workLocation && (
                     <Form.Text className="text-danger">
                       근무지역을 입력해주세요.
                     </Form.Text>
@@ -306,16 +409,16 @@ const NewHirePost = () => {
                   <Form.Control
                     type="text"
                     placeholder="포지션에 대한 설명을 입력하세요"
-                    value={formData.posDescription || ""}
+                    value={postData.posDescription || ""}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
+                      setPostData({
+                        ...postData,
                         posDescription: e.target.value,
                       })
                     }
                     required
                   />
-                  {!formData.posDescription && (
+                  {!postData.posDescription && (
                     <Form.Text className="text-danger">
                       채용 포지션에 대해 자세히 입력해주세요.
                     </Form.Text>
@@ -337,13 +440,12 @@ const NewHirePost = () => {
                           controlId="startDate"
                           className="text-center"
                         >
-                          <Form.Label>시작 날짜</Form.Label>
                           <DatePicker
                             id="startDate"
                             selected={startDate}
                             onChange={(date: Date) => {
                               setStartDate(date);
-                              setFormData((prev) => ({
+                              setPostData((prev) => ({
                                 ...prev,
                                 startDate: formatDate(date),
                               }));
@@ -366,15 +468,14 @@ const NewHirePost = () => {
                         className="d-flex flex-column align-items-center"
                       >
                         <Form.Group controlId="endDate" className="text-center">
-                          <Form.Label>종료 날짜</Form.Label>
                           <DatePicker
                             id="endDate"
                             selected={endDate}
                             onChange={(date: Date) => {
                               setEndDate(date);
-                              setFormData((prev) => ({
+                              setPostData((prev) => ({
                                 ...prev,
-                                EndDate: formatDate(date),
+                                endDate: formatDate(date),
                               }));
                             }}
                             placeholderText="최소 게시기간: 한달"
@@ -431,9 +532,9 @@ const NewHirePost = () => {
                     </Button>
                   </InputGroup>
                   <Form.Label className="pt-3" htmlFor="hireProcess">
-                    채용절차 : {formData.hirProcess || ""}
+                    채용절차 : {postData.hirProcess || ""}
                   </Form.Label>
-                  {!formData.hirProcess && (
+                  {!postData.hirProcess && (
                     <Form.Text className="text-danger">
                       채용 절차에 대해 자세히 입력해주세요.
                     </Form.Text>
@@ -450,16 +551,16 @@ const NewHirePost = () => {
                     as="textarea"
                     rows={3}
                     placeholder="자격 조건 입력"
-                    value={formData.reqQualifications || ""}
+                    value={postData.reqQualifications || ""}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
+                      setPostData({
+                        ...postData,
                         reqQualifications: e.target.value,
                       })
                     }
                     required
                   />
-                  {!formData.reqQualifications && (
+                  {!postData.reqQualifications && (
                     <Form.Text className="text-danger">
                       자격 요건에 대해 자세히 입력해주세요.
                     </Form.Text>
@@ -474,14 +575,14 @@ const NewHirePost = () => {
                   <Form.Control
                     as="textarea"
                     rows={3}
-                    value={formData.duties || ""}
+                    value={postData.duties || ""}
                     placeholder="업무 내용 입력"
                     onChange={(e) =>
-                      setFormData({ ...formData, duties: e.target.value })
+                      setPostData({ ...postData, duties: e.target.value })
                     }
                     required
                   />
-                  {!formData.duties && (
+                  {!postData.duties && (
                     <Form.Text className="text-danger">
                       업무 내용에 대해 자세히 입력해주세요.
                     </Form.Text>
@@ -495,10 +596,10 @@ const NewHirePost = () => {
                     as="textarea"
                     rows={3}
                     placeholder="우대 사항 입력"
-                    value={formData.prefQualifications || ""}
+                    value={postData.prefQualifications || ""}
                     onChange={(e) =>
-                      setFormData({
-                        ...formData,
+                      setPostData({
+                        ...postData,
                         prefQualifications: e.target.value,
                       })
                     }
@@ -513,68 +614,106 @@ const NewHirePost = () => {
                     as="textarea"
                     rows={3}
                     placeholder="혜택 및 복지 내용 입력"
-                    value={formData.benefits || ""}
+                    value={postData.benefits || ""}
                     onChange={(e) =>
-                      setFormData({ ...formData, benefits: e.target.value })
+                      setPostData({ ...postData, benefits: e.target.value })
                     }
                   />
                 </td>
               </tr>
               <tr>
                 <th>첨부파일</th>
-                <td colSpan={3}>
-                  <Form.Label
-                    className="d-flex justify-content-start text-muted"
-                    htmlFor="attachment"
-                  >
-                    채용공고 이미지 486 * 300 px (파일형식 .jpg, .jpeg, .png,
-                    .gif)
-                  </Form.Label>
-                  <Form.Control
-                    type="file"
-                    accept=".jpg, .jpeg, .png, .gif"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                  />
-                  {imageUrl ? (
+                {postData.fileName ? (
+                  <td colSpan={3}>
+                    <Form.Label
+                      className="d-flex justify-content-start text-muted"
+                      htmlFor="attachment"
+                    >
+                      채용공고 이미지 486 * 300 px (파일형식 .jpg, .jpeg, .png,
+                      .gif)
+                    </Form.Label>
                     <div className="py-3 d-flex justify-content-start">
                       <img src={imageUrl} style={{ height: "100px" }} />
-                      <Link
-                        to="#"
-                        onClick={handleImageRemove}
-                        style={{
-                          color: "red",
-                          textDecoration: "none",
-                          cursor: "pointer",
-                        }}
+                      <Button
+                        variant="outline-danger"
+                        onClick={() => deleteAttach(postIdx)}
                       >
-                        X
-                      </Link>
+                        삭제
+                      </Button>
                     </div>
-                  ) : (
-                    ""
-                  )}
-                </td>
+                  </td>
+                ) : (
+                  <td colSpan={3}>
+                    <Form.Label
+                      className="d-flex justify-content-start text-muted"
+                      htmlFor="attachment"
+                    >
+                      채용공고 이미지 486 * 300 px (파일형식 .jpg, .jpeg, .png,
+                      .gif)
+                    </Form.Label>
+                    <Form.Control
+                      type="file"
+                      accept=".jpg, .jpeg, .png, .gif"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                    />
+                    {imageUrl ? (
+                      <div className="py-3 d-flex justify-content-start">
+                        <img src={imageUrl} style={{ height: "100px" }} />
+
+                        <Link
+                          to="#"
+                          onClick={handleImageRemove}
+                          style={{
+                            color: "red",
+                            textDecoration: "none",
+                            cursor: "pointer",
+                          }}
+                        >
+                          X
+                        </Link>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </td>
+                )}
               </tr>
             </tbody>
           </Table>
           <div className="buttonWrap">
-            <ButtonGroup>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  navigate(-1);
-                }}
-              >
-                뒤로
-              </Button>
-              <Button variant="success" onClick={handlerPreviewPost}>
-                미리보기
-              </Button>
-              <Button variant="primary" type="submit">
-                등록
-              </Button>
-            </ButtonGroup>
+            {isEditMode ? (
+              <ButtonGroup>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    navigate("/react/manage-hire/post.do");
+                  }}
+                >
+                  뒤로
+                </Button>
+                <Button variant="danger" onClick={() => deletePost(postIdx)}>
+                  삭제
+                </Button>
+                <Button variant="primary" type="submit">
+                  등록
+                </Button>
+              </ButtonGroup>
+            ) : (
+              <ButtonGroup>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    navigate("/react/manage-hire/post.do");
+                  }}
+                >
+                  뒤로
+                </Button>
+                <Button variant="primary" type="submit">
+                  등록
+                </Button>
+              </ButtonGroup>
+            )}
           </div>
         </Form>
       </div>

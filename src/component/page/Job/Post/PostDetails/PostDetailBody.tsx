@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Row, Stack } from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
 import { loginInfoState } from "../../../../../stores/userInfo";
@@ -13,7 +13,11 @@ import { postApi } from "../../../../../api/postApi";
 import { Post, Scrap } from "../../../../../api/api";
 import { ISaveScrapResponse } from "../../../../../models/interface/IScrap";
 
-const PostDetailBody = () => {
+interface PostDetailBodyProps {
+  onImagePath: (bizImage: string | null, postImage: string | null) => void;
+}
+
+const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
   const { postIdx } = useParams();
   const [{ userType }] = useRecoilState<ILoginInfo>(loginInfoState);
   const navigate = useNavigate();
@@ -24,13 +28,20 @@ const PostDetailBody = () => {
     postDetailData(postIdx);
   }, [postIdx]);
 
+  useEffect(() => {
+    if (bizDetail && postDetail) {
+      const bizImagePath = bizDetail?.logicalPath || null;
+      const postImagePath = postDetail?.logicalPath || null;
+      onImagePath(bizImagePath, postImagePath);
+    }
+  }, [bizDetail, postDetail, onImagePath]);
+
   const postDetailData = async (postIdx: string) => {
     const params = { postIdx };
 
     const response = await postApi<IPostdatailResponse>(Post.getDetail, params);
 
     console.log("API Response: ", response);
-    // console.log(response.)
     if (response) {
       setPostDetail(response.postDetail);
       setBizDetail(response.bizDetail);
@@ -60,42 +71,40 @@ const PostDetailBody = () => {
     <>
       <Container className="mt-2">
         <div>
-          <Stack direction="horizontal" gap={3} className="me-3">
-            <div className="p-2">
-              <Row>
-                <h1>{postDetail?.title}</h1>
-                <Row className="my-1">
-                  <Col>
-                    <Link to={"#"} className="text-dark">
-                      <h4>{bizDetail?.bizName}</h4>
-                    </Link>
-                  </Col>
-                  <Col className="d-flex align-items-center">
-                    <span>
-                      {postDetail?.workLocation} | {postDetail?.expRequired}{" "}
-                    </span>
-                  </Col>
-                </Row>
+          <div className="p-2">
+            <Row>
+              <h1>{postDetail?.title}</h1>
+              <Row className="my-1">
+                <Col>
+                  <Link to={"#"} className="text-dark">
+                    <h4>{bizDetail?.bizName}</h4>
+                  </Link>
+                </Col>
+                <Col className="d-flex align-items-center">
+                  <span>
+                    {postDetail?.workLocation} | {postDetail?.expRequired}{" "}
+                  </span>
+                </Col>
               </Row>
+            </Row>
+          </div>
+          {userType === "A" ? (
+            <div className="p-2 d-flex justify-content-center">
+              <Button
+                variant="warning"
+                size="lg"
+                style={{ width: "150px", marginRight: "20px" }}
+                onClick={handlerSaveScrap}
+              >
+                스크랩
+              </Button>
+              <Button variant="primary" size="lg" style={{ width: "150px" }}>
+                입사지원
+              </Button>
             </div>
-            {userType === "B" ? (
-              <div></div>
-            ) : (
-              <div className="p-2 d-flex justify-content-center">
-                <Button
-                  variant="warning"
-                  size="lg"
-                  style={{ width: "150px", marginRight: "20px" }}
-                  onClick={handlerSaveScrap}
-                >
-                  스크랩
-                </Button>
-                <Button variant="primary" size="lg" style={{ width: "150px" }}>
-                  입사지원
-                </Button>
-              </div>
-            )}
-          </Stack>
+          ) : (
+            <></>
+          )}
         </div>
       </Container>
 
@@ -130,27 +139,40 @@ const PostDetailBody = () => {
             <span className="p-4">{postDetail?.benefits}</span>
           </div>
         </div>
-        <div className="d-flex justify-content-center m-5">
-          {userType === "B" ? (
+        {userType === "A" ? (
+          <></>
+        ) : (
+          <div className="d-flex justify-content-center mt-5 ">
+            <span style={{ color: "red" }}>
+              '대기중' 공고만 수정 및 삭제 가능합니다.
+            </span>
+          </div>
+        )}
+        <div className="d-flex justify-content-center m-2">
+          {postDetail?.appStatus === "대기중" ? (
             <div>
               <Button
                 variant="primary"
                 size="lg"
                 className="mx-1"
-                onClick={() => navigate("")}
+                onClick={() => navigate(`/react/manage-hire/update-post.do/${postIdx}`)}
               >
                 수정하기
               </Button>
               <Button
                 variant="secondary"
                 size="lg"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate("/react/manage-hire/post.do")}
               >
                 뒤로가기
               </Button>
             </div>
           ) : (
-            <Button variant="secondary" size="lg" onClick={() => navigate(-1)}>
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={() => navigate("/react/manage-hire/post.do")}
+            >
               뒤로가기
             </Button>
           )}
