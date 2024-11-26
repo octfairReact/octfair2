@@ -46,13 +46,13 @@ export const StyledTableResume = styled.table`
         border-top: 1px solid #ddd;
     }
 
-    // .resumeDetail_body {
-    //     margin: 20px 20px 60px;
-    // }
+    .resumeDetail_body {
+        margin-top: 50px;
+    }
 
-    // .resumeDetail_body_basicInfo {
-    //     margin: 20px;
-    // }
+    .resumeDetail_body_basicInfo {
+        margin-top: 20px;
+    }
 
     // .res-comment {
     //     border-radius: 10px;
@@ -85,6 +85,11 @@ export const StyledTableResume = styled.table`
     .showTableBtn {
         font-weight: 600;
         margin-bottom: 10px;
+    }
+
+    .btnGroup {
+        textAlign: center;
+        margin: 80px 0px 30px;
     }
 `;
 

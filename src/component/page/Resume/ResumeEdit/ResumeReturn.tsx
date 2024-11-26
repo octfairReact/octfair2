@@ -1,8 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import { Button } from "../../../common/Button/Button";
+import Button from 'react-bootstrap/Button';
 import { useNavigate } from "react-router-dom";
 import { ResumeAddStyled } from "./styled";
-import Button from 'react-bootstrap/Button';
 
 export const ResumeReturn = () => {
   const navigate = useNavigate();

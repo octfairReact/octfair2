@@ -5,27 +5,37 @@ import { postApi } from "../../../../api/postApi";
 import { IResumeDetailReponse } from "../../../../models/interface/IResume";
 import { Resume } from "../../../../api/api";
 
-export const ResumeSkillAdd = (props) => {
+export const ResumeSkillAdd = ({ setVisibleState, searchSkillList }) => {
   const location = useLocation();
   const skillName = useRef<HTMLInputElement>();
   const skillDetail = useRef(null);
 
   const handlerSave = async () => {
+    const _skillName = skillName.current.value;
+    const _skillDetail = skillDetail.current.value;
+
+    if (!_skillName || !_skillDetail) {
+      alert("모든 항목을 입력하세요.");
+      return;
+    }
+
     const param = {
-      skillName: skillName.current.value,
-      skillDetail: skillDetail?.current.value,
+      skillName: _skillName,
+      skillDetail: _skillDetail,
       resIdx: location.state.idx,
     }
 
     const saveSkill = await postApi<IResumeDetailReponse>(Resume.addSkill, param);
 
     if (saveSkill.payload) {
-      props.setVisibleState(false);
+      alert("추가되었습니다.");
+      setVisibleState(false);
+      searchSkillList();
     }
   }
 
   const handlerCancel = () => {
-    props.setVisibleState(false);
+    setVisibleState(false);
   }
 
   return (
@@ -75,8 +85,6 @@ export const ResumeSkillAdd = (props) => {
         >
           <span>저장</span>
         </Button>
-        {/* <a className="btnType gray cancleBtn" id="skill" href="#"><span>취소</span></a>
-        <a className="btnType blue" href="javascript:insertSkill()"><span>저장</span></a> */}
       </div>
     </div>
   );

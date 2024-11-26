@@ -1,5 +1,5 @@
-import { Alert, Button } from "react-bootstrap"
-import { IResumeCareer, IResumeCareerReponse, IResumeCertification, IResumeCertificationReponse } from "../../../../models/interface/IResume";
+import { Alert } from "react-bootstrap"
+import { IResumeCertification, IResumeCertificationReponse } from "../../../../models/interface/IResume";
 import { useEffect, useState } from "react";
 import { postApi } from "../../../../api/postApi";
 import { Resume } from "../../../../api/api";
@@ -16,14 +16,13 @@ export const ResumeCert = () => {
   useEffect(() => {
     if (location?.state){
       setResumeSeq(location.state.idx);
-      searchCertList(location.state.idx);
+      searchCertList();
     }
   }, []);
 
-
-  const searchCertList = async (resumeSeq: number) => {
-    const searchParam = { resIdx: resumeSeq };
-    const certList    = await postApi<IResumeCertificationReponse>( Resume.getCert, searchParam );
+  const searchCertList = async () => {
+    const searchParam = { resIdx: location.state.idx };
+    const certList = await postApi<IResumeCertificationReponse>( Resume.getCert, searchParam );
 
     if (certList) { setCertList(certList.payload); }
   }
@@ -36,13 +35,22 @@ export const ResumeCert = () => {
     const deleteList = await postApi<IResumeCertificationReponse>(Resume.deleteCert, searchParam);
 
     if (deleteList) {
-      searchCertList(resumeSeq);
+      alert("삭제되었습니다.");
+      searchCertList();
     }
   }
 
   const handlerSetVisible = (state: boolean) => {
     setAddVisible(state);
   }
+
+  const monthFormat = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    return `${year}.${month}`;
+  };
 
   return (
     <div className="resumeDetail_body">
@@ -64,14 +72,14 @@ export const ResumeCert = () => {
         >
           + 추가
         </button>
-        {/* <button type="button" className="showTableBtn" id="certification">+ 추가</button> */}
-      </div>
-      {/* <ul> */}
-        {/* <li className="list" id="certificationList">조회값 여기에 추가</li> */}
         
-        { addVisible && <ResumeCertAdd setVisibleState={handlerSetVisible} /> }
+        { addVisible && 
+          <ResumeCertAdd 
+            setVisibleState={handlerSetVisible} 
+            searchCertList={searchCertList} 
+          /> 
+        }
         { !addVisible && 
-        
           <div className="list" id="certificationList">
             {certList?.length > 0 ? (
               <table className="table table-bordered">
@@ -99,7 +107,7 @@ export const ResumeCert = () => {
                         <td>{cert.certName}</td>
                         <td>{cert.grade}</td>
                         <td>{cert.issuer}</td>
-                        <td>{cert.acqDate}</td>
+                        <td>{monthFormat(cert.acqDate)}</td>
                         <td onClick={() => handlerDelete(cert.certIdx)}><RiDeleteBin6Line /></td>
                       </tr>
                     </tbody>
@@ -119,11 +127,9 @@ export const ResumeCert = () => {
               </table>
             )}
           </div>
-        
         }
 
-      {/* </ul> */}
+      </div>
     </div>
-    
   );
 };

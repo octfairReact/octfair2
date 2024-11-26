@@ -57,6 +57,7 @@ export const Resume = {
     deleteEdu: "/api/apply/deleteEdu.do",
     deleteSkill: "/api/apply/deleteSkill.do",
     deleteCert: "/api/apply/deleteCert.do",
+    deleteFile: "/api/apply/deleteFile.do",
 };
 
 export const SignUp = {

@@ -1,16 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ResumeAddStyled } from "./styled";
 import Button from 'react-bootstrap/Button';
 
 export const ResumeAdd = () => {
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   window.location.search &&
-  //     navigate(window.location.pathname, { replace: true });
-  // }, [navigate]);
 
   const handlerAdd = () => {
     navigate('/react/apply/resumeDetail.do', { state: { pageFrom: 'new', idx: '' } });
