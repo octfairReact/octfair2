@@ -3,13 +3,13 @@ import { LoginStyled } from "./styled";
 import axios from "axios";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
-import { loginInfoState } from "../../../stores/userInfo";
-import { ILoginInfo } from "../../../models/interface/store/userInfo";
-import logo_img from "../../../assets/logo_img.png";
-import { modalState, modalState2 } from "../../../stores/modalState";
-import { Portal } from "../../common/potal/Portal";
-import { SignUpModal } from "./SignUp/SignUpModal/SignUpModal";
-import { FindIdPwModal } from "./Login/FindIdPwModal";
+import { loginInfoState } from "../../../../stores/userInfo";
+import { ILoginInfo } from "../../../../models/interface/store/userInfo";
+import logo_img from "../../../../assets/logo_img.png";
+import { modalState, modalState2 } from "../../../../stores/modalState";
+import { Portal } from "../../../common/potal/Portal";
+import { SignUpModal } from "../../SignUp/SignUpModal/SignUpModal";
+import { FindIdPwModal } from "../../FindIdPw/FindIdPwModal/FindIdPwModal";
 
 export interface IAccount {
     lgn_Id: string;
@@ -131,4 +131,3 @@ export const LoginMain = () => {
         </>
     );
 };
-

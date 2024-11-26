@@ -1,18 +1,29 @@
 import { useRecoilState } from "recoil";
 import { useEffect, useState } from "react";
-import { IUser, IUserDetailResponse } from "../../../../models/interface/IUser";
+import { IPostResponse, IUser, IUserDetailResponse } from "../../../../models/interface/IUser";
 import { ILoginInfo } from "../../../../models/interface/store/userInfo";
 import { loginInfoState } from "../../../../stores/userInfo";
 import { MyPage } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
-import { SignUpModalStyled } from "../../Login/style/styled";
 import { Button } from "react-bootstrap";
+import { UserInit } from "../../Login/Init/User";
+import PostCode from "../../../common/PostCode/PostCode";
+import { Address } from "react-daum-postcode";
+import { SignUpOtherUserDetail } from "../../../../models/interface/ISignUp";
+import { otherUserDataSchema } from "../../../common/Validate/Schemas/Schemas";
+import { MyPageStyled } from "./styled";
+import { modalState2 } from "../../../../stores/modalState";
+import { Portal } from "../../../common/potal/Portal";
+import { ChangePwModal } from "../ChangePwModal/ChangePwModal";
 
 export const MyPageMain = () => {
-    //  const [modal, setModal] = useRecoilState<boolean>(modalState);
+    const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
     const [userDetail, setUserDetail] = useState<IUser>();
     const userLoginId = userInfo.loginId;
+    const { state, refs } = UserInit();
+    const { userGender, setUserGender, address, setAddress, zipCode, setZipCode } = state;
+    const { name, birthday, phone, email, userDetailAddress } = refs;
 
     console.log(userLoginId);
 
@@ -20,6 +31,18 @@ export const MyPageMain = () => {
     useEffect(() => {
         searchDetail();
     }, []);
+
+    // userDetail 변경을 감지하고 userGender 업데이트
+    useEffect(() => {
+        if (userDetail?.sex) {
+            setUserGender(userDetail?.sex);
+            console.log("Updated gender:", userDetail?.sex);
+        }
+    }, [userDetail]);
+
+    const handleUserGender = (e) => {
+        setUserGender(e.target.value);
+    };
 
     const searchDetail = async () => {
         const param = { loginId: userInfo.loginId };
@@ -30,80 +53,162 @@ export const MyPageMain = () => {
         }
     };
 
-    return (
-        <SignUpModalStyled>
-            <table className="table">
-                <tbody>
-                    <tr>
-                        <th>아이디</th>
-                        <td>
-                            <input
-                                type="text"
-                                placeholder="숫자, 영문자 조합으로 6~20자리"
-                                defaultValue={userDetail?.loginId}
-                                readOnly
-                            ></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>비밀번호</th>
-                        <td>
-                            <Button>수정</Button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>이름</th>
-                        <td>
-                            <input type="text" defaultValue={userDetail?.name}></input>
-                        </td>
+    const handlerUpdate = async () => {
+        const nameToDetailAddress: SignUpOtherUserDetail = {
+            name: name.current.value,
+            userGender: userGender,
+            phone: phone.current.value,
+            email: email.current.value,
+            birthday: birthday.current.value,
+            zipCode: zipCode,
+            address: address,
+            detailAddress: userDetailAddress.current.value,
+        };
 
-                        <th>성별</th>
-                        <td>
-                            <select className="selectUserType" defaultValue={userDetail?.userGender}>
-                                <option value="">선택</option>
-                                <option value="1">남자</option>
-                                <option value="2">여자</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>생년 월일</th>
-                        <td>
-                            <input type="date" defaultValue={userDetail?.birth}></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>전화번호</th>
-                        <td>
-                            <input type="text" defaultValue={userDetail?.phone}></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>이메일</th>
-                        <td>
-                            <input type="text" defaultValue={userDetail?.email}></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>우편번호</th>
-                        <td className="address-container">
-                            <input type="text" defaultValue={userDetail?.zipCode} placeholder="우편번호 입력" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>주소</th>
-                        <td>
-                            <input type="text" defaultValue={userDetail?.address}></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>상세 주소</th>
-                        <td>
-                            <input type="text" defaultValue={userDetail?.detailAddress}></input>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </SignUpModalStyled>
+        const validNameToDa = otherUserDataSchema.safeParse(nameToDetailAddress);
+
+        if (!validNameToDa.success) {
+            alert(validNameToDa.error.errors[0].message);
+            return;
+        }
+
+        const param = {
+            name: name.current.value,
+            sex: userGender,
+            birthday: birthday.current.value,
+            phone: phone.current.value,
+            email: email.current.value,
+            zipCode: zipCode,
+            address: address,
+            detailAddress: userDetailAddress.current.value,
+            loginId: userInfo.loginId,
+        };
+
+        const updateApi = await postApi<IPostResponse>(MyPage.getUpdate, param);
+
+        if (updateApi.result === "success") {
+            alert("회원 정보 수정이 완료되었습니다");
+        }
+    };
+
+    // 우편번호 api 및 input
+    const handleAddressComplete = (data: Address) => {
+        // 검색된 주소로 `zipCode`와 `userAddress` 상태 업데이트
+        const userAddress = data.address;
+        const useZipCode = data.zonecode;
+
+        if (userAddress !== "" || useZipCode !== "") {
+            setAddress(userAddress);
+            setZipCode(useZipCode);
+        }
+    };
+
+    const handlerUpdatePwModal = () => {
+        setFindModal(!findModal);
+    };
+
+    return (
+        <>
+            <MyPageStyled>
+                <table className="table">
+                    <tbody>
+                        <tr>
+                            <th>아이디</th>
+                            <td>
+                                <input
+                                    type="text"
+                                    placeholder="숫자, 영문자 조합으로 6~20자리"
+                                    defaultValue={userDetail?.loginId}
+                                    readOnly
+                                ></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>비밀번호</th>
+                            <td>
+                                <Button onClick={handlerUpdatePwModal}>수정</Button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>이름</th>
+                            <td>
+                                <input type="text" ref={name} defaultValue={userDetail?.name}></input>
+                            </td>
+
+                            <th>성별</th>
+                            <td>
+                                <select className="selectUserType" value={userGender} onChange={handleUserGender}>
+                                    <option value="" disabled>
+                                        선택
+                                    </option>
+                                    <option value="1">남자</option>
+                                    <option value="2">여자</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>생년 월일</th>
+                            <td>
+                                <input type="date" ref={birthday} defaultValue={userDetail?.birthday}></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>전화번호</th>
+                            <td>
+                                <input type="text" ref={phone} defaultValue={userDetail?.phone}></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>이메일</th>
+                            <td>
+                                <input type="text" ref={email} defaultValue={userDetail?.email}></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>우편번호</th>
+                            <td className="address-container">
+                                <input
+                                    type="text"
+                                    value={zipCode}
+                                    defaultValue={userDetail?.zipCode}
+                                    onChange={(e) => setZipCode(e.target.value)}
+                                    placeholder="우편번호 입력"
+                                />
+                                <PostCode onHandleComplete={handleAddressComplete} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>주소</th>
+                            <td>
+                                <input
+                                    type="text"
+                                    defaultValue={userDetail?.address}
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                ></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>상세 주소</th>
+                            <td>
+                                <input
+                                    type="text"
+                                    ref={userDetailAddress}
+                                    defaultValue={userDetail?.detailAddress}
+                                ></input>
+                            </td>
+                        </tr>
+                        <div className="footer">
+                            <button onClick={handlerUpdate}>수정</button>
+                        </div>
+                    </tbody>
+                </table>
+            </MyPageStyled>
+            {findModal && (
+                <Portal>
+                    <ChangePwModal loginId={userInfo.loginId} />
+                </Portal>
+            )}
+        </>
     );
 };

@@ -10,7 +10,7 @@ export interface ISignUp {
     zipCode: number;
     phone: string;
     email: string;
-    birth: string;
+    birthday: string;
     address: string;
     detailAddress: string;
 }
@@ -48,6 +48,5 @@ export interface IPostResponse {
 export interface IUserInfoResponse {
   result: string;
   id: string;
-  password: string;
 }
 
