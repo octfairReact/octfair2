@@ -105,3 +105,8 @@ export const ManageBusiness = {
     getDetail: "/api/manage-user/bizManageDetail.do",
     getUpdate: "/api/manage-user/bizInfoUpdate.do",
 };
+
+export const Company = {
+    getDetail: "/api/company/companyDetailPage.do",
+    getUpdate: "/api/company/companyUpdatePage.do",
+}
