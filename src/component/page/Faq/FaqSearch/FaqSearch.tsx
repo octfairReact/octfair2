@@ -5,9 +5,12 @@ import { useContext, useEffect, useState } from 'react';
 import { FaqContext } from '../../../../api/provider/FaqProvider';
 import { FaqSearchStyled } from './styled';
 import { Button } from '../../../common/Button/Button';
+import { ILoginInfo } from '../../../../models/interface/store/userInfo';
+import { loginInfoState } from '../../../../stores/userInfo';
 
 export const FaqSearch = () => {
   const navigate = useNavigate();
+  const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [searchValue, setSearchValue] = useState<{
     searchTitle: string;
@@ -40,7 +43,7 @@ export const FaqSearch = () => {
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchStDate: e.target.value })}></input>
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchEdDate: e.target.value })}></input>
         <Button onClick={handlerSearch}>검색</Button>
-        <Button onClick={handlerModal}>신규등록</Button>
+        {userInfo.userType === 'M' ? <Button onClick={handlerModal}>신규등록</Button> : null}
       </div>
     </FaqSearchStyled>
   );

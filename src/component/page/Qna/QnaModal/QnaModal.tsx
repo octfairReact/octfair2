@@ -8,6 +8,7 @@ import { IDetailResponse, IPostResponse, IQnaDetail } from '../../../../models/i
 import { postApi } from '../../../../api/postApi';
 import { Qna } from '../../../../api/api';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { pwChkState } from '../../../../stores/pwChkState';
 
 interface IQnaModalProps {
   onSuccess: () => void;
@@ -21,11 +22,13 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
   const [qnaDetail, setQnaDetail] = useState<IQnaDetail>();
   const [imageUrl, setImageUrl] = useState<string>();
   const [fileData, setFileData] = useState<File>();
+  const qna_type = useRef<HTMLInputElement>();
   const title = useRef<HTMLInputElement>();
   const context = useRef<HTMLInputElement>();
   const ans_content = useRef<HTMLInputElement>();
   const password = useRef<HTMLInputElement>();
-  const [showAnsBox, setShowAnsBox] = useState<Boolean>(false);
+  const [showAnsBox, setShowAnsBox] = useState<boolean>(false);
+  const [isPwChecked, setIsPwChecked] = useRecoilState<boolean>(pwChkState);
 
   useEffect(() => {
     qnaSeq && searchDetail();
@@ -53,8 +56,20 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
   };
 
   const handlerFileSave = (e) => {
+    if (!title.current.value) {
+      alert('제목을 입력해주세요.');
+      return;
+    } else if (!context.current.value) {
+      alert('내용을 입력해주세요.');
+      return;
+    } else if (!password.current.value) {
+      alert('비밀번호를 입력해주세요.');
+      return;
+    }
+
     const fileForm = new FormData();
     const textData = {
+      qna_type: userInfo.userType,
       qnaTit: title.current.value,
       qnaCon: context.current.value,
       loginId: userInfo.loginId,
@@ -78,6 +93,11 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
       ans_content: ans_content.current.value,
       qnaSeq,
     };
+
+    if (ans_content.current.value) {
+      textData.ans_content = ans_content.current.value;
+    }
+
     fileData && fileForm.append('file', fileData);
     fileForm.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
 
@@ -88,7 +108,6 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
 
   const handlerDelete = async () => {
     const deleteApi = await postApi<IPostResponse>(Qna.getDelete, { qnaSeq });
-    console.log(deleteApi);
     if (deleteApi && deleteApi.result === 'success') onSuccess();
   };
 
@@ -128,59 +147,73 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
     });
   };
 
-  const pwConfirm = () => {
+  const pwConfirm = async () => {
     const param = {
-      password: password.current.value,
+      confirmPassword: password.current.value,
       qnaSeq,
     };
-    return () => {
-      <>
-        <label>
-          비밀번호<input type="password" ref={password}></input>
-        </label>
-      </>;
-    };
+    const confirmPassword = password.current.value;
+    if (confirmPassword === qnaDetail.password) {
+      setIsPwChecked(true);
+    } else {
+      alert('비밀번호가 일치하지 않습니다.');
+    }
   };
 
   return (
-    <QnaModalStyled>
-      <div className="container">
-        <label>
-          제목<input type="text" ref={title} defaultValue={qnaDetail?.title}></input>
-        </label>
-        <label>
-          내용<input type="text" ref={context} defaultValue={qnaDetail?.content}></input>
-        </label>
-        파일
-        <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handlerFile}></input>
-        <label className="img-label" htmlFor="fileInput">
-          파일 첨부하기
-        </label>
-        <div onClick={downloadFile}>
-          {imageUrl ? (
-            <div>
-              <label>미리보기</label>
-              <img src={imageUrl} />
-              {fileData?.name || qnaDetail.fileName}
+    <>
+      {!(userInfo.userType === 'M' || isPwChecked) ? (
+        <QnaModalStyled>
+          <div className="container">
+            <label>
+              비밀번호
+              <input type="password" ref={password}></input>
+            </label>
+            <button onClick={pwConfirm}>확인</button>
+            <button onClick={handlerModal}>취소</button>
+          </div>
+        </QnaModalStyled>
+      ) : (
+        <QnaModalStyled>
+          <div className="container">
+            <label>
+              제목<input type="text" ref={title} defaultValue={qnaDetail?.title}></input>
+            </label>
+            <label>
+              내용<input type="text" ref={context} defaultValue={qnaDetail?.content}></input>
+            </label>
+            파일
+            <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handlerFile}></input>
+            <label className="img-label" htmlFor="fileInput">
+              파일 첨부하기
+            </label>
+            <div onClick={downloadFile}>
+              {imageUrl ? (
+                <div>
+                  <label>미리보기</label>
+                  <img src={imageUrl} />
+                  {fileData?.name || qnaDetail.fileName}
+                </div>
+              ) : (
+                <div>{fileData?.name}</div>
+              )}
             </div>
-          ) : (
-            <div>{fileData?.name}</div>
-          )}
-        </div>
-        <label>
-          비밀번호<input type="password" ref={password} defaultValue={qnaDetail?.password}></input>
-        </label>
-        {(qnaDetail?.ans_content || userInfo.userType === 'M') && (
-          <label>
-            답변<input type="text" ref={ans_content} defaultValue={qnaDetail?.ans_content || ''}></input>
-          </label>
-        )}
-        <div className={'button-container'}>
-          {<button onClick={qnaSeq ? handlerFileUpdate : handlerFileSave}>{qnaSeq ? '수정' : '등록'}</button>}
-          {qnaSeq && <button onClick={handlerDelete}>삭제</button>}
-          <button onClick={handlerModal}>닫기</button>
-        </div>
-      </div>
-    </QnaModalStyled>
+            <label>
+              비밀번호<input type="password" ref={password} defaultValue={qnaDetail?.password}></input>
+            </label>
+            {(qnaDetail?.ans_content || userInfo.userType === 'M') && (
+              <label>
+                답변<input type="text" ref={ans_content} defaultValue={qnaDetail?.ans_content || ''}></input>
+              </label>
+            )}
+            <div className={'button-container'}>
+              {<button onClick={qnaSeq ? handlerFileUpdate : handlerFileSave}>{qnaSeq ? '수정' : '등록'}</button>}
+              {qnaSeq && <button onClick={handlerDelete}>삭제</button>}
+              <button onClick={handlerModal}>닫기</button>
+            </div>
+          </div>
+        </QnaModalStyled>
+      )}
+    </>
   );
 };

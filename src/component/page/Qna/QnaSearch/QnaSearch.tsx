@@ -5,10 +5,15 @@ import { modalState } from '../../../../stores/modalState';
 import { useContext, useEffect, useState } from 'react';
 import { QnaContext } from '../../../../api/provider/QnaProvider';
 import { Button } from '../../../common/Button/Button';
+import { pwChkState } from '../../../../stores/pwChkState';
+import { ILoginInfo } from '../../../../models/interface/store/userInfo';
+import { loginInfoState } from '../../../../stores/userInfo';
 
 export const QnaSearch = () => {
   const navigate = useNavigate();
   const [modal, setModal] = useRecoilState<boolean>(modalState);
+  const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
+  const [isPwChecked, setIsPwChecked] = useRecoilState<boolean>(pwChkState);
   const [searchValue, setSearchValue] = useState<{ searchTitle: string; searchStDate: string; searchEdDate: string }>({
     searchTitle: '',
     searchStDate: '',
@@ -26,6 +31,7 @@ export const QnaSearch = () => {
   };
   const handlerModal = () => {
     setModal(!modal);
+    setIsPwChecked(true);
   };
 
   return (
@@ -35,7 +41,7 @@ export const QnaSearch = () => {
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchStDate: e.target.value })}></input>
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchEdDate: e.target.value })}></input>
         <Button onClick={handlerSearch}>검색</Button>
-        <Button onClick={handlerModal}>질문등록</Button>
+        {userInfo.userType !== 'M' ? <Button onClick={handlerModal}>질문등록</Button> : null}
       </div>
     </QnaSearchStyled>
   );

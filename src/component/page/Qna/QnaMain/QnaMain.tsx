@@ -29,7 +29,6 @@ export const QnaMain = () => {
 
   const searchQnaList = async (currentPage?: number) => {
     currentPage = currentPage || 1;
-    console.log(selectedQnaType);
     const searchParam = {
       ...searchKeyWord,
       currentPage: currentPage.toString(),
@@ -60,11 +59,19 @@ export const QnaMain = () => {
     setSelectedQnaType(qna_type);
   };
 
+  const individual = selectedQnaType === 'A' ? 'active' : 'inactive';
+  const biz = selectedQnaType === 'B' ? 'active' : 'inactive';
+
   return (
     <>
-      <div>
-        <Button onClick={() => changeQnaType('A')}>개인회원</Button>
-        <Button onClick={() => changeQnaType('B')}>기업회원</Button>
+      <div style={{ display: 'inline-block' }}>
+        <Button className={`${individual}`} onClick={() => changeQnaType('A')}>
+          개인회원
+        </Button>
+        &nbsp;
+        <Button className={`${biz}`} onClick={() => changeQnaType('B')}>
+          기업회원
+        </Button>
       </div>
       <StyledTable>
         <thead>
@@ -82,11 +89,23 @@ export const QnaMain = () => {
                 <tr
                   key={qna.qnaIdx}
                   onClick={() => {
-                    // userInfo.userType === 'M' ? handlerModal(qna.qnaIdx) : ;
+                    handlerModal(qna.qnaIdx);
                   }}
                 >
                   <StyledTd>{qna.qnaIdx}</StyledTd>
-                  <StyledTd>{qna.title}</StyledTd>
+                  <StyledTd>
+                    {qna.title}&nbsp;
+                    {qna.ans_content ? (
+                      <button
+                        type="button"
+                        className="btn btn-outline-success  btn-sm"
+                        style={{ width: 70, height: 30 }}
+                      >
+                        답변완료
+                      </button>
+                    ) : null}
+                  </StyledTd>
+
                   <StyledTd>{qna.author}</StyledTd>
                   <StyledTd>{qna.createdDate}</StyledTd>
                 </tr>

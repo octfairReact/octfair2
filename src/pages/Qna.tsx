@@ -7,7 +7,7 @@ export const Qna = () => {
   return (
     <>
       <QnaProvider>
-        <ContentBox>Qna작업중...</ContentBox>
+        <ContentBox>Q&A</ContentBox>
         <QnaSearch />
         <QnaMain />
       </QnaProvider>
