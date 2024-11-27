@@ -88,45 +88,25 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
     <>
       <Container className="mt-2">
         <div>
-          <div className="p-2">
-            <Row>
-              <h1>{postDetail?.title}</h1>
-              <Row className="my-1">
-                <Col>
-                  <Link to={"#"} className="text-dark">
-                    <h4>{bizDetail?.bizName}</h4>
-                  </Link>
-                </Col>
-                <Col className="d-flex align-items-center">
-                  <span>
-                    {postDetail?.workLocation} | {postDetail?.expRequired}{" "}
-                  </span>
-                </Col>
+          <Stack direction="horizontal" gap={3} className="me-3">
+            <div className="p-2">
+              <Row>
+                <h1>{postDetail?.title}</h1>
+                <Row className="my-1">
+                  <Col>
+                    <Link to={"#"} className="text-dark">
+                      <h4>{bizDetail?.bizName}</h4>
+                    </Link>
+                  </Col>
+                  <Col className="d-flex align-items-center">
+                    <span>
+                      {postDetail?.workLocation} | {postDetail?.expRequired}{" "}
+                    </span>
+                  </Col>
+                </Row>
               </Row>
-            </Row>
-          </div>
-          <Stack>
+            </div>
             {userType === "A" ? (
-              <div className="p-2 d-flex justify-content-center">
-                <Button
-                  variant="warning"
-                  size="lg"
-                  style={{ width: "150px", marginRight: "20px" }}
-                  onClick={handlerSaveScrap}
-                >
-                  스크랩
-                </Button>
-                <Button variant="primary" size="lg" style={{ width: "150px" }}>
-                  입사지원
-                </Button>
-              </div>
-            ) : (
-              <></>
-            )}
-
-            {userType === "B" ? (
-              <div></div>
-            ) : (
               <div className="p-2 d-flex justify-content-center">
                 <Button
                   variant="warning"
@@ -145,6 +125,8 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
                   입사지원
                 </Button>
               </div>
+            ) : (
+              <></>
             )}
           </Stack>
         </div>
