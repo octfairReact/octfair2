@@ -37,6 +37,8 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
       const bizImagePath = bizDetail?.logicalPath || null;
       const postImagePath = postDetail?.logicalPath || null;
       onImagePath(bizImagePath, postImagePath);
+      console.log("bizImagePath: ", bizImagePath);
+      console.log("postImagePath: ", postImagePath);
     }
   }, [bizDetail, postDetail, onImagePath]);
 
