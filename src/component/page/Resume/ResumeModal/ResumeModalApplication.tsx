@@ -75,6 +75,7 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
     const request = {
       // loginIdx: scrap.loginIdx,
       postIdx: scrap ? scrap.postIdx : post.postIdx,
+      resumeIdx: selectedResumeIdx,
     };
     const response = await postApi<IpostResponse>(
       "/api/jobs/saveApply.do",
@@ -101,27 +102,35 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
           <hr />
           {userResumes && userResumes.length > 0 ? (
             userResumes.map((resume) => (
-              <div
-                key={resume.resumeIdx}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: "10px",
-                }}
-              >
-                <div>
-                  <p>{resume.resumeTitle}</p>
-                  <p>{resume.userEmail}</p>
-                  <p>{resume.userPhone}</p>
+              <>
+                <div
+                  key={resume.resumeIdx}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <div>
+                    <p>{resume.resumeTitle}</p>
+                    <p>{resume.userEmail}</p>
+                    <p>{resume.userPhone}</p>
+                  </div>
+                  <input
+                    type="radio"
+                    name="scrapSelect"
+                    checked={selectedResumeIdx === resume.resumeIdx}
+                    onChange={() => handlerRadioChange(resume.resumeIdx)}
+                  />
                 </div>
-                <input
-                  type="radio"
-                  name="scrapSelect"
-                  checked={selectedResumeIdx === resume.resumeIdx}
-                  onChange={() => handlerRadioChange(resume.resumeIdx)}
+                <hr
+                  style={{
+                    border: "none",
+                    borderTop: "3px solid #ccc",
+                  }}
                 />
-              </div>
+              </>
             ))
           ) : (
             <p>등록된 이력서가 없습니다.</p>

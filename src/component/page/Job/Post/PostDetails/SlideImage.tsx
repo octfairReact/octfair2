@@ -56,7 +56,7 @@ const SlideImage: React.FC<SlideImageProps> = ({
                 style={{
                   width: "100%",
                   height: "300px",
-                  objectFit: "cover", 
+                  objectFit: "cover",
                   borderRadius: "0px",
                 }}
               />
@@ -70,7 +70,7 @@ const SlideImage: React.FC<SlideImageProps> = ({
                 style={{
                   width: "100%",
                   height: "300px",
-                  objectFit: "cover", 
+                  objectFit: "cover",
                   borderRadius: "0px",
                 }}
               />

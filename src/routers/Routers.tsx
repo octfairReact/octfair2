@@ -20,6 +20,8 @@ import { MyPage } from "../pages/MyPage";
 import { Withdraw } from "../pages/Withdraw";
 import { ManageApplicant } from "../pages/ManageApplicant";
 import { ManageBusiness } from "../pages/ManageBusiness";
+import { Company } from "../pages/Company";
+import { CompanyInfo } from "../pages/CompanyInfo";
 
 const routers: RouteObject[] = [
     { path: "*", element: <NotFound /> },
@@ -75,6 +77,13 @@ const routers: RouteObject[] = [
                 children: [
                     { path: "applicant.do", element: <ManageApplicant /> },
                     { path: "biz.do", element: <ManageBusiness /> },
+                ],
+            },
+            {
+                path: "company",
+                children: [
+                    { path: "companyDetailPage.do/:postIdx/:bizIdx", element: <Company /> },
+                    { path: "companyUpdatePage.do/:bizIdx", element: <CompanyInfo /> },
                 ],
             },
         ],
