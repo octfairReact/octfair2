@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { modalState } from "../../../../stores/modalState";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../../../api/provider/UserProvider";
 import { NoticeSearchStyled } from "../../Notice/NoticeSearch/styled";

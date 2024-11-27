@@ -2,8 +2,6 @@ import { FC, useEffect, useState } from "react";
 import { NoticeModalStyled } from "../../Notice/NoticeModal/styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../stores/modalState";
-import { ILoginInfo } from "../../../../models/interface/store/userInfo";
-import { loginInfoState } from "../../../../stores/userInfo";
 import { IPostResponse, IUser, IUserDetailResponse } from "../../../../models/interface/IUser";
 import { postApi } from "../../../../api/postApi";
 import { ManageApplicant } from "../../../../api/api";
@@ -20,7 +18,6 @@ interface IApplicantModalProps {
 
 export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
-    const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
     const [applicantDetail, setApplicantDetail] = useState<IUser>();
     const { state, refs } = UserInit();
     const {
@@ -132,6 +129,15 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
         }
     };
 
+    const handlerResetPw = async () => {
+        const param = { loginId: loginId };
+
+        const resetPwApi = await postApi<IPostResponse>(ManageApplicant.getResetPw, param);
+        if (resetPwApi.result === "success") {
+            alert("비밀번호 초기화가 완료되었습니다.");
+        }
+    }
+
     const handlerModal = () => {
         setModal(!modal);
     };
@@ -166,7 +172,7 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
                     <tr>
                         <th>비밀번호</th>
                         <td>
-                            <Button>비밀번호 초기화</Button>
+                            <Button onClick={handlerResetPw}>비밀번호 초기화</Button>
                         </td>
                     </tr>
                     <tr>
@@ -257,6 +263,7 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
                         </td>
                     </tr>
                     <div className="footer">
+                        <button onClick={handlerModal}>나가기</button>
                         <button onClick={handlerUpdate}>수정</button>
                     </div>
                 </tbody>

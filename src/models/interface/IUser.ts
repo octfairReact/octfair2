@@ -1,3 +1,5 @@
+import { IBiz } from "./IBiz";
+
 export interface IUser {
     userIdx: number;
     loginId: string;
@@ -14,6 +16,7 @@ export interface IUser {
     detailAddress: string;
     statusYn: string;
     regdate: string;
+    bizIdx: number;
 }
 
 
@@ -23,6 +26,10 @@ export interface IPostResponse {
 
 export interface IUserDetailResponse {
     detail: IUser;
+}
+
+export interface IUserCheckBizRegResponse {
+    chkRegBiz: IBiz;
 }
 
 export interface IUserListResponse {

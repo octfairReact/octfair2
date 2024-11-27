@@ -7,7 +7,7 @@ import { SignUp } from "../../../../api/api";
 import { IPostResponse, IUserInfoResponse } from "../../../../models/interface/ISignUp";
 import { useRecoilState } from "recoil";
 import { modalState2 } from "../../../../stores/modalState";
-import { loginIdEmailSchema, nameEmailSchema, passwordCheckPwSchema } from "../../../common/Validate/Schemas/Schemas";
+import { emailAndNameSchema, loginIdEmailSchema, passwordCheckPwSchema } from "../../../common/Validate/Schemas/Schemas";
 
 export const FindIdPwModal = () => {
     const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
@@ -42,7 +42,7 @@ export const FindIdPwModal = () => {
             name: name.current.value,
         };
 
-        const validUserNameEmail = nameEmailSchema.safeParse(userEmailName);
+        const validUserNameEmail = emailAndNameSchema.safeParse(userEmailName);
         if (!validUserNameEmail.success) {
             alert(validUserNameEmail.error.errors[0].message);
             return; // validUserEmail 검증 실패 시 리턴

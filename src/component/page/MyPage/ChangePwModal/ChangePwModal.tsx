@@ -1,7 +1,6 @@
 import { Button } from "react-bootstrap";
 import { UserInit } from "../../Login/Init/User";
-import { postSignUpApi } from "../../../../api/postSignUpApi";
-import { MyPage, SignUp } from "../../../../api/api";
+import { MyPage } from "../../../../api/api";
 import { IPostResponse } from "../../../../models/interface/ISignUp";
 import { useRecoilState } from "recoil";
 import { modalState2 } from "../../../../stores/modalState";
@@ -59,9 +58,9 @@ export const ChangePwModal = (loginId) => {
         <ChangePwModalStyled>
             <div className="changePwArea">
                 <p>
-                    비밀번호<input type="password" ref={oldPassword}></input>
+                    현재 비밀번호<input type="password" ref={oldPassword}></input>
                     <br></br>
-                    비밀번호<input type="password" ref={password}></input>
+                    새 비밀번호<input type="password" ref={password}></input>
                     <br></br>
                     비밀번호 확인<input type="password" ref={checkPassword}></input>
                     <br></br>
