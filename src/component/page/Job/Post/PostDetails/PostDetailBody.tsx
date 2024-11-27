@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row, Stack } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
 import { loginInfoState } from "../../../../../stores/userInfo";
@@ -105,25 +105,25 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
               </Row>
             </Row>
           </div>
-          {userType === "A" ? (
-            <div className="p-2 d-flex justify-content-center">
-              <Button
-                variant="warning"
-                size="lg"
-                style={{ width: "150px", marginRight: "20px" }}
-                onClick={handlerSaveScrap}
-              >
-                스크랩
-              </Button>
-              <Button variant="primary" size="lg" style={{ width: "150px" }}>
-                입사지원
-              </Button>
-            </div>
-<<<<<<< HEAD
-          ) : (
-            <></>
-          )}
-=======
+          <Stack>
+            {userType === "A" ? (
+              <div className="p-2 d-flex justify-content-center">
+                <Button
+                  variant="warning"
+                  size="lg"
+                  style={{ width: "150px", marginRight: "20px" }}
+                  onClick={handlerSaveScrap}
+                >
+                  스크랩
+                </Button>
+                <Button variant="primary" size="lg" style={{ width: "150px" }}>
+                  입사지원
+                </Button>
+              </div>
+            ) : (
+              <></>
+            )}
+
             {userType === "B" ? (
               <div></div>
             ) : (
@@ -147,7 +147,6 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
               </div>
             )}
           </Stack>
->>>>>>> 0c81be25f6c76fd9231e1f9e175a551648a472f9
         </div>
       </Container>
 
@@ -198,7 +197,9 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
                 variant="primary"
                 size="lg"
                 className="mx-1"
-                onClick={() => navigate(`/react/manage-hire/update-post.do/${postIdx}`)}
+                onClick={() =>
+                  navigate(`/react/manage-hire/update-post.do/${postIdx}`)
+                }
               >
                 수정하기
               </Button>
