@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import { Button } from "react-bootstrap";
 import { PostContext } from "../../../../../api/provider/PostProvider";
 import { useNavigate } from "react-router-dom";
 import { PostSearchStyled } from "./styled";
+import { Button } from "../../../../common/Button/Button";
 
 export const PostSearch = () => {
   const navigate = useNavigate();
