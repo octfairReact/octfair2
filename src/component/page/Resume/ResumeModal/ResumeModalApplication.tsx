@@ -75,6 +75,7 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
     const request = {
       // loginIdx: scrap.loginIdx,
       postIdx: scrap ? scrap.postIdx : post.postIdx,
+      resumeIdx: selectedResumeIdx,
     };
     const response = await postApi<IpostResponse>(
       "/api/jobs/saveApply.do",
