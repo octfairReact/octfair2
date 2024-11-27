@@ -13,8 +13,9 @@ const HireApplicantSearch = () => {
   const [searchValue, setSearchValue] = useState<IApplicantSearch>({
     postIdx: "",
     keyword: "",
+    procArray: [],
   });
-const { setSearchKeyWord } = useContext(HireApplicantContext);
+  const { setSearchKeyWord } = useContext(HireApplicantContext);
 
   useEffect(() => {
     window.location.search &&
@@ -23,6 +24,7 @@ const { setSearchKeyWord } = useContext(HireApplicantContext);
 
   useEffect(() => {    
     bizDetailList();     
+    // console.log('배열테스트'+bizList[Number(searchValue.postIdx)].procArray);
   },[]);
 
   useEffect(() => {     
@@ -37,9 +39,18 @@ const { setSearchKeyWord } = useContext(HireApplicantContext);
       {}
     );
     if(searchList.MDetail.length>0){
-      console.log(searchList);
+      // console.log(searchList.MDetail[0].hirProcess);      
+      searchList.MDetail.forEach(element => {
+        if (element.hirProcess && typeof element.hirProcess === 'string') {
+        const procArry = element.hirProcess.split(' > ').map((step)=>({proc: step}));
+        element.procArray = procArry;
+        }
+      });
+      // console.log(searchList.MDetail[0].procArray);
       setBizList(searchList.MDetail);
-      setSearchValue({postIdx : searchList.MDetail[0].postIdx.toString(), keyword : "서류심사중" });
+      setSearchValue({postIdx : searchList.MDetail[0].postIdx.toString(), keyword : searchList.MDetail[0].procArray[0].proc
+        ,procArray : searchList.MDetail[0].procArray
+       });
     }else{
       alert("지원자가 없습니다.");
       navigate("/react/manage-hire/post.do");    
@@ -62,26 +73,38 @@ const { setSearchKeyWord } = useContext(HireApplicantContext);
   };
 
   return (
-    <div className="inputSelect">
+        
+    <div className="inputSelect" >
       <Stack direction="horizontal" gap={2} className="me-3">
       <Form.Select id="postTitle" 
-      onChange={(e) => setSearchValue({...searchValue, postIdx : e.target.value})}
-      value={searchValue.postIdx} >
-        {bizList?.map((MDetail) => (
+      onChange={(e) => setSearchValue({...searchValue, postIdx : e.target.value, procArray : bizList[Number(e.target.value)].procArray})}
+      value={searchValue.postIdx} >    
+      {bizList?.map((MDetail) => (   
+        <React.Fragment key={MDetail.postIdx}>
           <option key={MDetail.postIdx} value={MDetail.postIdx}>
             {MDetail.title}
           </option>
-        ))}
+        </React.Fragment> 
+         ))}          
       </Form.Select>
       <Form.Select id="selectValue" onChange={(e) => 
         handlerSearch(e)} value={searchValue.keyword}>
-        <option value="서류심사중" >서류심사</option>
-        <option value="면접진행중" >면접진행</option>
+        {bizList?.map((MDetail) => (
+          <>
+          {MDetail.postIdx.toString() == searchValue.postIdx ? (            
+            MDetail.procArray.map((procArray)=>(          
+            <option value={procArray.proc} >{procArray.proc}</option>  
+            ))       
+          ) : null }
+          </>
+        ))} 
         <option value="최종합격" >최종합격</option>
-        <option value="탈락" >불합격</option>
-      </Form.Select>
+        <option value="탈락" >불합격</option> 
+        </Form.Select>  
+        
       </Stack>
-    </div>
+    </div>       
+    
   )
 }
 

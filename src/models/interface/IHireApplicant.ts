@@ -24,11 +24,18 @@ export interface IApplicant {
 export interface IApplicantSearch {
     postIdx : string,
     keyword : string,
+    procArray: proc[],
   }
+
+export interface proc {
+  proc: string,
+}
 
 export interface IBiz {
     postIdx: number,
-    title: string,
+    title: string,        
+    hirProcess: string,
+    procArray: proc[],
   }
 
 export interface IBizSearch {
