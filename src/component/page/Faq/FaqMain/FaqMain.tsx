@@ -11,6 +11,9 @@ import { FaqModal } from '../FaqModal/FaqModal';
 import { Button } from 'react-bootstrap';
 import { postApi } from '../../../../api/postApi';
 import { ShowContentStyled } from './styled';
+import { userInfo } from 'os';
+import { ILoginInfo } from '../../../../models/interface/store/userInfo';
+import { loginInfoState } from '../../../../stores/userInfo';
 
 export const FaqMain = () => {
   const [faqList, setFaqList] = useState<IFaq[]>();
@@ -21,6 +24,7 @@ export const FaqMain = () => {
   const { searchKeyWord } = useContext(FaqContext);
   const [style, setStyle] = useState<number>(null);
   const [selectedFaqType, setSelectedFaqType] = useState<string>();
+  const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
 
   useEffect(() => {
     searchFaqList();
@@ -65,40 +69,43 @@ export const FaqMain = () => {
 
   return (
     <>
-      <div>
+      <div style={{ display: 'inline-block' }}>
         <Button onClick={() => changeFaqType('1')}>개인회원</Button>
+        &nbsp;
         <Button onClick={() => changeFaqType('2')}>기업회원</Button>
       </div>
       <StyledTable>
-        <thead>
-          <tr>
-            <StyledTh size={5}>번호</StyledTh>
-            <StyledTh size={35}>제목</StyledTh>
-            <StyledTh size={10}>작성자</StyledTh>
-            <StyledTh size={10}>등록일</StyledTh>
-            <StyledTh size={10}>관리</StyledTh>
-          </tr>
-        </thead>
-        <tbody>
+        <ShowContentStyled>
+          <thead>
+            <tr>
+              <StyledTh size={5}>번호</StyledTh>
+              <StyledTh size={35}>제목</StyledTh>
+              <StyledTh size={10}>작성자</StyledTh>
+              <StyledTh size={10}>등록일</StyledTh>
+              {userInfo.userType === 'M' ? <StyledTh size={10}>관리</StyledTh> : null}
+            </tr>
+          </thead>
           {faqList?.length > 0 ? (
             faqList?.map((faq) => {
               return (
-                <>
-                  <tr key={faq.faq_idx}>
+                <tbody key={faq.faq_idx}>
+                  <tr>
                     <StyledTd>{faq.faq_idx}</StyledTd>
                     <StyledTd onClick={() => handlerShowContent(faq.faq_idx)}>{faq.title}</StyledTd>
                     <StyledTd>{faq.author}</StyledTd>
                     <StyledTd>{faq.created_date}</StyledTd>
-                    <StyledTd onClick={() => handlerModal(faq.faq_idx)}>관리</StyledTd>
-                  </tr>
-                  <tr>
-                    <ShowContentStyled>
-                      <StyledTd className={style === faq.faq_idx ? 'show' : 'hide'} colSpan={5}>
-                        {faq.content}
+                    {userInfo.userType === 'M' && (
+                      <StyledTd onClick={() => handlerModal(faq.faq_idx)}>
+                        <button type="button" className="btn btn-secondary">
+                          관리
+                        </button>
                       </StyledTd>
-                    </ShowContentStyled>
+                    )}
                   </tr>
-                </>
+                  <tr className={style === faq.faq_idx ? 'show' : 'hide'} style={{ color: 'gray' }}>
+                    <StyledTd colSpan={5}>{faq.content}</StyledTd>
+                  </tr>
+                </tbody>
               );
             })
           ) : (
@@ -106,7 +113,7 @@ export const FaqMain = () => {
               <StyledTd colSpan={3}>데이터가 없습니다.</StyledTd>
             </tr>
           )}
-        </tbody>
+        </ShowContentStyled>
       </StyledTable>
       <PageNavigate
         totalItemsCount={listCount}

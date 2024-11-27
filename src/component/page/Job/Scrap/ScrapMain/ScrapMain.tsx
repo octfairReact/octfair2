@@ -18,6 +18,7 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { ResumeModalApplication } from "../../../Resume/ResumeModal/ResumeModalApplication";
+import { Button } from "react-bootstrap";
 
 export const ScrapMain = () => {
   const navigate = useNavigate();
@@ -155,9 +156,9 @@ export const ScrapMain = () => {
                       <StyledTd>{scrap.postWorkLocation}</StyledTd>
                       <StyledTd>{scrap.postEndDate}</StyledTd>
                       <StyledTd>
-                        <button onClick={() => handlerModal(scrap)}>
+                        <Button onClick={() => handlerModal(scrap)}>
                           입사지원
-                        </button>
+                        </Button>
                       </StyledTd>
                     </>
                   ) : (

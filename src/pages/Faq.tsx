@@ -7,7 +7,7 @@ export const Faq = () => {
   return (
     <>
       <FaqProvider>
-        <ContentBox>FAQ작업중...</ContentBox>
+        <ContentBox>FAQ</ContentBox>
         <FaqSearch />
         <FaqMain />
       </FaqProvider>

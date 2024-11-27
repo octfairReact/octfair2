@@ -1,5 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { DefaultValue, useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { Faq } from '../../../../api/api';
 import { IDetailResponse, IFaqDetail, IFaqPostResponse } from '../../../../models/interface/IFaq';
@@ -21,6 +21,7 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
   const faq_type = useRef<HTMLInputElement>();
   const title = useRef<HTMLInputElement>();
   const context = useRef<HTMLInputElement>();
+  const [selectedFaqType, setSelectedFaqType] = useState<string>();
 
   useEffect(() => {
     faqSeq && searchDetail();
@@ -50,7 +51,7 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
       title: title.current.value,
       context: context.current.value,
       loginId: userInfo.loginId,
-      faq_type: faq_type.current.value,
+      faq_type: selectedFaqType,
     };
     dataForm.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
     axios.post('/board/faqSavePart.do', dataForm).then((res: AxiosResponse<IFaqPostResponse>) => {
@@ -79,15 +80,34 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
     if (deleteApi && deleteApi.result === 'success') onSuccess();
   };
 
+  const handlerRadioChange = (faqType: string) => {
+    setSelectedFaqType(faqType);
+  };
+
   return (
     <FaqModalStyled>
       <div className="container">
         <>
           <label>
-            <input type="radio" name="faq_type" value="1" checked={faqDetail?.faq_type === '1'} />
-            개인회원
-            <input type="radio" name="faq_type" value="2" checked={faqDetail?.faq_type === '2'} />
-            기업회원
+            유형
+            <div>
+              <input
+                type="radio"
+                name="faqTypeSelect"
+                value="1"
+                checked={faqDetail?.faq_type === '1' || selectedFaqType === '1'}
+                onChange={() => handlerRadioChange('1')}
+              />
+              개인회원
+              <input
+                type="radio"
+                name="faqTypeSelect"
+                value="2"
+                checked={faqDetail?.faq_type === '2' || selectedFaqType === '2'}
+                onChange={() => handlerRadioChange('2')}
+              />
+              기업회원
+            </div>
           </label>
         </>
         <label>
