@@ -50,7 +50,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
     console.log("모달 로그1: " + resumeSeq);
     // 클린업 함수, 컴포넌트가 사라지기 직전에 실행
     return () => {
-      resumeSeq && setResumeSeq(undefined);
+      // resumeSeq && setResumeSeq(undefined);
     };
   }, []);
 

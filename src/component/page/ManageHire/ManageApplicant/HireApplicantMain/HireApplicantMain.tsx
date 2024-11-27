@@ -20,9 +20,10 @@ const HireApplicantMain = () => {
   const [listCount, setListCount] = useState<number>(0);
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [resSeq, setResSeq] = useState<number>();
-    
+  
   useEffect(() => {
     if (Object.keys(searchKeyWord).length != 0) {
+      console.log(searchKeyWord['procArray'][0].proc);
       loadApplicantList();
     }
   }, [searchKeyWord])
@@ -31,6 +32,7 @@ const HireApplicantMain = () => {
     currentPage = currentPage || 1;
     const searchParam = {
       ...searchKeyWord,
+      firstProc: searchKeyWord['procArray'][0].proc,
       currentPage: currentPage.toString(),
       pageSize: "5",
     };
