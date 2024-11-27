@@ -56,6 +56,7 @@ export const SignUpModal = () => {
             const checkIdResponse = await postSignUpApi<IPostResponse>(SignUp.checkId, param);
             if (checkIdResponse.result === "success") {
                 alert("중복된 ID입니다");
+                setCheckLoginIdExist("NOT AVAILABLE");
             } else {
                 setCheckLoginIdExist("AVAILABLE");
                 alert("사용 가능한 ID입니다");

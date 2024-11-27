@@ -1,6 +1,11 @@
 import { useRecoilState } from "recoil";
 import { useEffect, useState } from "react";
-import { IPostResponse, IUser, IUserDetailResponse } from "../../../../models/interface/IUser";
+import {
+    IPostResponse,
+    IUser,
+    IUserCheckBizRegResponse,
+    IUserDetailResponse,
+} from "../../../../models/interface/IUser";
 import { ILoginInfo } from "../../../../models/interface/store/userInfo";
 import { loginInfoState } from "../../../../stores/userInfo";
 import { MyPage } from "../../../../api/api";
@@ -20,25 +25,47 @@ export const MyPageMain = () => {
     const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
     const [userDetail, setUserDetail] = useState<IUser>();
-    const userLoginId = userInfo.loginId;
     const { state, refs } = UserInit();
     const { userGender, setUserGender, address, setAddress, zipCode, setZipCode } = state;
     const { name, birthday, phone, email, userDetailAddress } = refs;
+    const [bizIdx, setBizIdx] = useState<number>(0);
 
-    console.log(userLoginId);
+    // // useEffect로 컴포넌트 마운트 시 searchDetail 호출
+    // useEffect(() => {
+    //     searchDetail();
+    // }, []);
 
-    // useEffect로 컴포넌트 마운트 시 searchDetail 호출
-    useEffect(() => {
-        searchDetail();
-    }, []);
+    // useEffect(() => {
+    //     const initializePage = async () => {
+    //         await searchDetail(); // 사용자 정보 조회
+    //         await checkUserBizReg(); // 기업 등록 여부 확인
+    //     };
 
-    // userDetail 변경을 감지하고 userGender 업데이트
-    useEffect(() => {
-        if (userDetail?.sex) {
-            setUserGender(userDetail?.sex);
-            console.log("Updated gender:", userDetail?.sex);
-        }
-    }, [userDetail]);
+    //     initializePage();
+    // }, []);
+
+    // // userDetail 변경을 감지하고 userGender 업데이트
+    // useEffect(() => {
+    //     if (userDetail?.sex) {
+    //         setUserGender(userDetail?.sex);
+    //         console.log("Updated gender:", userDetail?.sex);
+    //     }
+    // }, [userDetail]);
+
+    // useEffect(() => {
+    //     // 로컬 스토리지에서 이전 userDetail을 가져오기
+    //     const savedUserDetail = localStorage.getItem("userDetail");
+    //     if (savedUserDetail) {
+    //         setUserDetail(JSON.parse(savedUserDetail)); // 로컬 스토리지에서 값 읽어오기
+    //     }
+    // }, []);
+
+    // useEffect(() => {
+    //     if (userDetail) {
+    //         // userDetail이 변경되면 로컬 스토리지에 저장
+    //         localStorage.setItem("userDetail", JSON.stringify(userDetail));
+    //     }
+    // }, [userDetail]);
 
     const handleUserGender = (e) => {
         setUserGender(e.target.value);
@@ -48,10 +75,50 @@ export const MyPageMain = () => {
         const param = { loginId: userInfo.loginId };
         console.log(param);
         const detailApi = await postApi<IUserDetailResponse>(MyPage.getDetail, param);
+
         if (detailApi) {
             setUserDetail(detailApi.detail);
         }
     };
+
+    const checkUserBizReg = async () => {
+        const param = { loginId: userInfo.loginId };
+        const checkRegBizApi = await postApi<IUserCheckBizRegResponse>(MyPage.getDetail, param);
+        if (checkRegBizApi) {
+            setBizIdx(checkRegBizApi.chkRegBiz.bizIdx);
+            console.log(bizIdx);
+        }
+    };
+
+    // 컴포넌트 마운트 시 데이터 로드 및 로컬 스토리지 처리
+    useEffect(() => {
+        const initializePage = async () => {
+            // 로컬 스토리지에서 이전 userDetail을 가져오기
+            const savedUserDetail = localStorage.getItem("userDetail");
+            if (savedUserDetail) {
+                setUserDetail(JSON.parse(savedUserDetail)); // 로컬 스토리지에서 값 읽어오기
+            } else {
+                await searchDetail(); // 로컬 스토리지에 없으면 데이터 API 호출
+            }
+
+            // 기업 등록 여부 확인
+            await checkUserBizReg();
+        };
+
+        initializePage();
+    }, []); // 처음 한 번만 실행
+
+    // userDetail 변경을 감지하고 userGender 업데이트 및 로컬 스토리지 저장
+    useEffect(() => {
+        if (userDetail?.sex) {
+            setUserGender(userDetail?.sex);
+        }
+
+        // userDetail이 변경되면 로컬 스토리지에 저장
+        if (userDetail) {
+            localStorage.setItem("userDetail", JSON.stringify(userDetail));
+        }
+    }, [userDetail]); // userDetail이 변경될 때마다 실행
 
     const handlerUpdate = async () => {
         const nameToDetailAddress: SignUpOtherUserDetail = {
@@ -164,6 +231,19 @@ export const MyPageMain = () => {
                                 <input type="text" ref={email} defaultValue={userDetail?.email}></input>
                             </td>
                         </tr>
+                        {userDetail?.userType === "B" && (
+                            <tr>
+                                <th>기업 정보</th>
+                                <td>
+                                    {bizIdx ? (
+                                        <button onClick={() => console.log("기업 정보 수정")}>기업 정보 수정</button>
+                                    ) : (
+                                        <button onClick={() => console.log("기업 등록")}>기업 등록</button>
+                                    )}
+                                </td>
+                            </tr>
+                        )}
+
                         <tr>
                             <th>우편번호</th>
                             <td className="address-container">
