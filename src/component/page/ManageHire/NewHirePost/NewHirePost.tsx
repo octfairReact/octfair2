@@ -125,10 +125,14 @@ const NewHirePost = () => {
     try {
       let response;
       if (postIdx) {
-        response = await axios.post(
-          `/api/manage-hire/post-update/${postIdx}`,
-          formData
-        );
+        response = await axios.post("/api/manage-hire/post-update", formData);
+        if (response.data.result === "success") {
+          // const createdPostIdx = response.data.postIdx; // 서버에서 반환된 postIdx
+          // setPostIdx(createdPostIdx); // `postIdx`를 상태에 저장
+          alert("채용공고가 수정되었습니다.");
+
+          navigate(`/react/jobs/post-detail/${postIdx}`);
+        }
       } else {
         response = await axios.post("/api/manage-hire/post-new", formData);
         if (response.data.result === "success") {
