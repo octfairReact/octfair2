@@ -19,11 +19,11 @@ const HireApplicantMain = () => {
   const [cPage, setCPage] = useState<number>();
   const [listCount, setListCount] = useState<number>(0);
   const [modal, setModal] = useRecoilState<boolean>(modalState);
-  const [resSeq, setResSeq] = useState<number>();
-  
+  const [resSeq, setResSeq] = useState<number>();  
+
   useEffect(() => {
     if (Object.keys(searchKeyWord).length != 0) {
-      console.log(searchKeyWord['procArray'][0].proc);
+      // console.log("배열변수 Proc="+Proc.map((Proc)=>Proc.proc));
       loadApplicantList();
     }
   }, [searchKeyWord])
@@ -79,42 +79,70 @@ const HireApplicantMain = () => {
     const userId =loginId;
     const currentStatus = status;
     const postIdx = postId;
-    if (currentStatus === '서류심사중') {
-      const nextStatus = '면접진행중'; 
-      statusUpdate(userId,nextStatus, postIdx)
-      loadApplicantList();
-    } else if (currentStatus === '면접진행중') {
-      const nextStatus = '최종합격'; 
-      statusUpdate(userId,nextStatus, postIdx)
-      loadApplicantList();
-    } else if (currentStatus.includes('탈락')){
-      const nextStatus = '서류심사중'; 
-      statusUpdate(userId,nextStatus, postIdx)
-      loadApplicantList();
-    } else {
-      alert('더 이상 진행할 수 없는 상태입니다.');
-      return;
-    }  
+    const procArray = searchKeyWord['procArray'];
+    const procLength = procArray.length;
+    for (const [index, data] of procArray.entries()) {      
+      if (currentStatus === data.proc && currentStatus !== procArray[procLength-1].proc) {
+        const nextStatus = procArray[index+1].proc;
+        console.log("배열변수 Proc="+procArray[index+1].proc);
+        statusUpdate(userId,nextStatus, postIdx)
+        loadApplicantList();
+        break;
+      }else if(currentStatus === procArray[procLength-1].proc){
+        const nextStatus = '최종합격';
+        statusUpdate(userId,nextStatus, postIdx)
+        loadApplicantList();
+        break;
+      }else{
+        const nextStatus = procArray[0].proc;
+        statusUpdate(userId,nextStatus, postIdx)
+        loadApplicantList();
+        break;
+      }
+    }
+    // if (currentStatus === '서류심사중') {
+    //   const nextStatus = '면접진행중'; 
+    //   statusUpdate(userId,nextStatus, postIdx)
+    //   loadApplicantList();
+    // } else if (currentStatus === '면접진행중') {
+    //   const nextStatus = '최종합격'; 
+    //   statusUpdate(userId,nextStatus, postIdx)
+    //   loadApplicantList();
+    // } else if (currentStatus.includes('탈락')){
+    //   const nextStatus = '서류심사중'; 
+    //   statusUpdate(userId,nextStatus, postIdx)
+    //   loadApplicantList();
+    // } else {
+    //   alert('더 이상 진행할 수 없는 상태입니다.');
+    //   return;
+    // }  
   }
 
   const handlerFailStatus = (loginId:string, status:string, postId:number) => {
     const userId =loginId;
     const currentStatus = status;
     const postIdx = postId;
-    if (currentStatus === '서류심사중') {
-      const nextStatus = '서류탈락'; 
+    const procArray = searchKeyWord['procArray'];
+    for (const [index, data] of procArray.entries()) {     
+      const nextStatus = '탈락'; 
       statusUpdate(userId,nextStatus, postIdx)
       loadApplicantList();
-      return
-    } else if (currentStatus === '면접진행중') {
-      const nextStatus = '면접탈락'; 
-      statusUpdate(userId,nextStatus, postIdx)
-      loadApplicantList();
-      return
-    } else {
-      alert('더 이상 진행할 수 없는 상태입니다.');
-      return;
+      break;
     }
+    // if (currentStatus === '서류심사중') {
+    //   const nextStatus = '서류탈락'; 
+    //   statusUpdate(userId,nextStatus, postIdx)
+    //   loadApplicantList();
+    //   return
+    // } else if (currentStatus === '면접진행중') {
+    //   const nextStatus = '면접탈락'; 
+    //   statusUpdate(userId,nextStatus, postIdx)
+    //   loadApplicantList();
+    //   return
+    // } else {
+    //   alert('더 이상 진행할 수 없는 상태입니다.');
+    //   return;
+    // }
   }
   
   const viewChange = async (loginId: string, postId:number) => {
@@ -198,7 +226,7 @@ const HireApplicantMain = () => {
                   <tr>
                     <td> <span className="highlight">전화번호:</span>{list.phone}</td>
                     <td rowSpan={2}>
-                      {list.viewed == 1 && list.status == '서류심사중' || list.status == '면접진행중' ? (
+                      {list.viewed == 1 && list.status != '탈락' && list.status != '최종합격' ? (
                         <>
                           <button id="btnPass" className="btn btn-resume" 
                           onClick={() => handlerSuccessStatus(list.loginId,list.status, list.postIdx)}>합격</button>
@@ -206,7 +234,7 @@ const HireApplicantMain = () => {
                           onClick={() => handlerFailStatus(list.loginId,list.status, list.postIdx)}>불합격</button>
                         </>
                       ) : null}
-                      {list.viewed == 1 && list.status == '서류탈락' || list.status == '면접탈락' ? (
+                      {list.viewed == 1 && list.status == '탈락' ? (
                         <button style={{backgroundColor:'white'}} id="btnPass" className="btn btn-resume"
                         onClick={() => handlerSuccessStatus(list.loginId,list.status, list.postIdx)}>추가합격</button>
                       ) : null}
