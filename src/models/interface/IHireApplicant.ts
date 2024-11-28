@@ -24,6 +24,7 @@ export interface IApplicant {
 export interface IApplicantSearch {
     postIdx : string,
     keyword : string,
+    title: string,
     procArray: proc[],
   }
 

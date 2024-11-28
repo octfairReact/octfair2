@@ -13,6 +13,7 @@ const HireApplicantSearch = () => {
   const [searchValue, setSearchValue] = useState<IApplicantSearch>({
     postIdx: "",
     keyword: "",
+    title: "",
     procArray: [],
   });
   const { setSearchKeyWord } = useContext(HireApplicantContext);
@@ -49,7 +50,7 @@ const HireApplicantSearch = () => {
       // console.log(searchList.MDetail[0].procArray);
       setBizList(searchList.MDetail);
       setSearchValue({postIdx : searchList.MDetail[0].postIdx.toString(), keyword : searchList.MDetail[0].procArray[0].proc
-        ,procArray : searchList.MDetail[0].procArray
+        ,procArray : searchList.MDetail[0].procArray, title : searchList.MDetail[0].title
        });
     }else{
       alert("지원자가 없습니다.");
@@ -72,16 +73,24 @@ const HireApplicantSearch = () => {
     setSearchValue({...searchValue, keyword : e.target.value})
   };
 
+  const handlerBiz = (e) => {
+    const selectedOption = e.target.options[e.target.selectedIndex];
+    const index = selectedOption.getAttribute('data-index');
+    const postidx = selectedOption.getAttribute('data-postidx');
+    setSearchValue({...searchValue, postIdx : postidx, procArray : bizList[index].procArray, 
+      title : e.target.value, keyword: bizList[index].procArray[0].proc})
+  };
+
   return (
         
     <div className="inputSelect" >
       <Stack direction="horizontal" gap={2} className="me-3">
       <Form.Select id="postTitle" 
-      onChange={(e) => setSearchValue({...searchValue, postIdx : e.target.value, procArray : bizList[Number(e.target.value)].procArray})}
-      value={searchValue.postIdx} >    
-      {bizList?.map((MDetail) => (   
+      onChange={(e) => handlerBiz(e)}
+      value={searchValue.title} >
+      {bizList?.map((MDetail,index) => (   
         <React.Fragment key={MDetail.postIdx}>
-          <option key={MDetail.postIdx} value={MDetail.postIdx}>
+          <option key={MDetail.postIdx} value={MDetail.title} data-postidx={MDetail.postIdx.toString()} data-index={index}>
             {MDetail.title}
           </option>
         </React.Fragment> 
