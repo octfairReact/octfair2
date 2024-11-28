@@ -46,6 +46,18 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
   };
 
   const handlerSave = () => {
+    if (!title.current.value) {
+      alert('제목을 입력해주세요.');
+      title.current.focus();
+      return;
+    } else if (!context.current.value) {
+      alert('내용을 입력해주세요.');
+      context.current.focus();
+      return;
+    } else if (!selectedFaqType) {
+      alert('회원유형을 선택해주세요.');
+      return;
+    }
     const dataForm = new FormData();
     const textData = {
       title: title.current.value,
