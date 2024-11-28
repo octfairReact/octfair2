@@ -22,11 +22,11 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
   const [qnaDetail, setQnaDetail] = useState<IQnaDetail>();
   const [imageUrl, setImageUrl] = useState<string>();
   const [fileData, setFileData] = useState<File>();
-  const qna_type = useRef<HTMLInputElement>();
   const title = useRef<HTMLInputElement>();
   const context = useRef<HTMLInputElement>();
-  const ans_content = useRef<HTMLInputElement>();
+  const ans_content = useRef<HTMLInputElement>(null);
   const password = useRef<HTMLInputElement>();
+  const password2 = useRef<HTMLInputElement>();
   const [showAnsBox, setShowAnsBox] = useState<boolean>(false);
   const [isPwChecked, setIsPwChecked] = useRecoilState<boolean>(pwChkState);
 
@@ -35,7 +35,7 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
     return () => {
       qnaSeq && setQnaSeq(undefined);
     };
-  }, [qnaSeq]);
+  }, [qnaSeq, isPwChecked]);
 
   const searchDetail = async () => {
     const detailApi = await postApi<IDetailResponse>(Qna.getDetail, { qnaSeq });
@@ -55,15 +55,23 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
     setModal(!modal);
   };
 
+  const handlerCloseModal = () => {
+    setModal(!modal);
+    setIsPwChecked(!isPwChecked);
+  };
+
   const handlerFileSave = (e) => {
     if (!title.current.value) {
       alert('제목을 입력해주세요.');
+      title.current.focus();
       return;
     } else if (!context.current.value) {
       alert('내용을 입력해주세요.');
+      context.current.focus();
       return;
     } else if (!password.current.value) {
       alert('비밀번호를 입력해주세요.');
+      password.current.focus();
       return;
     }
 
@@ -82,6 +90,7 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
     axios.post('/board/qnaSaveFileForm.do', fileForm).then((res: AxiosResponse<IPostResponse>) => {
       res.data.result === 'success' && onSuccess();
     });
+    setIsPwChecked(!isPwChecked);
   };
 
   const handlerFileUpdate = () => {
@@ -90,13 +99,9 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
       qnaTit: title.current.value,
       qnaCon: context.current.value,
       password: password.current.value,
-      ans_content: ans_content.current.value,
+      ans_content: ans_content.current?.value || null,
       qnaSeq,
     };
-
-    if (ans_content.current.value) {
-      textData.ans_content = ans_content.current.value;
-    }
 
     fileData && fileForm.append('file', fileData);
     fileForm.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
@@ -104,6 +109,7 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
     axios.post('/board/qnaUpdateFileForm.do', fileForm).then((res: AxiosResponse<IPostResponse>) => {
       res.data.result === 'success' && onSuccess();
     });
+    setIsPwChecked(!isPwChecked);
   };
 
   const handlerDelete = async () => {
@@ -148,13 +154,9 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
   };
 
   const pwConfirm = async () => {
-    const param = {
-      confirmPassword: password.current.value,
-      qnaSeq,
-    };
-    const confirmPassword = password.current.value;
-    if (confirmPassword === qnaDetail.password) {
-      setIsPwChecked(true);
+    const confirmPassword = password2.current.value;
+    if (confirmPassword === qnaDetail?.password) {
+      setIsPwChecked(!isPwChecked);
     } else {
       alert('비밀번호가 일치하지 않습니다.');
     }
@@ -162,18 +164,7 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
 
   return (
     <>
-      {!(userInfo.userType === 'M' || isPwChecked) ? (
-        <QnaModalStyled>
-          <div className="container">
-            <label>
-              비밀번호
-              <input type="password" ref={password}></input>
-            </label>
-            <button onClick={pwConfirm}>확인</button>
-            <button onClick={handlerModal}>취소</button>
-          </div>
-        </QnaModalStyled>
-      ) : (
+      {userInfo.userType === 'M' || isPwChecked ? (
         <QnaModalStyled>
           <div className="container">
             <label>
@@ -201,16 +192,28 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
             <label>
               비밀번호<input type="password" ref={password} defaultValue={qnaDetail?.password}></input>
             </label>
-            {(qnaDetail?.ans_content || userInfo.userType === 'M') && (
+            {(userInfo.userType === 'M' || qnaDetail?.ans_content) && (
               <label>
-                답변<input type="text" ref={ans_content} defaultValue={qnaDetail?.ans_content || ''}></input>
+                답변
+                <input type="text" ref={ans_content} defaultValue={qnaDetail?.ans_content || null}></input>
               </label>
             )}
-            <div className={'button-container'}>
-              {<button onClick={qnaSeq ? handlerFileUpdate : handlerFileSave}>{qnaSeq ? '수정' : '등록'}</button>}
-              {qnaSeq && <button onClick={handlerDelete}>삭제</button>}
-              <button onClick={handlerModal}>닫기</button>
-            </div>
+            {!qnaDetail?.ans_content && (
+              <button onClick={qnaSeq ? handlerFileUpdate : handlerFileSave}>{qnaSeq ? '수정' : '등록'}</button>
+            )}
+            {qnaSeq && !qnaDetail?.ans_content && <button onClick={handlerDelete}>삭제</button>}
+            <button onClick={handlerCloseModal}>닫기</button>
+          </div>
+        </QnaModalStyled>
+      ) : (
+        <QnaModalStyled>
+          <div className="container">
+            <label>
+              비밀번호
+              <input type="password" ref={password2}></input>
+            </label>
+            <button onClick={pwConfirm}>확인</button>
+            <button onClick={handlerModal}>취소</button>
           </div>
         </QnaModalStyled>
       )}

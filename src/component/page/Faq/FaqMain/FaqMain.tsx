@@ -11,7 +11,6 @@ import { FaqModal } from '../FaqModal/FaqModal';
 import { Button } from 'react-bootstrap';
 import { postApi } from '../../../../api/postApi';
 import { ShowContentStyled } from './styled';
-import { userInfo } from 'os';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
 
@@ -67,12 +66,19 @@ export const FaqMain = () => {
     setSelectedFaqType(faq_type);
   };
 
+  const individual = selectedFaqType === '1' ? 'active' : 'inactive';
+  const biz = selectedFaqType === '2' ? 'active' : 'inactive';
+
   return (
     <>
       <div style={{ display: 'inline-block' }}>
-        <Button onClick={() => changeFaqType('1')}>개인회원</Button>
+        <Button className={`${individual}`} onClick={() => changeFaqType('1')}>
+          개인회원
+        </Button>
         &nbsp;
-        <Button onClick={() => changeFaqType('2')}>기업회원</Button>
+        <Button className={`${biz}`} onClick={() => changeFaqType('2')}>
+          기업회원
+        </Button>
       </div>
       <StyledTable>
         <ShowContentStyled>
