@@ -37,17 +37,25 @@ const NewHirePost = () => {
   const [imageUrl, setImageUrl] = useState<string>("");
   const [currentProc, setCurrentProc] = useState<string>("");
   const navigate = useNavigate();
-  const { postIdx } = useParams();
+  const [postIdx, setPostIdx] = useState<string | null>(null);
+  const params = useParams();
   const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
+  // useEffect(() => {
+  //   if (postIdx) {
+  //     setIsEditMode(true);
+  //     getPostDetail(postIdx);
+  //   } else {
+  //     setIsEditMode(false);
+  //   }
+  // }, [postIdx]);
   useEffect(() => {
-    if (postIdx) {
-      setIsEditMode(true);
-      getPostDetail(postIdx);
-    } else {
-      setIsEditMode(false);
+    const fetchedPostIdx = params.postIdx ? params.postIdx : null;
+    if (fetchedPostIdx) {
+      setPostIdx(fetchedPostIdx);
+      getPostDetail(fetchedPostIdx);
     }
-  }, [postIdx]);
+  }, [params.postIdx, postIdx]);
 
   const getPostDetail = async (postIdx: string) => {
     const params = { postIdx };
@@ -123,14 +131,13 @@ const NewHirePost = () => {
         );
       } else {
         response = await axios.post("/api/manage-hire/post-new", formData);
-      }
-      if (response.data.result === "success") {
-        alert(
-          postIdx ? "채용공고가 수정되었습니다." : "채용공고가 등록되었습니다."
-        );
-        navigate(`/react/jobs/post-detail/${postIdx}`);
-      } else {
-        alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+        if (response.data.result === "success") {
+          const createdPostIdx = response.data.postIdx; // 서버에서 반환된 postIdx
+          setPostIdx(createdPostIdx); // `postIdx`를 상태에 저장
+          alert("채용공고가 등록되었습니다.");
+
+          navigate(`/react/jobs/post-detail/${createdPostIdx}`);
+        }
       }
     } catch (error) {
       alert("오류가 발생했습니다. 잠시 후 다시 시도해주세요. " + error);
@@ -216,9 +223,7 @@ const NewHirePost = () => {
   return (
     <>
       <div>
-        <ContentBox>
-          {isEditMode ? "채용공고 수정" : "채용공고 등록"}
-        </ContentBox>
+        <ContentBox>{postIdx ? "채용공고 수정" : "채용공고 등록"}</ContentBox>
         <div className="mt-5"></div>
         <Form onSubmit={handleFormSubmit}>
           <Table bordered className="input-table">
@@ -682,7 +687,7 @@ const NewHirePost = () => {
             </tbody>
           </Table>
           <div className="buttonWrap">
-            {isEditMode ? (
+            {postIdx ? (
               <ButtonGroup>
                 <Button
                   variant="secondary"
@@ -696,7 +701,7 @@ const NewHirePost = () => {
                   삭제
                 </Button>
                 <Button variant="primary" type="submit">
-                  등록
+                  수정
                 </Button>
               </ButtonGroup>
             ) : (
