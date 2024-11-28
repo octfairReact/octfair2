@@ -83,11 +83,9 @@ const routers: RouteObject[] = [
       {
         path: "company",
         children: [
-          {
-            path: "companyDetailPage.do/:postIdx/:bizIdx",
-            element: <Company />,
-          },
-          { path: "companyUpdatePage.do/:bizIdx", element: <CompanyInfo /> },
+          { path: "companyDetailPage.do/:postIdx/:bizIdx", element: <Company /> },
+          { path: "companyWrite.do", element: <CompanyInfo /> },
+          { path: "companyUpdate.do/:bizIdx", element: <CompanyInfo /> },
         ],
       },
       {
