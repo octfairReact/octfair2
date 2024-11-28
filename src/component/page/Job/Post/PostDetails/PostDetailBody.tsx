@@ -96,7 +96,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
                 <h1>{postDetail?.title}</h1>
                 <Row className="my-1">
                   <Col>
-                    <Link to={"#"} className="text-dark">
+                    <Link to={`/react/company/companyDetailPage.do/${postIdx}/${bizDetail?.bizIdx}`} className="text-dark">
                       <h4>{bizDetail?.bizName}</h4>
                     </Link>
                   </Col>

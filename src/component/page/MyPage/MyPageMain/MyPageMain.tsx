@@ -20,6 +20,7 @@ import { MyPageStyled } from "./styled";
 import { modalState2 } from "../../../../stores/modalState";
 import { Portal } from "../../../common/potal/Portal";
 import { ChangePwModal } from "../ChangePwModal/ChangePwModal";
+import { useNavigate } from "react-router-dom";
 
 export const MyPageMain = () => {
     const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
@@ -29,6 +30,7 @@ export const MyPageMain = () => {
     const { userGender, setUserGender, address, setAddress, zipCode, setZipCode } = state;
     const { name, birthday, phone, email, userDetailAddress } = refs;
     const [bizIdx, setBizIdx] = useState<number>(0);
+    const navigate = useNavigate();
 
     // // useEffect로 컴포넌트 마운트 시 searchDetail 호출
     // useEffect(() => {
@@ -236,9 +238,9 @@ export const MyPageMain = () => {
                                 <th>기업 정보</th>
                                 <td>
                                     {bizIdx ? (
-                                        <button onClick={() => console.log("기업 정보 수정")}>기업 정보 수정</button>
+                                        <button onClick={() => navigate(`/react/company/companyUpdate.do/${bizIdx}`)}>기업 정보 수정</button>
                                     ) : (
-                                        <button onClick={() => console.log("기업 등록")}>기업 등록</button>
+                                        <button onClick={() => navigate(`/react/company/companyWrite.do/`)}>기업 등록</button>
                                     )}
                                 </td>
                             </tr>

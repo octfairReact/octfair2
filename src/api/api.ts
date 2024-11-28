@@ -107,5 +107,7 @@ export const ManageBusiness = {
 
 export const Company = {
   getDetail: '/api/company/companyDetailPage.do',
-  getUpdate: '/api/company/companyUpdatePage.do',
+  getInsert: '/api/company/companyInsert.do',
+  getUpdate: '/api/company/companyUpdate.do',
+  getDelete: '/api/company/companyDelete.do',
 };

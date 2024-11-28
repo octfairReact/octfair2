@@ -5,11 +5,13 @@ import { ICompanyDetail, ICompanyDetailReponse } from "../../../../models/interf
 import { Company } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
 import { Button } from "react-bootstrap";
+import axios from "axios";
 
 export const CompanyUpdate = () => {
   const [companyDetail, setCompanyDetail] = useState<ICompanyDetail>();
   const [imageUrl, setImageUrl] = useState<string>();
   const [fileData, setFileData] = useState<File>();
+  const [phoneNum, setPhoneNum] = useState("");
   const { bizIdx } = useParams();
   const navigate = useNavigate();
 
@@ -22,19 +24,23 @@ export const CompanyUpdate = () => {
   const bizIntro = useRef(null);
   const bizEmpCount = useRef(null);
   const bizRevenue = useRef(null);
+  const fileInputRef = useRef(null);
   
   useEffect(() => {
-    console.log("company update **************************");
-    console.log(bizIdx);
-
-    searchDetail(bizIdx);
+    if (bizIdx) {
+      searchDetail(bizIdx);
+    }
   }, []);
+
+  useEffect(() => {
+    if (companyDetail?.bizContact) {
+      setPhoneNum(companyDetail.bizContact);
+    }
+  }, [companyDetail]);
 
   const searchDetail = async (bizIdx) => {
     const searchParam = { bizIdx: bizIdx };
     const detailList = await postApi<ICompanyDetailReponse>( Company.getDetail, searchParam );
-
-    console.log(detailList);
 
     if (detailList) { 
       setCompanyDetail(detailList.payload);
@@ -42,7 +48,6 @@ export const CompanyUpdate = () => {
       const { fileExt, logicalPath } = detailList.payload;
       if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png") {
         setImageUrl(logicalPath);
-        console.log(logicalPath);
       } else {
         setImageUrl("");
       }
@@ -69,17 +74,126 @@ export const CompanyUpdate = () => {
     }
   };
 
-  const handlerUpdate = () => {
+  const handlerUpdate = (path: string) => {
+    if (!handlerValidation()) {
+      return;
+    }
 
+    const fileForm = new FormData();
+
+    if (path === "insert" ) {
+      fileForm.append('seq', bizIdx);
+    }
+    
+    fileForm.append('bizName', bizName.current.value);
+    fileForm.append('bizAddr', bizAddr.current.value);
+    fileForm.append('bizContact', bizContact.current.value);
+    fileForm.append('bizWebUrl', bizWebUrl.current.value);
+    fileForm.append('bizCeoName', bizCeoName.current.value);
+    fileForm.append('bizFoundDate', bizFoundDate.current.value);
+    fileForm.append('bizEmpCount', bizEmpCount.current.value);
+    fileForm.append('bizRevenue', bizRevenue.current.value);
+    fileForm.append('bizIntro', bizIntro.current.value);
+
+    const fileInput = fileInputRef.current;
+    if (fileInput && fileInput.files[0]) {
+        fileForm.append('fileInfo', fileInput.files[0]);
+    }
+
+    axios
+    .post(path === "insert" ? Company.getInsert : Company.getUpdate, fileForm)
+    .then((res) => {
+      console.log(res.data.result);
+      if ("idAlready" === res.data.result) {
+        alert("이미 회사를 등록하셨습니다.");
+      } else {
+        alert("회사가 저장되었습니다.");
+      }
+
+      navigate("/react/mypage/update.do");
+    }).catch((err) => {});
   }
 
-  const handlerDelete = () => {
-    
+  const handlerDelete = async () => {
+    const searchParam = {};
+    const deleteList = await postApi<ICompanyDetailReponse>(Company.getDelete, searchParam);
+
+    if (deleteList) {
+      alert("삭제되었습니다.");
+      navigate("/react/mypage/update.do");
+    }
+  }
+
+  const phoneNumChange = (e) => {
+    const inputNum = e.target.value;
+    var phone = inputNum.replace(/[^0-9]/g, "");
+
+    if (phone.length >= 3) {
+			var prefix = phone.substring(0, 3);
+			if ([ "010", "019", "011", "016", "017" ].indexOf(prefix) === -1) {
+				alert("정확한 전화번호를 입력해주세요.");
+				return;
+			}
+		}
+
+    // 휴대폰 번호 형식에 맞게 하이픈 추가
+		if (phone.length >= 3 && phone.length <= 7) {
+			phone = phone.replace(/(\d{3})(\d{1,4})/, "$1-$2");
+		} else if (phone.length >= 8) {
+			phone = phone.replace(/(\d{3})(\d{3,4})(\d{0,4})/, "$1-$2-$3");
+		}
+
+		if (phone.length > 13) {
+			phone = phone.substring(0, 13);
+		}
+
+    setPhoneNum(phone);
+  }
+
+  const handlerValidation = () => {
+    const today = new Date();
+    const addressPattern = /^[\w\s가-힣]+$/;
+    const urlPattern = /^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+([\/?%&=]*)?$/;
+
+    const _bizName = bizName.current.value;
+    const _bizCeoName = bizCeoName.current.value;
+    const _bizContact = bizContact.current.value;
+    const _bizAddr = bizAddr.current.value;
+    const _bizFoundDate = bizFoundDate.current.value;
+    const _bizWebUrl = bizWebUrl.current.value;
+    const _bizEmpCount = bizEmpCount.current.value;
+    const _bizRevenue = bizRevenue.current.value;
+
+    if      (!_bizName.trim())      { alert("사업자 이름을 입력해 주세요"); return; }
+    else if (!_bizCeoName.trim())   { alert("사업자 이름을 입력해 주세요"); return; }
+    else if (!_bizContact.trim())   { alert("연락처를 입력해 주세요"); return; }
+    else if (!_bizAddr.trim())      { alert("주소를 입력해 주세요"); return; }
+    else if (!_bizFoundDate.trim()) { alert("설립일을 입력해 주세요"); return; }
+    else if (!_bizWebUrl.trim())    { alert("홈페이지 주소를 입력해 주세요"); return; }
+    else if (!_bizEmpCount.trim())  { alert("사원수를 입력해 주세요"); return; }
+    else if (!_bizRevenue.trim())   { alert("매출액을 입력해 주세요"); return; }
+
+    if (today < new Date(_bizFoundDate)) {
+      alert("설립일은 오늘보다 이전이어야 합니다.");
+      return;
+    }
+
+    if (!addressPattern.test(_bizAddr)) {
+      alert("주소는 특수 문자를 포함하지 않는 형식으로 입력해 주세요.");
+      return;
+    }
+
+    if (!urlPattern.test(_bizWebUrl)) {
+      alert("홈페이지 주소는 올바른 URL 형식으로 입력해 주세요.");
+      return;
+    }
+
+    return true;
   }
 
   return (
     <StyledTableCompany>
-      <table className="table table-bordered">
+      <table className="table table-bordered writeTable">
         <colgroup>
           <col width={"20%"} />
           <col width={""} />
@@ -120,9 +234,10 @@ export const CompanyUpdate = () => {
                 name="bizContact" 
                 id="bizContact" 
                 placeholder="ex) 010-xxxx-xxxx" 
-                defaultValue={companyDetail?.bizContact}
+                // defaultValue={companyDetail?.bizContact}
+                value={phoneNum}
                 ref={bizContact}
-                // oninput="javascript:formatPhoneNumber()"
+                onChange={phoneNumChange}
               />
             </td>
             <th>사업자 주소<span className="font_red">*</span></th>
@@ -145,7 +260,6 @@ export const CompanyUpdate = () => {
                 id="bizEmpCount" 
                 defaultValue={'10명 이하'} 
                 ref={bizEmpCount} 
-                // onChange={}
               >
                 <option value="10명 이하">10명 이하</option>
                 <option value="50명 이하">50명 이하</option>
@@ -184,8 +298,7 @@ export const CompanyUpdate = () => {
                 className="form-select" 
                 id="bizRevenue" 
                 defaultValue={'10억 이하'} 
-                ref={bizRevenue} 
-                // onChange={}
+                ref={bizRevenue}
               >
                 <option value="10억 이하">10억 이하</option>
                 <option value="100억 이하">100억 이하</option>
@@ -195,7 +308,7 @@ export const CompanyUpdate = () => {
             </td>
           </tr>
           <tr>
-            <th>기업소개<span className="font_red"> *</span></th>
+            <th>기업 소개<span className="font_red">*</span></th>
             <td colSpan={3}>
               <textarea 
                 className="form-control" 
@@ -205,52 +318,73 @@ export const CompanyUpdate = () => {
                 rows={10}
                 defaultValue={companyDetail?.bizIntro}
                 ref={bizIntro}
-              >
-                company.bizIntro
-              </textarea>
+              />
             </td>
           </tr>
           <tr>
-            <th>기업로고<span className="font_red">*</span></th>
+            <th>기업 로고<span className="font_red">*</span></th>
             <td colSpan={3}>
               <input 
-              type="file" 
-              className="form-control" 
-              name="bizLogo" 
-              id="bizLogo" />
-              <span id="currentFileName">이전파일: company.bizLogo</span>
+                type="file" 
+                className="form-control" 
+                name="bizLogo" 
+                id="bizLogo" 
+                onChange={handlerFile}
+                ref={fileInputRef}
+              />
+              <p id="currentFileName">
+                이전파일: {companyDetail?.bizLogo}
+              </p>
             </td>
           </tr>
           <tr>
-            <th>미리보기</th>
+            <th>미리 보기</th>
             <td colSpan={3}>
-              <span id="companyUpdatePreview">
-                {/* <img src='${company.logicalPath}' id='imgFile' style='width:100px; height:100px'> */}
-              </span>
+              {imageUrl ? (
+                <span id="companyUpdatePreview">
+                  <img src={imageUrl} style={{ width: "50%" }} alt="" />
+                </span>
+              ) : (
+                <span></span>
+              )}
             </td>
           </tr>
         </tbody>
       </table>
 
       <div className="btnGroup" style={{ textAlign: "right" }}>
-        <Button 
-          variant="primary" 
-          style={{ margin: "2px" }}
-          // onClick={() => navigate(`/react/company/companyUpdatePage.do/${bizIdx}`)}
-        >
-          <span>수정</span>
-        </Button>
-        <Button 
-          variant="danger" 
-          style={{ margin: "2px" }}
-          // onClick={() => navigate(`/react/jobs/post-detail/${postIdx}`)}
-        >
-          <span>삭제</span>
-        </Button>
+        {bizIdx ? (
+          <Button 
+            variant="primary" 
+            style={{ margin: "3px" }}
+            onClick={() => handlerUpdate("update")}
+          >
+            <span>수정</span>
+          </Button>
+        ) : (
+          <Button 
+            variant="primary" 
+            style={{ margin: "3px" }}
+            onClick={() => handlerUpdate("insert")}
+          >
+            <span>등록</span>
+          </Button>
+        )}
+
+        {bizIdx &&
+          <Button 
+            variant="danger" 
+            style={{ margin: "3px" }}
+            onClick={() => handlerDelete()}
+          >
+            <span>삭제</span>
+          </Button>
+        }
+        
         <Button 
           variant="secondary" 
-          style={{ margin: "2px" }}
-          // onClick={() => navigate(`/react/jobs/post-detail/${postIdx}`)}
+          style={{ margin: "3px" }}
+          onClick={() => navigate("/react/mypage/update.do")}
         >
           <span>돌아가기</span>
         </Button>
