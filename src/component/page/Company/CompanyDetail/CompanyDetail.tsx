@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { StyledTableCompany } from "../Style/StyledTableCompany"
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ICompanyDetail, ICompanyDetailReponse } from "../../../../models/interface/ICompany";
 import { Company } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
@@ -9,24 +9,19 @@ import { Button } from "react-bootstrap";
 export const CompanyDetail = () => {
   const [companyDetail, setCompanyDetail] = useState<ICompanyDetail>();
   const [imageUrl, setImageUrl] = useState<string>();
-  const [fileData, setFileData] = useState<File>();
   const { bizIdx } = useParams();
   const { postIdx } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("**************************");
-    console.log(bizIdx);
-
-    searchDetail(bizIdx);
+    if (bizIdx) {
+      searchDetail(bizIdx);
+    }
   }, []);
 
   const searchDetail = async (bizIdx) => {
     const searchParam = { bizIdx: bizIdx };
     const detailList = await postApi<ICompanyDetailReponse>( Company.getDetail, searchParam );
-
-    console.log("**************************");
-    console.log(detailList);
 
     if (detailList) { 
       setCompanyDetail(detailList.payload);
@@ -34,32 +29,11 @@ export const CompanyDetail = () => {
       const { fileExt, logicalPath } = detailList.payload;
       if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png") {
         setImageUrl(logicalPath);
-        console.log(logicalPath);
       } else {
         setImageUrl("");
       }
     }
   }
-
-  const handlerFile = (e: ChangeEvent<HTMLInputElement>) => {
-    const fileInfo = e.target.files;
-    if (fileInfo?.length > 0) {
-      const fileInfoSplit = fileInfo[0].name.split(".");
-      const fileExtension = fileInfoSplit[1].toLowerCase();
-
-      if (
-        fileExtension === "jpg" ||
-        fileExtension === "gif" ||
-        fileExtension === "png"
-      ) {
-        setImageUrl(URL.createObjectURL(fileInfo[0]));
-      } else {
-        setImageUrl("");
-      }
-
-      setFileData(fileInfo[0]);
-    }
-  };
 
   return (
     <StyledTableCompany>
@@ -81,8 +55,8 @@ export const CompanyDetail = () => {
 							<td colSpan={4}>
                 {imageUrl ? (
                   <span id="preview">
-                    <img src={imageUrl} style={{ width: "50%" }} />
-                    </span>
+                    <img src={imageUrl} style={{ width: "50%" }} alt="" />
+                  </span>
                 ) : (
                   <span></span>
                 )}
@@ -123,7 +97,7 @@ export const CompanyDetail = () => {
 					</tbody>
 					<thead>
 						<tr>
-							<th colSpan={4}>기업소개</th>
+							<th colSpan={4}>기업 소개</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -137,14 +111,6 @@ export const CompanyDetail = () => {
       <div className="btnGroup" style={{ textAlign: "right" }}>
         <Button 
           variant="secondary" 
-          style={{ margin: "2px" }}
-          onClick={() => navigate(`/react/company/companyUpdatePage.do/${bizIdx}`)}
-        >
-          <span>임시 정보 수정</span>
-        </Button>
-        <Button 
-          variant="secondary" 
-          style={{ margin: "2px" }}
           onClick={() => navigate(`/react/jobs/post-detail/${postIdx}`)}
         >
           <span>기업 지원 공고 확인하기</span>

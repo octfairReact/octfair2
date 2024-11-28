@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Row, Stack } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
-import { loginInfoState } from "../../../../../stores/userInfo";
+import { ILoginInfo } from "../../../../models/interface/store/userInfo";
+import { loginInfoState } from "../../../../stores/userInfo";
 import { useRecoilState } from "recoil";
 import {
   IBizDetail,
   IPostdatailResponse,
   IPostDetail,
-} from "../../../../../models/interface/IPost";
-import { postApi } from "../../../../../api/postApi";
-import { Post, Scrap } from "../../../../../api/api";
-import { ISaveScrapResponse } from "../../../../../models/interface/IScrap";
-import { modalState } from "../../../../../stores/modalState";
-import { Portal } from "../../../../common/potal/Portal";
-import { ResumeModalApplication } from "../../../Resume/ResumeModal/ResumeModalApplication";
+} from "../../../../models/interface/IPost";
+import { postApi } from "../../../../api/postApi";
+import { Post, Scrap } from "../../../../api/api";
+import { ISaveScrapResponse } from "../../../../models/interface/IScrap";
+import { modalState } from "../../../../stores/modalState";
+import { Portal } from "../../../common/potal/Portal";
+import { ResumeModalApplication } from "../../Resume/ResumeModal/ResumeModalApplication";
 
 interface PostDetailBodyProps {
   onImagePath: (bizImage: string | null, postImage: string | null) => void;
@@ -96,7 +96,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
                 <h1>{postDetail?.title}</h1>
                 <Row className="my-1">
                   <Col>
-                    <Link to={`/react/company/companyDetailPage.do/${postIdx}/${bizDetail?.bizIdx}`} className="text-dark">
+                    <Link to={"#"} className="text-dark">
                       <h4>{bizDetail?.bizName}</h4>
                     </Link>
                   </Col>
@@ -185,14 +185,14 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
                   navigate(`/react/manage-hire/update-post.do/${postIdx}`)
                 }
               >
-                수정하기
+                승인
               </Button>
               <Button
                 variant="secondary"
                 size="lg"
                 onClick={() => navigate("/react/manage-hire/post.do")}
               >
-                뒤로가기
+                불허
               </Button>
             </div>
           ) : (
