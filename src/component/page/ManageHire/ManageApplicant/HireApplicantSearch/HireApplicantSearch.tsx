@@ -6,9 +6,13 @@ import { IApplicantSearch, IBiz, IBizSearch } from '../../../../../models/interf
 import { Form, Stack } from 'react-bootstrap';
 import { postApi } from '../../../../../api/postApi';
 import { HireApplicant } from '../../../../../api/api';
+import { useRecoilState } from 'recoil';
+import { ILoginInfo } from '../../../../../models/interface/store/userInfo';
+import { loginInfoState } from '../../../../../stores/userInfo';
 
 const HireApplicantSearch = () => {
   const navigate = useNavigate();
+  const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
   const [bizList, setBizList] = useState<IBiz[]>();
   const [searchValue, setSearchValue] = useState<IApplicantSearch>({
     postIdx: "",
