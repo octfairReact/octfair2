@@ -4,6 +4,9 @@ import { ApplyContext } from "../../../../api/provider/ApplyProvider";
 import { HistorySearchStyled } from "./styled";
 import { Button } from "../../../common/Button/Button";
 import { IHistorySearch } from "../../../../models/interface/IHistory";
+import { useRecoilState } from "recoil";
+import { ILoginInfo } from "../../../../models/interface/store/userInfo";
+import { loginInfoState } from "../../../../stores/userInfo";
 
 export const HistorySearch = () => {
     const navigate = useNavigate();
@@ -14,6 +17,7 @@ export const HistorySearch = () => {
         keyWord: "",
       });
     const { setSearchKeyWord } = useContext(ApplyContext);
+    const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
 
   useEffect(() => {
     window.location.search &&

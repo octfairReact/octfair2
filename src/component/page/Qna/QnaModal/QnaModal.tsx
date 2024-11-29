@@ -35,7 +35,7 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
     return () => {
       qnaSeq && setQnaSeq(undefined);
     };
-  }, [qnaSeq, isPwChecked]);
+  }, [qnaSeq]);
 
   const searchDetail = async () => {
     const detailApi = await postApi<IDetailResponse>(Qna.getDetail, { qnaSeq });
@@ -168,7 +168,7 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
         <QnaModalStyled>
           <div className="container">
             <label>
-              제목<input type="text" ref={title} defaultValue={qnaDetail?.title}></input>
+              제목<input type="text" ref={title} value={qnaDetail?.title || ''} onChange={(e) => setQnaDetail({ ...qnaDetail, title: e.target.value })}></input>
             </label>
             <label>
               내용<input type="text" ref={context} defaultValue={qnaDetail?.content}></input>

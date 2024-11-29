@@ -11,6 +11,8 @@ import { IApplicant, IApplicantResponse } from '../../../../../models/interface/
 import { HireApplicant } from '../../../../../api/api';
 import { postApi } from '../../../../../api/postApi';
 import { Table } from "react-bootstrap";
+import { ILoginInfo } from '../../../../../models/interface/store/userInfo';
+import { loginInfoState } from '../../../../../stores/userInfo';
 
 
 const HireApplicantMain = () => {
@@ -20,6 +22,7 @@ const HireApplicantMain = () => {
   const [listCount, setListCount] = useState<number>(0);
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [resSeq, setResSeq] = useState<number>();  
+  const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
 
   useEffect(() => {
     if (Object.keys(searchKeyWord).length != 0) {
@@ -35,6 +38,7 @@ const HireApplicantMain = () => {
       firstProc: searchKeyWord['procArray'][0].proc,
       currentPage: currentPage.toString(),
       pageSize: "5",
+      loginId: userInfo.loginId,
     };
     const searchList= await postApi<IApplicantResponse>(
       HireApplicant.getList,
@@ -188,9 +192,11 @@ const HireApplicantMain = () => {
             </tr>
           </thead>
             {applicantList?.length <= 0 ? (
-              <tr className="row-separator">
-                <td>지원자가 없습니다.</td>
-              </tr>           
+              <tbody>
+                <tr className="row-separator">
+                  <td>지원자가 없습니다.</td>
+                </tr>    
+              </tbody>       
             ) : (applicantList?.map((list) => {
               return (
                 <tbody key={list.appId}>
