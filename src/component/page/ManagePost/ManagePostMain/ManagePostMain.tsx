@@ -11,6 +11,7 @@ import {
   StyledTd,
   StyledTh,
 } from "../../../common/styled/StyledTable";
+import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
 
 export const ManagePostMain = () => {
   const navigate = useNavigate();
@@ -84,7 +85,7 @@ export const ManagePostMain = () => {
                   <StyledTd>{managePost.expRequired}</StyledTd>
                   <StyledTd>{managePost.endDate}</StyledTd>
                   <StyledTd>{managePost.postDate}</StyledTd>
-                  <StyledTd>{"승인여부"}</StyledTd>
+                  <StyledTd>{managePost.appStatus}</StyledTd>
                 </tr>
               );
             })
@@ -95,6 +96,14 @@ export const ManagePostMain = () => {
           )}
         </tbody>
       </StyledTable>
+      <PageNavigate
+        totalItemsCount={listCount}
+        onChange={searchManagePostList}
+        activePage={cPage}
+        itemsCountPerPage={5}
+      ></PageNavigate>
     </>
   );
 };
+
+export default ManagePostMain;

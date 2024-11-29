@@ -27,8 +27,7 @@ export const PostMain = () => {
 
   useEffect(() => {
     // console.log("updated searchKeyWord: ", searchKeyWord);
-    if (userType === "A") searchJobPostList();
-    else searchManagePostList();
+    searchJobPostList();
   }, [searchKeyWord]);
 
   const searchJobPostList = async (currentPage?: number) => {
@@ -61,110 +60,46 @@ export const PostMain = () => {
     navigate(`/react/jobs/post-detail/${postIdx}`);
   };
 
-  const searchManagePostList = async (currentPage?: number) => {
-    currentPage = currentPage || 1;
-
-    const searchParam = {
-      ...searchKeyWord,
-      currentPage: currentPage.toString(),
-      pageSize: "5",
-    };
-
-    // console.log("searchParam: ", searchParam);
-
-    const searchList = await postApi<IPostListResponse>(
-      "/api/manage-post/readPostList.do",
-      searchParam
-    );
-    console.log("manage-post API Response:", searchList);
-
-    // if (searchList) {
-    //   setJobPostList(searchList.approvalList);
-    //   setListCount(searchList.approvalPostCnt);
-    //   setCPage(currentPage);
-    // }
-  };
   return (
     <>
       <p>
         총 공고 수: {listCount} | 현재 페이지: {cPage}
       </p>
-      {userType === "A" ? (
-        <StyledTable>
-          <thead>
+      <StyledTable>
+        <thead>
+          <tr>
+            <StyledTh size={5}>번호</StyledTh>
+            <StyledTh size={40}>제목</StyledTh>
+            <StyledTh size={15}>근무지역</StyledTh>
+            <StyledTh size={10}>경력여부</StyledTh>
+            <StyledTh size={10}>마감일</StyledTh>
+            <StyledTh size={10}>등록일</StyledTh>
+          </tr>
+        </thead>
+        <tbody>
+          {jobPostList?.length > 0 ? (
+            jobPostList?.map((jobPost) => {
+              return (
+                <tr
+                  key={jobPost.postIdx}
+                  onClick={() => hanlderDetail(jobPost.postIdx)}
+                >
+                  <StyledTd>{jobPost.postIdx}</StyledTd>
+                  <StyledTd>{jobPost.title}</StyledTd>
+                  <StyledTd>{jobPost.workLocation}</StyledTd>
+                  <StyledTd>{jobPost.expRequired}</StyledTd>
+                  <StyledTd>{jobPost.endDate}</StyledTd>
+                  <StyledTd>{jobPost.postDate}</StyledTd>
+                </tr>
+              );
+            })
+          ) : (
             <tr>
-              <StyledTh size={5}>번호</StyledTh>
-              <StyledTh size={40}>제목</StyledTh>
-              <StyledTh size={15}>근무지역</StyledTh>
-              <StyledTh size={10}>경력여부</StyledTh>
-              <StyledTh size={10}>마감일</StyledTh>
-              <StyledTh size={10}>등록일</StyledTh>
+              <StyledTd colSpan={6}>데이터가 없습니다.</StyledTd>
             </tr>
-          </thead>
-          <tbody>
-            {jobPostList?.length > 0 ? (
-              jobPostList?.map((jobPost) => {
-                return (
-                  <tr
-                    key={jobPost.postIdx}
-                    onClick={() => hanlderDetail(jobPost.postIdx)}
-                  >
-                    <StyledTd>{jobPost.postIdx}</StyledTd>
-                    <StyledTd>{jobPost.title}</StyledTd>
-                    <StyledTd>{jobPost.workLocation}</StyledTd>
-                    <StyledTd>{jobPost.expRequired}</StyledTd>
-                    <StyledTd>{jobPost.endDate}</StyledTd>
-                    <StyledTd>{jobPost.postDate}</StyledTd>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <StyledTd colSpan={6}>데이터가 없습니다.</StyledTd>
-              </tr>
-            )}
-          </tbody>
-        </StyledTable>
-      ) : (
-        // admin
-        <StyledTable>
-          <thead>
-            <tr>
-              <StyledTh size={5}>번호</StyledTh>
-              <StyledTh size={40}>제목</StyledTh>
-              <StyledTh size={15}>근무지역</StyledTh>
-              <StyledTh size={10}>경력여부</StyledTh>
-              <StyledTh size={10}>마감일</StyledTh>
-              <StyledTh size={10}>등록일</StyledTh>
-              <StyledTh size={5}>승인여부</StyledTh>
-            </tr>
-          </thead>
-          <tbody>
-            {jobPostList?.length > 0 ? (
-              jobPostList?.map((jobPost) => {
-                return (
-                  <tr
-                    key={jobPost.postIdx}
-                    onClick={() => hanlderDetail(jobPost.postIdx)}
-                  >
-                    <StyledTd>{jobPost.postIdx}</StyledTd>
-                    <StyledTd>{jobPost.title}</StyledTd>
-                    <StyledTd>{jobPost.workLocation}</StyledTd>
-                    <StyledTd>{jobPost.expRequired}</StyledTd>
-                    <StyledTd>{jobPost.endDate}</StyledTd>
-                    <StyledTd>{jobPost.postDate}</StyledTd>
-                    <StyledTd>{"승인여부"}</StyledTd>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <StyledTd colSpan={7}>데이터가 없습니다.</StyledTd>
-              </tr>
-            )}
-          </tbody>
-        </StyledTable>
-      )}
+          )}
+        </tbody>
+      </StyledTable>
 
       <PageNavigate
         totalItemsCount={listCount}

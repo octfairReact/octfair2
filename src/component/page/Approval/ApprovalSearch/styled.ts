@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const PostSearchStyled = styled.div`
+export const ApprovalSearchStyled = styled.div`
   margin-bottom: 10px;
   float: inline-end;
   input {

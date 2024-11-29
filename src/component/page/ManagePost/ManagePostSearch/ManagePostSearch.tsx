@@ -54,3 +54,5 @@ export const ManagePostSearch = () => {
     </>
   );
 };
+
+export default ManagePostSearch;

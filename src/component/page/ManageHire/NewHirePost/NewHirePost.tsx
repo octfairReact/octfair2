@@ -16,7 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "./NewHirePost.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
-  IPostdatailResponse,
+  IPostdetailResponse,
   IPostDetail,
 } from "../../../../models/interface/IPost";
 import axios from "axios";
@@ -60,7 +60,7 @@ const NewHirePost = () => {
   const getPostDetail = async (postIdx: string) => {
     const params = { postIdx };
 
-    const response = await postApi<IPostdatailResponse>(Post.getDetail, params);
+    const response = await postApi<IPostdetailResponse>(Post.getDetail, params);
 
     console.log("API Response: ", response);
     if (response) {
