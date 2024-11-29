@@ -104,7 +104,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
   }
 
   const handleNavigation = (path) => {
-    navigate(path);
+    navigate("/"+path);
   };
 
   return (
@@ -141,9 +141,8 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
             {resumeInfo?.proLink !== null ?
               <div>
                 <p >링크 : &nbsp;
-                  <span onClick={() => handleNavigation(resumeInfo?.proLink)} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>
-                    {resumeInfo?.proLink}
-                  </span>
+                  <a href={resumeInfo?.proLink} target="_blank"
+         rel="noopener noreferrer">{resumeInfo?.proLink}</a>                  
                 </p>
               </div>
               : null}

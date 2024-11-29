@@ -192,9 +192,11 @@ const HireApplicantMain = () => {
             </tr>
           </thead>
             {applicantList?.length <= 0 ? (
-              <tr className="row-separator">
-                <td>지원자가 없습니다.</td>
-              </tr>           
+              <tbody>
+                <tr className="row-separator">
+                  <td>지원자가 없습니다.</td>
+                </tr>    
+              </tbody>       
             ) : (applicantList?.map((list) => {
               return (
                 <tbody key={list.appId}>

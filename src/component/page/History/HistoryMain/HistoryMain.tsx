@@ -15,8 +15,6 @@ import { ResumeModalPreview } from "../../Resume/ResumeModal/ResumeModalPreview"
 import { IApply, IApplyResponse } from "../../../../models/interface/IHistory";
 import { History } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
-import { ILoginInfo } from "../../../../models/interface/store/userInfo";
-import { loginInfoState } from "../../../../stores/userInfo";
 
 export const HistoryMain = () => {
   const [applyList, setApplyList] = useState<IApply[]>();
@@ -26,7 +24,6 @@ export const HistoryMain = () => {
   const [listCount, setListCount] = useState<number>(0);
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [resSeq, setResSeq] = useState<number>();
-  const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
 
   useEffect(() => {
     searchApplyList();
