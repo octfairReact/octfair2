@@ -23,6 +23,7 @@ import { ManageBusiness } from "../pages/ManageBusiness";
 import { Company } from "../pages/Company";
 import { CompanyInfo } from "../pages/CompanyInfo";
 import { ManagePost } from "../pages/ManagePost";
+import { Approval } from "../pages/Approval";
 
 const routers: RouteObject[] = [
   { path: "*", element: <NotFound /> },
@@ -87,12 +88,16 @@ const routers: RouteObject[] = [
             path: "companyDetailPage.do/:postIdx/:bizIdx",
             element: <Company />,
           },
-          { path: "companyUpdatePage.do/:bizIdx", element: <CompanyInfo /> },
+          { path: "companyWrite.do", element: <CompanyInfo /> },
+          { path: "companyUpdate.do/:bizIdx", element: <CompanyInfo /> },
         ],
       },
       {
         path: "manage-post",
-        children: [{ path: "post.do", element: <ManagePost /> }],
+        children: [
+          { path: "post.do", element: <ManagePost /> },
+          { path: "approval.do", element: <Approval /> },
+        ],
       },
     ],
   },

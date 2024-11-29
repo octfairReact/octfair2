@@ -4,7 +4,8 @@ export interface IQna {
   content: string;
   author: string;
   createdDate: string;
-  ans_content: string;
+  ans_content: string | null;
+  password: string;
 }
 
 export interface IQnaListResponse {
@@ -22,7 +23,6 @@ export interface IQnaDetail extends IQna {
   logicalPath: string | null;
   fileSize: number;
   fileExt: string | null;
-  password: string;
 }
 
 export interface IPostResponse {
