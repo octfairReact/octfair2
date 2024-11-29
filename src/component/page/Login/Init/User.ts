@@ -4,11 +4,11 @@ import { useState, useRef } from "react";
 export function UserInit() {
     // useState
     const [userType, setUserType] = useState<string>("");
-    const [userGender, setUserGender] = useState<string>("");
+    const [sex, setSex] = useState<string>("");
     const [userStatus, setUserStatus] = useState<string>("");
     const [address, setAddress] = useState<string>("");
     const [zipCode, setZipCode] = useState<string>("");
-    const [checkLoginIdExist, setCheckLoginIdExist] = useState<string>("");
+    const [firstCheckId, setFirstCheckId] = useState<string>("");
 
     // useRef
     const loginId = useRef<HTMLInputElement>(null);
@@ -25,16 +25,16 @@ export function UserInit() {
         state: {
             userType,
             setUserType,
-            userGender,
-            setUserGender,
+            sex,
+            setSex,
             userStatus,
             setUserStatus,
             address,
             setAddress,
             zipCode,
             setZipCode,
-            checkLoginIdExist,
-            setCheckLoginIdExist,
+            firstCheckId,
+            setFirstCheckId,
         },
         refs: {
             loginId,
@@ -45,7 +45,7 @@ export function UserInit() {
             phone,
             email,
             userDetailAddress,
-            regdate
+            regdate,
         },
     };
 }

@@ -5,13 +5,14 @@ import { IBiz, IBizDetailResponse, IPostResponse } from "../../../../models/inte
 import { ManageBusiness } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
 import { NoticeModalStyled } from "../../Notice/NoticeModal/styled";
-import { bizDataSchema } from "../../../common/Validate/Schemas/Schemas";
+import { bizDataSchema } from "../../../common/Validate/Schemas/Biz/ManageBizSchema";
 
 interface IBusinessModalProps {
+    onSuccess: () => void;
     bizIdx: number;
 }
 
-export const BusinessModal: FC<IBusinessModalProps> = ({ bizIdx }) => {
+export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [bizDetail, setBizDetail] = useState<IBiz>();
 
@@ -39,7 +40,6 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ bizIdx }) => {
     };
 
     const handlerUpdate = async () => {
-
         const bizData = {
             bizName: bizName.current.value,
             bizCeoName: bizCeoName.current.value,
@@ -53,7 +53,7 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ bizIdx }) => {
         };
 
         const validBiz = bizDataSchema.safeParse(bizData);
-        
+
         if (!validBiz.success) {
             alert(validBiz.error.errors[0].message);
             return;
@@ -77,6 +77,7 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ bizIdx }) => {
         if (updateApi.result === "success") {
             alert("기업 정보 수정이 완료되었습니다");
             handlerModal();
+            onSuccess();
         }
     };
 
