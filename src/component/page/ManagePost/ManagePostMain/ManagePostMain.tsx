@@ -1,29 +1,26 @@
 import { useContext, useEffect, useState } from "react";
-import {
-  StyledTable,
-  StyledTd,
-  StyledTh,
-} from "../../../common/styled/StyledTable";
-import { PostContext } from "../../../../api/provider/PostProvider";
-import { IPost, IPostListResponse } from "../../../../models/interface/IPost";
-import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
-import { Post } from "../../../../api/api";
 import { useNavigate } from "react-router-dom";
+import { ManagePostContext } from "../../../../api/provider/ManagePostProvider";
 import { postApi } from "../../../../api/postApi";
 import {
   IManagePost,
   IManagePostListResponse,
 } from "../../../../models/interface/IManagePost";
+import {
+  StyledTable,
+  StyledTd,
+  StyledTh,
+} from "../../../common/styled/StyledTable";
+import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
 
-const ApprovalMain = () => {
+export const ManagePostMain = () => {
   const navigate = useNavigate();
   const [managePostList, setManagePostList] = useState<IManagePost[]>();
   const [listCount, setListCount] = useState<number>(0);
   const [cPage, setCPage] = useState<number>();
-  const { searchKeyWord } = useContext(PostContext);
+  const { searchKeyWord } = useContext(ManagePostContext);
 
   useEffect(() => {
-    // console.log("updated searchKeyWord: ", searchKeyWord);
     searchManagePostList();
   }, [searchKeyWord]);
 
@@ -45,8 +42,8 @@ const ApprovalMain = () => {
     console.log("manage-post API Response:", searchList);
 
     if (searchList) {
-      setManagePostList(searchList.pendingList);
-      setListCount(searchList.pendingPostCnt);
+      setManagePostList(searchList.approvalList);
+      setListCount(searchList.approvalPostCnt);
       setCPage(currentPage);
     }
   };
@@ -66,35 +63,35 @@ const ApprovalMain = () => {
         <thead>
           <tr>
             <StyledTh size={5}>번호</StyledTh>
-            <StyledTh size={35}>제목</StyledTh>
+            <StyledTh size={40}>제목</StyledTh>
             <StyledTh size={15}>근무지역</StyledTh>
-            <StyledTh size={5}>경력여부</StyledTh>
+            <StyledTh size={10}>경력여부</StyledTh>
             <StyledTh size={10}>마감일</StyledTh>
             <StyledTh size={10}>등록일</StyledTh>
-            <StyledTh size={10}>승인여부</StyledTh>
+            <StyledTh size={5}>승인여부</StyledTh>
           </tr>
         </thead>
         <tbody>
           {managePostList?.length > 0 ? (
-            managePostList?.map((pendingPost) => {
+            managePostList?.map((managePost) => {
               return (
                 <tr
-                  key={pendingPost.postIdx}
-                  onClick={() => hanlderDetail(pendingPost.postIdx)}
+                  key={managePost.postIdx}
+                  onClick={() => hanlderDetail(managePost.postIdx)}
                 >
-                  <StyledTd>{pendingPost.postIdx}</StyledTd>
-                  <StyledTd>{pendingPost.title}</StyledTd>
-                  <StyledTd>{pendingPost.workLocation}</StyledTd>
-                  <StyledTd>{pendingPost.expRequired}</StyledTd>
-                  <StyledTd>{pendingPost.endDate}</StyledTd>
-                  <StyledTd>{pendingPost.postDate}</StyledTd>
-                  <StyledTd>{pendingPost.appStatus}</StyledTd>
+                  <StyledTd>{managePost.postIdx}</StyledTd>
+                  <StyledTd>{managePost.title}</StyledTd>
+                  <StyledTd>{managePost.workLocation}</StyledTd>
+                  <StyledTd>{managePost.expRequired}</StyledTd>
+                  <StyledTd>{managePost.endDate}</StyledTd>
+                  <StyledTd>{managePost.postDate}</StyledTd>
+                  <StyledTd>{managePost.appStatus}</StyledTd>
                 </tr>
               );
             })
           ) : (
             <tr>
-              <StyledTd colSpan={6}>데이터가 없습니다.</StyledTd>
+              <StyledTd colSpan={7}>데이터가 없습니다.</StyledTd>
             </tr>
           )}
         </tbody>
@@ -109,4 +106,4 @@ const ApprovalMain = () => {
   );
 };
 
-export default ApprovalMain;
+export default ManagePostMain;

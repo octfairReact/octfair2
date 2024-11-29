@@ -13,10 +13,14 @@ import { PageNavigate } from "../../../../common/pageNavigation/PageNavigate";
 import { Post } from "../../../../../api/api";
 import { useNavigate } from "react-router-dom";
 import { postApi } from "../../../../../api/postApi";
+import { useRecoilState } from "recoil";
+import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
+import { loginInfoState } from "../../../../../stores/userInfo";
 
 export const PostMain = () => {
   const navigate = useNavigate();
   const [jobPostList, setJobPostList] = useState<IPost[]>();
+  const [{ userType }] = useRecoilState<ILoginInfo>(loginInfoState);
   const [listCount, setListCount] = useState<number>(0);
   const [cPage, setCPage] = useState<number>();
   const { searchKeyWord } = useContext(PostContext);
@@ -96,6 +100,7 @@ export const PostMain = () => {
           )}
         </tbody>
       </StyledTable>
+
       <PageNavigate
         totalItemsCount={listCount}
         onChange={searchJobPostList}
