@@ -12,7 +12,7 @@ export interface IPost {
 export interface IPostDetail extends IPost {
   appStatus: string;
   benefits: string | null;
-  duties: string| null;
+  duties: string | null;
   expYears: number | null;
   fileExt: string | null;
   fileName: string | null;
@@ -25,7 +25,7 @@ export interface IPostDetail extends IPost {
   prefQualifications: string | null;
   reqQualifications: string | null;
   salary: string | null;
-  startDate: string| null;
+  startDate: string | null;
 }
 
 export interface IBizDetail {
@@ -52,7 +52,7 @@ export interface IPostListResponse {
   approvalList: IPost[];
 }
 
-export interface IPostdatailResponse {
+export interface IPostdetailResponse {
   postDetail: IPostDetail;
   bizDetail: IBizDetail;
 }
@@ -81,7 +81,6 @@ export interface IHirePost {
   logicalPath: string | null;
 }
 
-export interface IHirePostListResponse{
-  payload:IHirePost[];
+export interface IHirePostListResponse {
+  payload: IHirePost[];
 }
-

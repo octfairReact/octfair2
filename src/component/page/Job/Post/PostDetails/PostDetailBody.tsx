@@ -6,7 +6,7 @@ import { loginInfoState } from "../../../../../stores/userInfo";
 import { useRecoilState } from "recoil";
 import {
   IBizDetail,
-  IPostdatailResponse,
+  IPostdetailResponse,
   IPostDetail,
 } from "../../../../../models/interface/IPost";
 import { postApi } from "../../../../../api/postApi";
@@ -45,12 +45,27 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
   const postDetailData = async (postIdx: string) => {
     const params = { postIdx };
 
-    const response = await postApi<IPostdatailResponse>(Post.getDetail, params);
+    const response = await postApi<IPostdetailResponse>(Post.getDetail, params);
 
     console.log("API Response: ", response);
     if (response) {
       setPostDetail(response.postDetail);
       setBizDetail(response.bizDetail);
+    }
+  };
+
+  const postUpdateAppStatus = async (postIdx: string, appStatus: string) => {
+    const params = { postIdx, appStatus };
+
+    const response = await postApi("/api/manage-post/statusUpdate.do", params);
+
+    console.log("API Response: ", response);
+    if (response) {
+      alert(`${appStatus}이(가) 처리되었습니다.`);
+    } else {
+      alert(
+        `${appStatus}이(가) 처리되지 않았습니다. 잠시 후 다시 한 번 시도해주세요.`
+      );
     }
   };
 
@@ -86,6 +101,16 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
     // postDetailData(postIdx);
   };
 
+  const handlerUpdateAppStatus = (postIdx, appStatus) => {
+    postUpdateAppStatus(postIdx, appStatus);
+
+    if (appStatus === "승인") {
+      navigate("/react/jobs/posts.do");
+    } else if (appStatus === "불허") {
+      navigate("/react/manage-post/approval.do");
+    }
+  };
+
   return (
     <>
       <Container className="mt-2">
@@ -96,7 +121,10 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
                 <h1>{postDetail?.title}</h1>
                 <Row className="my-1">
                   <Col>
-                    <Link to={`/react/company/companyDetailPage.do/${postIdx}/${bizDetail?.bizIdx}`} className="text-dark">
+                    <Link
+                      to={`/react/company/companyDetailPage.do/${postIdx}/${bizDetail?.bizIdx}`}
+                      className="text-dark"
+                    >
                       <h4>{bizDetail?.bizName}</h4>
                     </Link>
                   </Col>
@@ -165,17 +193,17 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
             <span className="p-4">{postDetail?.benefits}</span>
           </div>
         </div>
-        {userType === "A" ? (
-          <></>
-        ) : (
+        {userType === "B" ? (
           <div className="d-flex justify-content-center mt-5 ">
             <span style={{ color: "red" }}>
               '대기중' 공고만 수정 및 삭제 가능합니다.
             </span>
           </div>
+        ) : (
+          <></>
         )}
         <div className="d-flex justify-content-center m-2">
-          {postDetail?.appStatus === "대기중" ? (
+          {userType === "B" && postDetail?.appStatus === "대기중" ? (
             <div>
               <Button
                 variant="primary"
@@ -195,12 +223,32 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
                 뒤로가기
               </Button>
             </div>
+          ) : userType === "M" ? (
+            <>
+              <Button
+                variant="outline-success"
+                className="me-2"
+                onClick={() => handlerUpdateAppStatus(postIdx, "승인")}
+              >
+                승인
+              </Button>
+              <Button
+                variant="outline-danger"
+                className="me-2"
+                onClick={() => handlerUpdateAppStatus(postIdx, "불허")}
+              >
+                불허
+              </Button>
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={() => navigate(-1)}
+              >
+                뒤로가기
+              </Button>
+            </>
           ) : (
-            <Button
-              variant="secondary"
-              size="lg"
-              onClick={() => navigate("/react/manage-hire/post.do")}
-            >
+            <Button variant="secondary" size="lg" onClick={() => navigate(-1)}>
               뒤로가기
             </Button>
           )}
