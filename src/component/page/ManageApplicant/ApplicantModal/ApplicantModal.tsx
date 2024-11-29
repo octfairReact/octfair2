@@ -2,27 +2,27 @@ import { FC, useEffect, useState } from "react";
 import { NoticeModalStyled } from "../../Notice/NoticeModal/styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../stores/modalState";
-import { IPostResponse, IUser, IUserDetailResponse } from "../../../../models/interface/IUser";
+import { IPostResponse, IUser, IUserDetailResponse, manageUpdateApplicantData } from "../../../../models/interface/IUser";
 import { postApi } from "../../../../api/postApi";
 import { ManageApplicant } from "../../../../api/api";
 import { UserInit } from "../../Login/Init/User";
 import { Button } from "react-bootstrap";
 import { Address } from "react-daum-postcode";
 import PostCode from "../../../common/PostCode/PostCode";
-import { SignUpOtherUserDetail } from "../../../../models/interface/ISignUp";
-import { otherUserDataSchema } from "../../../common/Validate/Schemas/Schemas";
+import { manageApplicantSchema } from "../../../common/Validate/Schemas/User/ManageApplicantSchema";
 
 interface IApplicantModalProps {
+    onSuccess: () => void;
     loginId: string;
 }
 
-export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
+export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [applicantDetail, setApplicantDetail] = useState<IUser>();
     const { state, refs } = UserInit();
     const {
-        userGender,
-        setUserGender,
+        sex,
+        setSex,
         userType,
         setUserType,
         userStatus,
@@ -36,23 +36,16 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
 
     useEffect(() => {
         loginId && searchDetail(); // 컴포넌트 생성될 때 실행
-
     }, []);
 
     // userDetail 변경을 감지하고 userGender 업데이트
     useEffect(() => {
-        if (applicantDetail?.sex || applicantDetail?.userType || applicantDetail?.statusYn) {
-            setUserGender(applicantDetail?.sex);
+        if (applicantDetail) {
+            setSex(applicantDetail?.sex);
             setUserType(applicantDetail?.userType);
             setUserStatus(applicantDetail?.statusYn);
-            console.log(
-                "Updated gender: ",
-                applicantDetail?.sex,
-                "   Updated userType: ",
-                applicantDetail?.userType,
-                "     Updated userStatus: ",
-                applicantDetail?.statusYn
-            );
+            setZipCode(applicantDetail?.zipCode.toString());
+            setAddress(applicantDetail?.address);
         }
     }, [applicantDetail]);
 
@@ -60,11 +53,11 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
         setUserType(e.target.value);
     };
     const handleUserGender = (e) => {
-        setUserGender(e.target.value);
+        setSex(e.target.value);
     };
-     const handleUserStatus = (e) => {
-         setUserStatus(e.target.value);
-     };
+    const handleUserStatus = (e) => {
+        setUserStatus(e.target.value);
+    };
 
     // 우편번호 api 및 input
     const handleAddressComplete = (data: Address) => {
@@ -88,28 +81,27 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
     };
 
     const handlerUpdate = async () => {
-        const nameToDetailAddress: SignUpOtherUserDetail = {
+        const allApplicantDetail: manageUpdateApplicantData = {
             name: name.current.value,
-            userGender: userGender,
             phone: phone.current.value,
             email: email.current.value,
             birthday: birthday.current.value,
             zipCode: zipCode,
             address: address,
-            detailAddress: userDetailAddress.current.value,
+            regdate: regdate.current.value,
         };
 
-        const validNameToDa = otherUserDataSchema.safeParse(nameToDetailAddress);
+        const validApplicantDetail = manageApplicantSchema.safeParse(allApplicantDetail);
 
-        if (!validNameToDa.success) {
-            alert(validNameToDa.error.errors[0].message);
+        if (!validApplicantDetail.success) {
+            alert(validApplicantDetail.error.errors[0].message);
             return;
         }
 
         const param = {
             userType: userType,
             name: name.current.value,
-            sex: userGender,
+            sex: sex,
             birthday: birthday.current.value,
             phone: phone.current.value,
             email: email.current.value,
@@ -126,6 +118,7 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
         if (updateApi.result === "success") {
             alert("회원 정보 수정이 완료되었습니다");
             handlerModal();
+            onSuccess();
         }
     };
 
@@ -136,7 +129,7 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
         if (resetPwApi.result === "success") {
             alert("비밀번호 초기화가 완료되었습니다.");
         }
-    }
+    };
 
     const handlerModal = () => {
         setModal(!modal);
@@ -149,7 +142,7 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
                     <tr>
                         <th>회원 유형</th>
                         <td>
-                            <select className="selectUserType" value={userType} onChange={handleUserType}>
+                            <select className="selectUserType" value={userType || ""} onChange={handleUserType}>
                                 <option value="" disabled>
                                     선택
                                 </option>
@@ -183,7 +176,7 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
 
                         <th>성별</th>
                         <td>
-                            <select className="selectUserType" value={userGender} onChange={handleUserGender}>
+                            <select className="selectUserType" value={sex || ""} onChange={handleUserGender}>
                                 <option value="" disabled>
                                     선택
                                 </option>
@@ -213,13 +206,13 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
                     <tr>
                         <th>가입일자</th>
                         <td>
-                            <input type="date" ref={regdate} value={applicantDetail?.regdate}></input>
+                            <input type="date" ref={regdate} defaultValue={applicantDetail?.regdate}></input>
                         </td>
                     </tr>
                     <tr>
                         <th>활성화 여부</th>
                         <td>
-                            <select className="selectUserType" value={userStatus} onChange={handleUserStatus}>
+                            <select className="selectUserType" value={userStatus || ""} onChange={handleUserStatus}>
                                 <option value="" disabled>
                                     선택
                                 </option>
@@ -233,7 +226,7 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
                         <td className="address-container">
                             <input
                                 type="text"
-                                value={zipCode}
+                                value={zipCode || ""}
                                 defaultValue={applicantDetail?.zipCode}
                                 onChange={(e) => setZipCode(e.target.value)}
                                 placeholder="우편번호 입력"
@@ -247,7 +240,7 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ loginId }) => {
                             <input
                                 type="text"
                                 defaultValue={applicantDetail?.address}
-                                value={address}
+                                value={address || ""}
                                 onChange={(e) => setAddress(e.target.value)}
                             ></input>
                         </td>

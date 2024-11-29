@@ -8,28 +8,32 @@ export interface IUser {
     password: string;
     checkPassword: string;
     sex: string;
-    zipCode: number;
+    zipCode: string;
     phone: string;
     email: string;
     birthday: string;
     address: string;
-    detailAddress: string;
+    detailAddress?: string;
     statusYn: string;
     regdate: string;
     bizIdx: number;
 }
 
+// 나머지 필드는 'Omit'을 사용하여 분리
+export type manageUpdateApplicantData = Omit<
+    IUser,
+    "userIdx" | "loginId" | "userType" | "sex" | "password" | "checkPassword" | "statusYn" | "bizIdx"
+>;
+
 
 export interface IPostResponse {
     result: string;
+    id?: string;
 }
 
 export interface IUserDetailResponse {
     detail: IUser;
-}
-
-export interface IUserCheckBizRegResponse {
-    chkRegBiz: IBiz;
+    chkRegBiz?: IBiz;
 }
 
 export interface IUserListResponse {

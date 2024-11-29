@@ -45,6 +45,11 @@ export const BusinessMain = () => {
         }
     };
 
+    const onPostSuccess = () => {
+        setModal(!modal);
+        searchBizList();
+    };
+
     const handlerModal = (bizIdx: number) => {
         setModal(!modal);
         setBizIdx(bizIdx);
@@ -96,7 +101,7 @@ export const BusinessMain = () => {
             ></PageNavigate>
             {modal && (
                 <Portal>
-                    <BusinessModal bizIdx={bizIdx} />
+                    <BusinessModal bizIdx={bizIdx} onSuccess={onPostSuccess} />
                 </Portal>
             )}
         </>
