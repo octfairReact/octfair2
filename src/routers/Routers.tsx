@@ -22,6 +22,7 @@ import { ManageApplicant } from "../pages/ManageApplicant";
 import { ManageBusiness } from "../pages/ManageBusiness";
 import { Company } from "../pages/Company";
 import { CompanyInfo } from "../pages/CompanyInfo";
+import { ManagePost } from "../pages/ManagePost";
 
 const routers: RouteObject[] = [
   { path: "*", element: <NotFound /> },
@@ -91,7 +92,7 @@ const routers: RouteObject[] = [
       },
       {
         path: "manage-post",
-        children: [{ path: "post.do", element: <Post /> }],
+        children: [{ path: "post.do", element: <ManagePost /> }],
       },
     ],
   },

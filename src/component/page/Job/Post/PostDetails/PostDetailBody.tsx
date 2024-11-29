@@ -196,11 +196,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
               </Button>
             </div>
           ) : (
-            <Button
-              variant="secondary"
-              size="lg"
-              onClick={() => navigate("/react/manage-hire/post.do")}
-            >
+            <Button variant="secondary" size="lg" onClick={() => navigate(-1)}>
               뒤로가기
             </Button>
           )}
