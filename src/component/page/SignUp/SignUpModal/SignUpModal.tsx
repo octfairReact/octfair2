@@ -158,9 +158,13 @@ export const SignUpModal = () => {
                 <table className="table">
                     <tbody>
                         <tr>
-                            <th>회원 유형</th>
+                            <th className="required">회원 유형</th>
                             <td>
-                                <select className="selectUserType" value={userType} onChange={handleUserType}>
+                                <select
+                                    className="selectUserType"
+                                    value={userType}
+                                    onChange={(e) => setUserType(e.target.value)}
+                                >
                                     <option value="">선택</option>
                                     <option value="A">개인회원</option>
                                     <option value="B">기업회원</option>
@@ -168,14 +172,20 @@ export const SignUpModal = () => {
                             </td>
                         </tr>
                         <tr>
-                            <th>아이디</th>
+                            <th className="required">아이디</th>
                             <td>
-                                <input type="text" ref={loginId} placeholder="숫자, 영문자 조합으로 6~20자리"></input>
-                                <button onClick={checkId}>중복확인</button>
+                                <div className="input-with-button">
+                                    <input
+                                        type="text"
+                                        ref={loginId}
+                                        placeholder="숫자, 영문자 조합으로 6~20자리"
+                                    ></input>
+                                    <button onClick={checkId}>중복확인</button>
+                                </div>
                             </td>
                         </tr>
                         <tr>
-                            <th>비밀번호</th>
+                            <th className="required">비밀번호</th>
                             <td>
                                 <input
                                     type="password"
@@ -185,20 +195,20 @@ export const SignUpModal = () => {
                             </td>
                         </tr>
                         <tr>
-                            <th>비밀번호 확인</th>
+                            <th className="required">비밀번호 확인</th>
                             <td>
                                 <input type="password" ref={checkPassword}></input>
                             </td>
                         </tr>
                         <tr>
-                            <th>이름</th>
+                            <th className="required">이름</th>
                             <td>
                                 <input type="text" ref={name} name="userName"></input>
                             </td>
 
-                            <th>성별</th>
+                            <th className="required">성별</th>
                             <td>
-                                <select className="selectUserType" value={sex} onChange={handleUserGender}>
+                                <select className="selectUserType" value={sex} onChange={(e) => setSex(e.target.value)}>
                                     <option value="">선택</option>
                                     <option value="1">남자</option>
                                     <option value="2">여자</option>
@@ -206,25 +216,25 @@ export const SignUpModal = () => {
                             </td>
                         </tr>
                         <tr>
-                            <th>생년 월일</th>
+                            <th className="required">생년 월일</th>
                             <td>
                                 <input type="date" ref={birthday}></input>
                             </td>
                         </tr>
                         <tr>
-                            <th>전화번호</th>
+                            <th className="required">전화번호</th>
                             <td>
                                 <input type="text" ref={phone}></input>
                             </td>
                         </tr>
                         <tr>
-                            <th>이메일</th>
+                            <th className="required">이메일</th>
                             <td>
                                 <input type="text" ref={email}></input>
                             </td>
                         </tr>
                         <tr>
-                            <th>우편번호</th>
+                            <th className="required">우편번호</th>
                             <td className="address-container">
                                 <input
                                     type="text"
@@ -237,7 +247,7 @@ export const SignUpModal = () => {
                             </td>
                         </tr>
                         <tr>
-                            <th>주소</th>
+                            <th className="required">주소</th>
                             <td>
                                 <input type="text" value={address} onChange={(e) => setAddress(e.target.value)}></input>
                             </td>
@@ -248,11 +258,11 @@ export const SignUpModal = () => {
                                 <input type="text" ref={userDetailAddress}></input>
                             </td>
                         </tr>
-                        <div className="modal-footer">
-                            <button onClick={handlerModal}>나가기</button>
-                            <button onClick={handlerSave}>등록</button>
-                        </div>
                     </tbody>
+                    <div className="modal-footer">
+                        <button onClick={handlerModal}>나가기</button>
+                        <button onClick={handlerSave}>등록</button>
+                    </div>
                 </table>
             </SignUpModalStyled>
         </form>

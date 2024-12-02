@@ -27,11 +27,6 @@ export const MyPageMain = () => {
     const [bizIdx, setBizIdx] = useState<number>(0);
     const navigate = useNavigate();
 
-
-    const handleUserGender = (e) => {
-        setSex(e.target.value);
-    };
-
     const searchDetail = async () => {
         const param = { loginId: userInfo.loginId };
         console.log(param);
@@ -39,9 +34,7 @@ export const MyPageMain = () => {
 
         if (detailApi) {
             setUserDetail(detailApi.detail);
-
             setBizIdx(detailApi.chkRegBiz.bizIdx);
-
             localStorage.setItem("userDetail", JSON.stringify(detailApi.detail));
         }
     };
@@ -54,11 +47,9 @@ export const MyPageMain = () => {
                 const parsedDetail = JSON.parse(savedUserDetail);
                 setUserDetail(parsedDetail);
             }
-
             // 상세 정보를 불러오는 API 호출
             searchDetail();
         }
-
         // 컴포넌트 언마운트 시 클린업
         return () => {
             setUserDetail(null); // 상태 초기화
@@ -77,7 +68,6 @@ export const MyPageMain = () => {
             setZipCode(userDetail?.zipCode);
         }
     }, [userDetail]); // userDetail 값이 변경될 때마다 실행
-
 
     const handlerUpdate = async () => {
         const nameToDetailAddress: SignUpOtherUserData = {
@@ -157,14 +147,19 @@ export const MyPageMain = () => {
                             </td>
                         </tr>
                         <tr>
-                            <th>이름</th>
+                            <th className="required">이름</th>
                             <td>
                                 <input type="text" ref={name} defaultValue={userDetail?.name}></input>
                             </td>
-
-                            <th>성별</th>
+                        </tr>
+                        <tr>
+                            <th className="required">성별</th>
                             <td>
-                                <select className="selectUserType" value={sex || ""} onChange={handleUserGender}>
+                                <select
+                                    className="selectUserType"
+                                    value={sex || ""}
+                                    onChange={(e) => setSex(e.target.value)}
+                                >
                                     <option value="" disabled>
                                         선택
                                     </option>
@@ -174,19 +169,24 @@ export const MyPageMain = () => {
                             </td>
                         </tr>
                         <tr>
-                            <th>생년 월일</th>
+                            <th className="required">생년 월일</th>
                             <td>
-                                <input type="date" ref={birthday} defaultValue={userDetail?.birthday}></input>
+                                <input
+                                    className="selectBirth"
+                                    type="date"
+                                    ref={birthday}
+                                    defaultValue={userDetail?.birthday}
+                                ></input>
                             </td>
                         </tr>
                         <tr>
-                            <th>전화번호</th>
+                            <th className="required">전화번호</th>
                             <td>
                                 <input type="text" ref={phone} defaultValue={userDetail?.phone}></input>
                             </td>
                         </tr>
                         <tr>
-                            <th>이메일</th>
+                            <th className="required">이메일</th>
                             <td>
                                 <input type="text" ref={email} defaultValue={userDetail?.email}></input>
                             </td>
@@ -207,9 +207,8 @@ export const MyPageMain = () => {
                                 </td>
                             </tr>
                         )}
-
                         <tr>
-                            <th>우편번호</th>
+                            <th className="required">우편번호</th>
                             <td className="address-container">
                                 <input
                                     type="text"
@@ -222,7 +221,7 @@ export const MyPageMain = () => {
                             </td>
                         </tr>
                         <tr>
-                            <th>주소</th>
+                            <th className="required">주소</th>
                             <td>
                                 <input
                                     type="text"

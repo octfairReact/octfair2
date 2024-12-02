@@ -10,6 +10,7 @@ import { Button } from "react-bootstrap";
 import { Address } from "react-daum-postcode";
 import PostCode from "../../../common/PostCode/PostCode";
 import { manageApplicantSchema } from "../../../common/Validate/Schemas/User/ManageApplicantSchema";
+import { ApplicantModalStyled } from "./css/styled";
 
 interface IApplicantModalProps {
     onSuccess: () => void;
@@ -44,21 +45,12 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
             setSex(applicantDetail?.sex);
             setUserType(applicantDetail?.userType);
             setUserStatus(applicantDetail?.statusYn);
-            setZipCode(applicantDetail?.zipCode.toString());
+            setZipCode(applicantDetail?.zipCode);
             setAddress(applicantDetail?.address);
         }
     }, [applicantDetail]);
 
-    const handleUserType = (e) => {
-        setUserType(e.target.value);
-    };
-    const handleUserGender = (e) => {
-        setSex(e.target.value);
-    };
-    const handleUserStatus = (e) => {
-        setUserStatus(e.target.value);
-    };
-
+    
     // 우편번호 api 및 input
     const handleAddressComplete = (data: Address) => {
         // 검색된 주소로 `zipCode`와 `userAddress` 상태 업데이트
@@ -136,13 +128,26 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
     };
 
     return (
-        <NoticeModalStyled>
+        <ApplicantModalStyled>
             <table className="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <div className="title-container">
+                                <strong>구직자 회원 관리</strong>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
                         <th>회원 유형</th>
                         <td>
-                            <select className="selectUserType" value={userType || ""} onChange={handleUserType}>
+                            <select
+                                className="selectUserType"
+                                value={userType || ""}
+                                onChange={(e) => setUserType(e.target.value)}
+                            >
                                 <option value="" disabled>
                                     선택
                                 </option>
@@ -173,10 +178,15 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
                         <td>
                             <input type="text" ref={name} defaultValue={applicantDetail?.name}></input>
                         </td>
-
+                    </tr>
+                    <tr>
                         <th>성별</th>
                         <td>
-                            <select className="selectUserType" value={sex || ""} onChange={handleUserGender}>
+                            <select
+                                className="selectUserType"
+                                value={sex || ""}
+                                onChange={(e) => setSex(e.target.value)}
+                            >
                                 <option value="" disabled>
                                     선택
                                 </option>
@@ -212,7 +222,11 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
                     <tr>
                         <th>활성화 여부</th>
                         <td>
-                            <select className="selectUserType" value={userStatus || ""} onChange={handleUserStatus}>
+                            <select
+                                className="selectUserType"
+                                value={userStatus || ""}
+                                onChange={(e) => setUserStatus(e.target.value)}
+                            >
                                 <option value="" disabled>
                                     선택
                                 </option>
@@ -261,6 +275,6 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
                     </div>
                 </tbody>
             </table>
-        </NoticeModalStyled>
+        </ApplicantModalStyled>
     );
 };
