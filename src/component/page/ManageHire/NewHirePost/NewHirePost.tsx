@@ -219,8 +219,13 @@ const NewHirePost = () => {
 
   const deleteAttach = async (postIdx: string) => {
     try {
+      const param = { ...postData };
       const response = await axios.post(
-        `/api/manage-hire/deleteAttachment/${postIdx}`
+        `/api/manage-hire/deleteAttachment/${postIdx}`,
+        param,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
       );
       if (response.data.result === "success") {
         alert("첨부파일이 삭제되었습니다.");
