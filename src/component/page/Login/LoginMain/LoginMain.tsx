@@ -57,6 +57,12 @@ export const LoginMain = () => {
         });
     };
 
+    const activeEnter  = (e) => {
+        if (e.key === "Enter") {
+            loginHandler();
+        }
+    };
+
     return (
         <>
             <LoginStyled>
@@ -90,6 +96,7 @@ export const LoginMain = () => {
                                                 return { ...prev, lgn_Id: e.target.value };
                                             });
                                         }}
+                                        onKeyDown={(e) => activeEnter(e)}
                                     />
                                 </div>
                                 <div>
@@ -102,6 +109,7 @@ export const LoginMain = () => {
                                                 return { ...prev, pwd: e.target.value };
                                             });
                                         }}
+                                        onKeyDown={(e) => activeEnter(e)}
                                     />
                                 </div>
                                 <div>

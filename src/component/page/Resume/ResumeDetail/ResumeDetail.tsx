@@ -61,7 +61,8 @@ export const ResumeDetail = () => {
 
     if (newList) {
       setResumeSeq(newList.payload.resIdx);
-      setResumeDetail(newList.payload); 
+      setResumeDetail(newList.payload);
+      navigate('/react/apply/resumeDetail.do', { state: { idx: newList.payload.resIdx } });
     }
   }
 
@@ -70,7 +71,7 @@ export const ResumeDetail = () => {
     const detailList = await postApi<IResumeDetailReponse>( Resume.getDetail, searchParam );
 
     if (detailList) { 
-      setResumeDetail(detailList.payload); 
+      setResumeDetail(detailList.payload);
     }
   }
 
