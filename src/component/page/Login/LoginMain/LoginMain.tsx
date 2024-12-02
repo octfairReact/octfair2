@@ -26,6 +26,7 @@ export const LoginMain = () => {
 
     //회원 가입 모달 창 띄우기
     const [modal, setModal] = useRecoilState<boolean>(modalState);
+    //ID, PW 찾는 모달 창 띄우기
     const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
 
     const handlerSignUpModal = () => {

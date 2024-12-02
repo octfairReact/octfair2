@@ -11,22 +11,20 @@ import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
 import { ApplicantModal } from "../ApplicantModal/ApplicantModal";
 import { Portal } from "../../../common/potal/Portal";
 
-
 export const ApplicantMain = () => {
-
     const [applicantList, setApplicantList] = useState<IUser[]>();
     const [listCount, setListCount] = useState<number>(0);
-    const [modal, setModal] = useRecoilState<boolean>(modalState); 
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     const [loginId, setLoginId] = useState<string>("");
     const [cPage, setCPage] = useState<number>();
     const { searchKeyWord } = useContext(UserContext);
 
-      useEffect(() => {
-          // console.log(searchKeyWord);
-          searchApplicantList();
-      }, [searchKeyWord]);
-    
+    useEffect(() => {
+        // console.log(searchKeyWord);
+        searchApplicantList();
+    }, [searchKeyWord]);
+
     const searchApplicantList = async (currentPage?: number) => {
         currentPage = currentPage || 1;
 
@@ -44,6 +42,11 @@ export const ApplicantMain = () => {
             setListCount(searchList.applicantCnt);
             setCPage(currentPage);
         }
+    };
+
+    const onPostSuccess = () => {
+        setModal(!modal);
+        searchApplicantList();
     };
 
     const handlerModal = (loginId: string) => {
@@ -95,7 +98,7 @@ export const ApplicantMain = () => {
             ></PageNavigate>
             {modal && (
                 <Portal>
-                    <ApplicantModal loginId={loginId} />
+                    <ApplicantModal loginId={loginId} onSuccess={onPostSuccess} />
                 </Portal>
             )}
         </>

@@ -1,11 +1,6 @@
 import { useRecoilState } from "recoil";
 import { useEffect, useState } from "react";
-import {
-    IPostResponse,
-    IUser,
-    IUserCheckBizRegResponse,
-    IUserDetailResponse,
-} from "../../../../models/interface/IUser";
+import { IPostResponse, IUser, IUserDetailResponse } from "../../../../models/interface/IUser";
 import { ILoginInfo } from "../../../../models/interface/store/userInfo";
 import { loginInfoState } from "../../../../stores/userInfo";
 import { MyPage } from "../../../../api/api";
@@ -14,63 +9,27 @@ import { Button } from "react-bootstrap";
 import { UserInit } from "../../Login/Init/User";
 import PostCode from "../../../common/PostCode/PostCode";
 import { Address } from "react-daum-postcode";
-import { SignUpOtherUserDetail } from "../../../../models/interface/ISignUp";
-import { otherUserDataSchema } from "../../../common/Validate/Schemas/Schemas";
+import { SignUpOtherUserData } from "../../../../models/interface/ISignUp";
 import { MyPageStyled } from "./styled";
 import { modalState2 } from "../../../../stores/modalState";
 import { Portal } from "../../../common/potal/Portal";
 import { ChangePwModal } from "../ChangePwModal/ChangePwModal";
 import { useNavigate } from "react-router-dom";
+import { otherUserDataSchema } from "../../../common/Validate/Schemas/User/UserSchema";
 
 export const MyPageMain = () => {
     const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
     const [userDetail, setUserDetail] = useState<IUser>();
     const { state, refs } = UserInit();
-    const { userGender, setUserGender, address, setAddress, zipCode, setZipCode } = state;
+    const { sex, setSex, address, setAddress, zipCode, setZipCode } = state;
     const { name, birthday, phone, email, userDetailAddress } = refs;
     const [bizIdx, setBizIdx] = useState<number>(0);
     const navigate = useNavigate();
 
-    // // useEffect로 컴포넌트 마운트 시 searchDetail 호출
-    // useEffect(() => {
-    //     searchDetail();
-    // }, []);
-
-    // useEffect(() => {
-    //     const initializePage = async () => {
-    //         await searchDetail(); // 사용자 정보 조회
-    //         await checkUserBizReg(); // 기업 등록 여부 확인
-    //     };
-
-    //     initializePage();
-    // }, []);
-
-    // // userDetail 변경을 감지하고 userGender 업데이트
-    // useEffect(() => {
-    //     if (userDetail?.sex) {
-    //         setUserGender(userDetail?.sex);
-    //         console.log("Updated gender:", userDetail?.sex);
-    //     }
-    // }, [userDetail]);
-
-    // useEffect(() => {
-    //     // 로컬 스토리지에서 이전 userDetail을 가져오기
-    //     const savedUserDetail = localStorage.getItem("userDetail");
-    //     if (savedUserDetail) {
-    //         setUserDetail(JSON.parse(savedUserDetail)); // 로컬 스토리지에서 값 읽어오기
-    //     }
-    // }, []);
-
-    // useEffect(() => {
-    //     if (userDetail) {
-    //         // userDetail이 변경되면 로컬 스토리지에 저장
-    //         localStorage.setItem("userDetail", JSON.stringify(userDetail));
-    //     }
-    // }, [userDetail]);
 
     const handleUserGender = (e) => {
-        setUserGender(e.target.value);
+        setSex(e.target.value);
     };
 
     const searchDetail = async () => {
@@ -80,52 +39,50 @@ export const MyPageMain = () => {
 
         if (detailApi) {
             setUserDetail(detailApi.detail);
+
+            setBizIdx(detailApi.chkRegBiz.bizIdx);
+
+            localStorage.setItem("userDetail", JSON.stringify(detailApi.detail));
         }
     };
 
-    const checkUserBizReg = async () => {
-        const param = { loginId: userInfo.loginId };
-        const checkRegBizApi = await postApi<IUserCheckBizRegResponse>(MyPage.getDetail, param);
-        if (checkRegBizApi) {
-            setBizIdx(checkRegBizApi.chkRegBiz.bizIdx);
-            console.log(bizIdx);
-        }
-    };
-
-    // 컴포넌트 마운트 시 데이터 로드 및 로컬 스토리지 처리
     useEffect(() => {
-        const initializePage = async () => {
-            // 로컬 스토리지에서 이전 userDetail을 가져오기
+        // userInfo가 변경되면 로컬 스토리지에서 사용자 정보 불러오기
+        if (userInfo?.loginId) {
             const savedUserDetail = localStorage.getItem("userDetail");
             if (savedUserDetail) {
-                setUserDetail(JSON.parse(savedUserDetail)); // 로컬 스토리지에서 값 읽어오기
-            } else {
-                await searchDetail(); // 로컬 스토리지에 없으면 데이터 API 호출
+                const parsedDetail = JSON.parse(savedUserDetail);
+                setUserDetail(parsedDetail);
             }
 
-            // 기업 등록 여부 확인
-            await checkUserBizReg();
+            // 상세 정보를 불러오는 API 호출
+            searchDetail();
+        }
+
+        // 컴포넌트 언마운트 시 클린업
+        return () => {
+            setUserDetail(null); // 상태 초기화
+            setBizIdx(null); // 상태 초기화
+            localStorage.removeItem("userDetail"); // 로컬 스토리지 클린업
         };
+    }, [userInfo]); // userInfo가 변경될 때마다 실행
 
-        initializePage();
-    }, []); // 처음 한 번만 실행
-
-    // userDetail 변경을 감지하고 userGender 업데이트 및 로컬 스토리지 저장
     useEffect(() => {
-        if (userDetail?.sex) {
-            setUserGender(userDetail?.sex);
-        }
-
-        // userDetail이 변경되면 로컬 스토리지에 저장
+        // userDetail 값이 변경되면 여기서 다른 작업을 수행할 수 있음
         if (userDetail) {
-            localStorage.setItem("userDetail", JSON.stringify(userDetail));
+            console.log("User Detail updated:", userDetail);
+            // 추가 작업 (예: UI에 사용자 상세 정보 반영)
+            setSex(userDetail?.sex);
+            setAddress(userDetail?.address);
+            setZipCode(userDetail?.zipCode);
         }
-    }, [userDetail]); // userDetail이 변경될 때마다 실행
+    }, [userDetail]); // userDetail 값이 변경될 때마다 실행
+
 
     const handlerUpdate = async () => {
-        const nameToDetailAddress: SignUpOtherUserDetail = {
+        const nameToDetailAddress: SignUpOtherUserData = {
             name: name.current.value,
-            userGender: userGender,
+            sex: sex,
             phone: phone.current.value,
             email: email.current.value,
             birthday: birthday.current.value,
@@ -143,7 +100,7 @@ export const MyPageMain = () => {
 
         const param = {
             name: name.current.value,
-            sex: userGender,
+            sex: sex,
             birthday: birthday.current.value,
             phone: phone.current.value,
             email: email.current.value,
@@ -157,6 +114,7 @@ export const MyPageMain = () => {
 
         if (updateApi.result === "success") {
             alert("회원 정보 수정이 완료되었습니다");
+            searchDetail();
         }
     };
 
@@ -206,7 +164,7 @@ export const MyPageMain = () => {
 
                             <th>성별</th>
                             <td>
-                                <select className="selectUserType" value={userGender} onChange={handleUserGender}>
+                                <select className="selectUserType" value={sex || ""} onChange={handleUserGender}>
                                     <option value="" disabled>
                                         선택
                                     </option>
@@ -238,9 +196,13 @@ export const MyPageMain = () => {
                                 <th>기업 정보</th>
                                 <td>
                                     {bizIdx ? (
-                                        <button onClick={() => navigate(`/react/company/companyUpdate.do/${bizIdx}`)}>기업 정보 수정</button>
+                                        <button onClick={() => navigate(`/react/company/companyUpdate.do/${bizIdx}`)}>
+                                            기업 정보 수정
+                                        </button>
                                     ) : (
-                                        <button onClick={() => navigate(`/react/company/companyWrite.do/`)}>기업 등록</button>
+                                        <button onClick={() => navigate(`/react/company/companyWrite.do/`)}>
+                                            기업 등록
+                                        </button>
                                     )}
                                 </td>
                             </tr>
@@ -251,7 +213,7 @@ export const MyPageMain = () => {
                             <td className="address-container">
                                 <input
                                     type="text"
-                                    value={zipCode}
+                                    value={zipCode || ""}
                                     defaultValue={userDetail?.zipCode}
                                     onChange={(e) => setZipCode(e.target.value)}
                                     placeholder="우편번호 입력"
@@ -265,7 +227,7 @@ export const MyPageMain = () => {
                                 <input
                                     type="text"
                                     defaultValue={userDetail?.address}
-                                    value={address}
+                                    value={address || ""}
                                     onChange={(e) => setAddress(e.target.value)}
                                 ></input>
                             </td>

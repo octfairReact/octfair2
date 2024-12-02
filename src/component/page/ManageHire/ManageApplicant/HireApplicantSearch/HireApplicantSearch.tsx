@@ -6,6 +6,9 @@ import { IApplicantSearch, IBiz, IBizSearch } from '../../../../../models/interf
 import { Form, Stack } from 'react-bootstrap';
 import { postApi } from '../../../../../api/postApi';
 import { HireApplicant } from '../../../../../api/api';
+import { useRecoilState } from 'recoil';
+import { ILoginInfo } from '../../../../../models/interface/store/userInfo';
+import { loginInfoState } from '../../../../../stores/userInfo';
 
 const HireApplicantSearch = () => {
   const navigate = useNavigate();
@@ -56,18 +59,6 @@ const HireApplicantSearch = () => {
       alert("지원자가 없습니다.");
       navigate("/react/manage-hire/post.do");    
     }
-
-    // axios.post('/api/manage-hire/applicant.do',).then((res) => {
-    //   const data = res.data;
-    //   setBizList(data.MDetail);
-       
-    //   if(data.MDetail.length===0){
-    //     alert("지원자가 없습니다.");
-    //     navigate("/react/manage-hire/post.do");        
-    //   }else{
-    //     setSearchValue({postIdx : data.MDetail[0].postIdx.toString(), keyword : "서류심사중" });            
-    //   }
-    // })
   }
   const handlerSearch = (e) => {
     setSearchValue({...searchValue, keyword : e.target.value})
@@ -89,23 +80,20 @@ const HireApplicantSearch = () => {
       onChange={(e) => handlerBiz(e)}
       value={searchValue.title} >
       {bizList?.map((MDetail,index) => (   
-        <React.Fragment key={MDetail.postIdx}>
           <option key={MDetail.postIdx} value={MDetail.title} data-postidx={MDetail.postIdx.toString()} data-index={index}>
             {MDetail.title}
           </option>
-        </React.Fragment> 
          ))}          
       </Form.Select>
-      <Form.Select id="selectValue" onChange={(e) => 
-        handlerSearch(e)} value={searchValue.keyword}>
-        {bizList?.map((MDetail) => (
-          <>
+      <Form.Select id="selectValue" onChange={(e) => handlerSearch(e)} value={searchValue.keyword}>
+        {bizList?.map((MDetail,index) => (
+          <React.Fragment key={index}>
           {MDetail.postIdx.toString() == searchValue.postIdx ? (            
-            MDetail.procArray.map((procArray)=>(          
-            <option value={procArray.proc} >{procArray.proc}</option>  
+            MDetail.procArray.map((procArray,index)=>(          
+            <option key={index} value={procArray.proc} >{procArray.proc}</option>  
             ))       
           ) : null }
-          </>
+          </React.Fragment>
         ))} 
         <option value="최종합격" >최종합격</option>
         <option value="탈락" >불합격</option> 

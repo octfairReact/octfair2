@@ -3,40 +3,40 @@ import { useRecoilState } from "recoil";
 import { modalState } from "../../../../stores/modalState";
 import { SignUp } from "../../../../api/api";
 import { postSignUpApi } from "../../../../api/postSignUpApi";
-import { IPostResponse, SignUpOtherUserDetail, SignUpUserTypeToCheckPw } from "../../../../models/interface/ISignUp";
-import { loginIdSchema, otherUserDataSchema } from "../../../common/Validate/Schemas/Schemas";
+import { IPostResponse, SignUpOtherUserData, SignUpUserTypeToCheckPw } from "../../../../models/interface/ISignUp";
 import { UserInit } from "../../Login/Init/User";
 import PostCode from "../../../common/PostCode/PostCode";
 import { Address } from "react-daum-postcode";
-import { userTypeToCheckPwSchema } from "../../../common/Validate/Schemas/Schemas";
-import { useEffect } from "react";
+import { idChkState } from "../../../../stores/idChkState";
+import { loginIdSchema, userTypeToCheckPwSchema } from "../../../common/Validate/Schemas/User/SignUpSchema";
+import { otherUserDataSchema } from "../../../common/Validate/Schemas/User/UserSchema";
 
 export const SignUpModal = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
+    const [checkIdExist, setCheckIdExist] = useRecoilState<boolean>(idChkState);
 
     //User.ts에서 유저 정보 초기값 불러오기
     const { state, refs } = UserInit();
     const {
         userType,
         setUserType,
-        userGender,
-        setUserGender,
+        sex,
+        setSex,
         address,
         setAddress,
         zipCode,
         setZipCode,
-        checkLoginIdExist,
-        setCheckLoginIdExist,
+        firstCheckId,
+        setFirstCheckId,
     } = state;
     const { loginId, password, checkPassword, name, birthday, phone, email, userDetailAddress } = refs;
 
-    useEffect(() => {}, []);
     //select-option으로 값 바뀌는 userType과 Gender 값 세팅
     const handleUserType = (e) => {
         setUserType(e.target.value);
     };
     const handleUserGender = (e) => {
-        setUserGender(e.target.value);
+        setSex(e.target.value);
     };
 
     //Id 중복 체크 버튼용 함수
@@ -56,9 +56,9 @@ export const SignUpModal = () => {
             const checkIdResponse = await postSignUpApi<IPostResponse>(SignUp.checkId, param);
             if (checkIdResponse.result === "success") {
                 alert("중복된 ID입니다");
-                setCheckLoginIdExist("NOT AVAILABLE");
             } else {
-                setCheckLoginIdExist("AVAILABLE");
+                setCheckIdExist(!checkIdExist);
+                setFirstCheckId(loginId.current.value);
                 alert("사용 가능한 ID입니다");
             }
         } catch (error) {
@@ -89,9 +89,9 @@ export const SignUpModal = () => {
             checkPassword: checkPassword.current.value,
         };
 
-        const nameToDetailAddress: SignUpOtherUserDetail = {
+        const nameToDetailAddress: SignUpOtherUserData = {
             name: name.current.value,
-            userGender: userGender,
+            sex: sex,
             phone: phone.current.value,
             email: email.current.value,
             birthday: birthday.current.value,
@@ -114,6 +114,16 @@ export const SignUpModal = () => {
             return; // validUserTypeToCheckPw 검증 실패 시 리턴
         }
 
+        if (checkIdExist !== true) {
+            alert("ID 중복 검사를 진행해주세요");
+            return;
+        }
+        if (loginId.current.value !== firstCheckId) {
+            setCheckIdExist(!checkIdExist);
+            alert("입력하신 ID가 변경되었습니다. 중복 검사를 다시 진행해주세요");
+            return;
+        }
+
         //유효성 검증 완료 후 폼 제출
         const param = {
             action: "I",
@@ -121,7 +131,7 @@ export const SignUpModal = () => {
             userType: userType,
             name: name.current.value,
             password: password.current.value,
-            sex: userGender,
+            sex: sex,
             phone: phone.current.value,
             email: email.current.value,
             birthday: birthday.current.value,
@@ -129,11 +139,6 @@ export const SignUpModal = () => {
             address: address,
             detailAddress: userDetailAddress.current.value,
         };
-
-        if (checkLoginIdExist !== "AVAILABLE") {
-            alert("ID 중복 검사를 진행해주세요");
-            return;
-        }
 
         const save = await postSignUpApi<IPostResponse>(SignUp.register, param);
         if (save.result === "SUCCESS") {
@@ -143,6 +148,7 @@ export const SignUpModal = () => {
     };
 
     const handlerModal = () => {
+        setCheckIdExist(!checkIdExist);
         setModal(!modal);
     };
 
@@ -192,7 +198,7 @@ export const SignUpModal = () => {
 
                             <th>성별</th>
                             <td>
-                                <select className="selectUserType" value={userGender} onChange={handleUserGender}>
+                                <select className="selectUserType" value={sex} onChange={handleUserGender}>
                                     <option value="">선택</option>
                                     <option value="1">남자</option>
                                     <option value="2">여자</option>

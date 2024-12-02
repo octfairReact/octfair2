@@ -4,10 +4,12 @@ import { Button } from "react-bootstrap";
 import { UserInit } from "../../Login/Init/User";
 import { postSignUpApi } from "../../../../api/postSignUpApi";
 import { SignUp } from "../../../../api/api";
-import { IPostResponse, IUserInfoResponse } from "../../../../models/interface/ISignUp";
+
 import { useRecoilState } from "recoil";
 import { modalState2 } from "../../../../stores/modalState";
-import { emailAndNameSchema, loginIdEmailSchema, passwordCheckPwSchema } from "../../../common/Validate/Schemas/Schemas";
+import { IPostResponse } from "../../../../models/interface/IUser";
+import { emailAndNameSchema, loginIdEmailSchema } from "../../../common/Validate/Schemas/User/FindIdPwSchema";
+import { passwordCheckPwSchema } from "../../../common/Validate/Schemas/User/UserSchema";
 
 export const FindIdPwModal = () => {
     const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
@@ -17,6 +19,7 @@ export const FindIdPwModal = () => {
     const { refs } = UserInit();
 
     const { loginId, name, email, password, checkPassword } = refs;
+    const [passLoginId, setPassLoginId] = useState("");
 
     const handlerModal = () => {
         setFindModal(!findModal);
@@ -54,7 +57,7 @@ export const FindIdPwModal = () => {
         };
         console.log(param);
 
-        const findUserId = await postSignUpApi<IUserInfoResponse>(SignUp.findId, param);
+        const findUserId = await postSignUpApi<IPostResponse>(SignUp.findId, param);
         if (findUserId.result === "SUCCESS") {
             alert("회원님의 ID는  " + findUserId.id + "  입니다.");
             handlerModal();
@@ -66,6 +69,9 @@ export const FindIdPwModal = () => {
 
     const findPw = async (e) => {
         e.preventDefault();
+
+        const loginIdValue = loginId.current.value;
+        setPassLoginId(loginIdValue);
 
         const userLoginIdEmail = {
             loginId: loginId.current.value,
@@ -83,7 +89,7 @@ export const FindIdPwModal = () => {
         };
         console.log(param);
 
-        const findUserPw = await postSignUpApi<IUserInfoResponse>(SignUp.findPw, param);
+        const findUserPw = await postSignUpApi<IPostResponse>(SignUp.findPw, param);
         if (findUserPw.result === "SUCCESS") {
             setOpenChangePw(true);
         } else {
@@ -105,7 +111,7 @@ export const FindIdPwModal = () => {
 
         const param = {
             pw: password.current.value,
-            id: loginId.current.value,
+            id: passLoginId,
         };
         console.log(param);
         const updateUserPw = await postSignUpApi<IPostResponse>(SignUp.updatePw, param);
@@ -134,20 +140,23 @@ export const FindIdPwModal = () => {
             </div>
 
             <div className="findPwArea">
-                {openFindPw && (
-                    <p>
-                        아이디<input type="text" ref={loginId} placeholder="가입하신 아이디를 입력하세요"></input>
-                        <br></br>
-                        이메일<input type="text" ref={email} placeholder="가입하신 이메일을 입력하세요"></input>
-                        <br></br>
-                        <Button onClick={findPw}>확인</Button>
-                    </p>
-                )}
+                {openFindPw &&
+                    !openChangePw && ( // openChangePw가 false일 때만 표시되도록 조건 추가
+                        <p>
+                            아이디<input type="text" ref={loginId} placeholder="가입하신 아이디를 입력하세요"></input>
+                            <br></br>
+                            이메일<input type="text" ref={email} placeholder="가입하신 이메일을 입력하세요"></input>
+                            <br></br>
+                            <Button onClick={findPw}>확인</Button>
+                        </p>
+                    )}
             </div>
 
             <div className="changePwArea">
                 {openChangePw && (
                     <p>
+                        <input type="hidden" value={passLoginId}></input>
+                        <br></br>
                         비밀번호<input type="password" ref={password}></input>
                         <br></br>
                         비밀번호 확인<input type="password" ref={checkPassword}></input>

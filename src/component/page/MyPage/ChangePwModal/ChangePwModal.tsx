@@ -4,10 +4,10 @@ import { MyPage } from "../../../../api/api";
 import { IPostResponse } from "../../../../models/interface/ISignUp";
 import { useRecoilState } from "recoil";
 import { modalState2 } from "../../../../stores/modalState";
-import { passwordCheckPwSchema } from "../../../common/Validate/Schemas/Schemas";
 import { ChangePwModalStyled } from "./styled";
 import { useRef } from "react";
 import { postApi } from "../../../../api/postApi";
+import { passwordCheckPwSchema } from "../../../common/Validate/Schemas/User/UserSchema";
 
 export const ChangePwModal = (loginId) => {
     const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
