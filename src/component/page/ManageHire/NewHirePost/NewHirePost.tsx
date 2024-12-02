@@ -18,6 +18,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   IPostdetailResponse,
   IPostDetail,
+  IBizDetail,
 } from "../../../../models/interface/IPost";
 import axios from "axios";
 import { useRecoilState } from "recoil";
@@ -31,10 +32,12 @@ const NewHirePost = () => {
   const [postData, setPostData] = useState<IPostDetail>({
     expYears: 0,
   } as IPostDetail);
+  const [bizData, setBizData] = useState<IBizDetail>();
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [fileData, setFileData] = useState<File>();
   const [currentProc, setCurrentProc] = useState<string>("");
   const navigate = useNavigate();
   const [postIdx, setPostIdx] = useState<string | null>(null);
@@ -65,6 +68,7 @@ const NewHirePost = () => {
     console.log("API Response: ", response);
     if (response) {
       setPostData(response.postDetail);
+      setBizData(response.bizDetail);
       setStartDate(new Date(response.postDetail.startDate));
       setEndDate(new Date(response.postDetail.startDate));
       setImageUrl(response.postDetail.logicalPath);
@@ -115,13 +119,14 @@ const NewHirePost = () => {
     validateForm();
     const postWithLoginId = { ...postData, loginId: userInfo.loginId };
     const formData = new FormData();
+
+    fileData && formData.append("attachFile", fileData);
+
     formData.append(
       "postContent",
       new Blob([JSON.stringify(postWithLoginId)], { type: "application/json" })
     );
-    if (fileInputRef.current?.files?.[0]) {
-      formData.append("attachFile", fileInputRef.current.files[0]);
-    }
+
     try {
       let response;
       if (postIdx) {
@@ -163,6 +168,8 @@ const NewHirePost = () => {
       } else {
         setImageUrl(URL.createObjectURL(file));
       }
+
+      setFileData(file);
     }
   };
 
@@ -194,8 +201,10 @@ const NewHirePost = () => {
 
   const deletePost = async (postIdx: string) => {
     try {
+      const param = { bizIdx: bizData.bizIdx };
       const response = await axios.post(
-        `/api/manage-hire/deleteHirePost/${postIdx}`
+        `/api/manage-hire/deleteHirePost/${postIdx}`,
+        param
       );
       if (response.data.result === "success") {
         alert("채용공고가 삭제되었습니다.");

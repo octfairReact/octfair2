@@ -52,7 +52,7 @@ const SlideImage: React.FC<SlideImageProps> = ({
             <div>
               <img
                 src={bizImagePath}
-                alt="Slide 1"
+                alt="bizImage"
                 style={{
                   width: "100%",
                   height: "300px",
@@ -66,7 +66,7 @@ const SlideImage: React.FC<SlideImageProps> = ({
             <div>
               <img
                 src={postImagePath}
-                alt="Slide 1"
+                alt="PostImage"
                 style={{
                   width: "100%",
                   height: "300px",
