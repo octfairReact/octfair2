@@ -57,18 +57,24 @@ export const ChangePwModal = (loginId) => {
     return (
         <ChangePwModalStyled>
             <div className="changePwArea">
-                <p>
-                    현재 비밀번호<input type="password" ref={oldPassword}></input>
-                    <br></br>
-                    새 비밀번호<input type="password" ref={password}></input>
-                    <br></br>
-                    비밀번호 확인<input type="password" ref={checkPassword}></input>
+                
+                <div>
+                    <label>현재 비밀번호</label>
+                    <input type="password" ref={oldPassword}></input>
+                </div>
+                <div>
+                    <label>새 비밀번호</label>
+                    <input type="password" ref={password}></input>
+                </div>
+                <div>
+                    <label>비밀번호 확인</label>
+                    <input type="password" ref={checkPassword}></input>
+                </div>
                     <br></br>
                     <Button onClick={updatePw}>비밀번호 변경</Button>
-                </p>
+                    <Button onClick={handlerModal}>나가기</Button>
+                
             </div>
-
-            <Button onClick={handlerModal}>나가기</Button>
         </ChangePwModalStyled>
     );
 };

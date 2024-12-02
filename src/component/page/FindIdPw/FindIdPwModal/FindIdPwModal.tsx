@@ -29,6 +29,7 @@ export const FindIdPwModal = () => {
         e.preventDefault();
         setOpenFindId(true);
         setOpenFindPw(false);
+        setOpenChangePw(false);
     };
 
     const openFindPwArea = (e) => {
@@ -123,50 +124,134 @@ export const FindIdPwModal = () => {
 
     return (
         <FindIdPwModalStyled>
-            <Button onClick={openFindIdArea}>ID 찾기</Button>
-
-            <Button onClick={openFindPwArea}>PW 찾기</Button>
-
-            <div className="findIdArea">
-                {openFindId && (
-                    <p>
-                        이름<input type="text" ref={name} placeholder="가입하신 이름을 입력하세요"></input>
-                        <br></br>
-                        이메일<input type="text" ref={email} placeholder="가입하신 이메일을 입력하세요"></input>
-                        <br></br>
-                        <Button onClick={findId}>확인</Button>
-                    </p>
-                )}
+            <div className="modal-header">
+                <Button className="close-button" onClick={handlerModal}>
+                    X
+                </Button>
             </div>
 
-            <div className="findPwArea">
-                {openFindPw &&
-                    !openChangePw && ( // openChangePw가 false일 때만 표시되도록 조건 추가
-                        <p>
-                            아이디<input type="text" ref={loginId} placeholder="가입하신 아이디를 입력하세요"></input>
-                            <br></br>
-                            이메일<input type="text" ref={email} placeholder="가입하신 이메일을 입력하세요"></input>
-                            <br></br>
-                            <Button onClick={findPw}>확인</Button>
-                        </p>
+            <div className="findButton">
+                <Button onClick={openFindIdArea}>ID 찾기</Button>
+                <Button onClick={openFindPwArea}>PW 찾기</Button>
+            </div>
+
+            <div className="findArea">
+                <div>
+                    {openFindId && (
+                        <div>
+                            <div className="form-group">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <label className="form-label">이름</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                ref={name}
+                                                placeholder="가입하신 이름을 입력하세요"
+                                                className="form-input"
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <label className="form-label">이메일</label>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                ref={email}
+                                                placeholder="가입하신 이메일을 입력하세요"
+                                                className="form-input"
+                                            />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <Button className="form-button" onClick={findId}>
+                                확인
+                            </Button>
+                        </div>
                     )}
-            </div>
+                </div>
+                <div>
+                    {openFindPw &&
+                        !openChangePw && ( // openChangePw가 false일 때만 표시되도록 조건 추가
+                            <div>
+                                <div className="form-group">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <label className="form-label">아이디</label>
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    ref={loginId}
+                                                    placeholder="가입하신 아이디를 입력하세요"
+                                                    className="form-input"
+                                                ></input>
+                                            </td>
+                                        </tr>
 
-            <div className="changePwArea">
-                {openChangePw && (
-                    <p>
-                        <input type="hidden" value={passLoginId}></input>
-                        <br></br>
-                        비밀번호<input type="password" ref={password}></input>
-                        <br></br>
-                        비밀번호 확인<input type="password" ref={checkPassword}></input>
-                        <br></br>
-                        <Button onClick={updatePw}>비밀번호 변경</Button>
-                    </p>
-                )}
-            </div>
+                                        <tr>
+                                            <td>
+                                                <label className="form-label">이메일</label>
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    ref={email}
+                                                    placeholder="가입하신 이메일을 입력하세요"
+                                                    className="form-input"
+                                                ></input>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <Button className="form-button" onClick={findPw}>
+                                    확인
+                                </Button>
+                            </div>
+                        )}
+                </div>
+                <div>
+                    {openChangePw && (
+                        <div>
+                            <input type="hidden" value={passLoginId}></input>
+                            <div>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <label className="form-label">비밀번호</label>
+                                        </td>
+                                        <td>
+                                            <input type="password" ref={password} className="form-input"></input>
+                                        </td>
+                                    </tr>
 
-            <Button onClick={handlerModal}>나가기</Button>
+                                    <tr>
+                                        <td>
+                                            <label className="form-label">비밀번호 확인</label>
+                                        </td>
+                                        <td>
+                                            <input type="password" ref={checkPassword} className="form-input"></input>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <Button className="form-button" onClick={updatePw}>
+                                비밀번호 변경
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            </div>
+            {/* 
+            <div className="modal-footer">
+                <Button onClick={handlerModal}>나가기</Button>
+            </div> */}
         </FindIdPwModalStyled>
     );
 };
