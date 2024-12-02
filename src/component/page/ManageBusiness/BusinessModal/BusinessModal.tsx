@@ -4,8 +4,8 @@ import { modalState } from "../../../../stores/modalState";
 import { IBiz, IBizDetailResponse, IPostResponse } from "../../../../models/interface/IBiz";
 import { ManageBusiness } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
-import { NoticeModalStyled } from "../../Notice/NoticeModal/styled";
 import { bizDataSchema } from "../../../common/Validate/Schemas/Biz/ManageBizSchema";
+import { BusinessModalStyled } from "./css/styled";
 
 interface IBusinessModalProps {
     onSuccess: () => void;
@@ -24,7 +24,7 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
     const bizAddr = useRef<HTMLInputElement>(null);
     const bizWebUrl = useRef<HTMLInputElement>(null);
     const bizFoundDate = useRef<HTMLInputElement>(null);
-    const bizIntro = useRef<HTMLInputElement>(null);
+    const bizIntro = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         bizIdx && searchDetail(); // 컴포넌트 생성될 때 실행
@@ -86,8 +86,17 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
     };
 
     return (
-        <NoticeModalStyled>
+        <BusinessModalStyled>
             <table className="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <div className="title-container">
+                                <strong>기업 회원 관리</strong>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
                         <th>사업자번호</th>
@@ -146,7 +155,7 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
                     <tr>
                         <th>회사 소개</th>
                         <td>
-                            <input type="text" ref={bizIntro} defaultValue={bizDetail?.bizIntro}></input>
+                            <textarea className="textarea" ref={bizIntro} defaultValue={bizDetail?.bizIntro}/>
                         </td>
                     </tr>
                     <div className="footer">
@@ -155,6 +164,6 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
                     </div>
                 </tbody>
             </table>
-        </NoticeModalStyled>
+        </BusinessModalStyled>
     );
 };

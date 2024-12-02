@@ -52,12 +52,14 @@ export const SignUpModalStyled = styled.div`
         display: flex;
         width: auto;
         flex-direction: column;
+        text-align: center;
         border-collapse: collapse;
     }
 
     th,
     td {
         padding: 10px; /* 내부 여백 */
+        width: 500px;
         text-align: left; /* 텍스트 정렬 */
         border: 1px solid #ddd; /* 경계선 추가 */
     }
@@ -65,7 +67,22 @@ export const SignUpModalStyled = styled.div`
     th {
         min-width: 110px; /* 최소 너비를 지정 */
         text-align: center; /* 텍스트를 가운데 정렬 */
-        white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+        vertical-align: middle; /* 텍스트를 세로로 가운데 정렬 */
+        position: relative; /* 가상요소 위치를 위한 설정 */
+
+        &.required::after {
+            content: "*";
+            color: #ff0000;
+            position: absolute;
+            margin-left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2em;
+        }
+    }
+
+    .input-with-button button {
+        margin-left: 15px; /* 버튼에 왼쪽 여백을 추가 */
     }
 
     .address-container {
@@ -73,41 +90,20 @@ export const SignUpModalStyled = styled.div`
         align-items: center; /* 수직 가운데 정렬 */
         gap: 20px; /* 요소 간 간격 */
     }
+    .address-container button {
+        margin-left: 1px; /* 버튼에 왼쪽 여백을 추가 */
+    }
 
     .address-container input {
         flex: 1; /* input이 버튼보다 넓게 차지하도록 설정 */
     }
 
     .modal-footer {
-        margin-top: auto; /* 테이블 아래로 밀어내기 */
         display: flex;
-        justify-content: center; /* 버튼을 가로로 중앙에 배치 */
+        justify-content: center;
         width: 100%;
-    }
-
-    img {
-        width: 100px;
-        height: 100px;
-    }
-
-    .img-label {
-        margin-top: 10px;
-        padding: 6px 25px;
-        background-color: #ccc;
-        border-radius: 4px;
-        color: rgba(0, 0, 0, 0.9);
-        cursor: pointer;
-
-        &:hover {
-            background-color: #45a049;
-            color: white;
-        }
-
-        &:active {
-            background-color: #3e8e41;
-            box-shadow: 0 2px #666;
-            transform: translateY(2px);
-        }
+        margin-top: 20px; /* tbody와 modal-footer 사이에 여백 추가 */
+        gap: 20px; /* 버튼 간 간격 추가 */
     }
 
     .button-container {
