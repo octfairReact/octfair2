@@ -15,11 +15,13 @@ interface IBusinessModalProps {
 export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [bizDetail, setBizDetail] = useState<IBiz>();
+    const [bizEmpCount, setBizEmpCount] = useState("");
+    const [bizRevenue, setBizRevenue] = useState("");
 
     const bizName = useRef<HTMLInputElement>(null);
     const bizCeoName = useRef<HTMLInputElement>(null);
-    const bizEmpCount = useRef<HTMLInputElement>(null);
-    const bizRevenue = useRef<HTMLInputElement>(null);
+    // const bizEmpCount = useRef<HTMLInputElement>(null);
+    // const bizRevenue = useRef<HTMLInputElement>(null);
     const bizContact = useRef<HTMLInputElement>(null);
     const bizAddr = useRef<HTMLInputElement>(null);
     const bizWebUrl = useRef<HTMLInputElement>(null);
@@ -29,6 +31,14 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
     useEffect(() => {
         bizIdx && searchDetail(); // 컴포넌트 생성될 때 실행
     }, []);
+
+    // bizDetail을 로드한 후 bizEmpCount 설정
+    useEffect(() => {
+        if (bizDetail) {
+            setBizEmpCount(bizDetail?.bizEmpCount); // bizDetail이 로드된 후 bizEmpCount 설정
+            setBizRevenue(bizDetail?.bizRevenue); // bizDetail이 로드된 후 bizEmpCount 설정
+        }
+    }, [bizDetail]);
 
     const searchDetail = async () => {
         const param = { bizIdx: bizIdx };
@@ -43,8 +53,8 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
         const bizData = {
             bizName: bizName.current.value,
             bizCeoName: bizCeoName.current.value,
-            bizEmpCount: bizEmpCount.current.value,
-            bizRevenue: bizRevenue.current.value,
+            bizEmpCount: bizEmpCount,
+            bizRevenue: bizRevenue,
             bizContact: bizContact.current.value,
             bizAddr: bizAddr.current.value,
             bizWebUrl: bizWebUrl.current.value,
@@ -62,8 +72,8 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
         const param = {
             bizName: bizName.current.value,
             bizCeoName: bizCeoName.current.value,
-            bizEmpCount: bizEmpCount.current.value,
-            bizRevenue: bizRevenue.current.value,
+            bizEmpCount: bizEmpCount,
+            bizRevenue: bizRevenue,
             bizContact: bizContact.current.value,
             bizAddr: bizAddr.current.value,
             bizWebUrl: bizWebUrl.current.value,
@@ -119,13 +129,37 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
                     <tr>
                         <th>사원수</th>
                         <td>
-                            <input type="text" ref={bizEmpCount} defaultValue={bizDetail?.bizEmpCount}></input>
+                            <select
+                                className="selectOption"
+                                value={bizEmpCount}
+                                defaultValue={bizDetail?.bizEmpCount}
+                                onChange={(e) => setBizEmpCount(e.target.value)}
+                            >
+                                <option value="10명 이하">10명 이하</option>
+                                <option value="50명 이하">50명 이하</option>
+                                <option value="100명 이하">100명 이하</option>
+                                <option value="1000명 이하">1000명 이하</option>
+                                <option value="1000명 이상">1000명 이상</option>
+                            </select>
                         </td>
+                        {/* <td>
+                            <input type="text" ref={bizEmpCount} defaultValue={bizDetail?.bizEmpCount}></input>
+                        </td> */}
                     </tr>
                     <tr>
                         <th>매출액</th>
                         <td>
-                            <input type="text" ref={bizRevenue} defaultValue={bizDetail?.bizRevenue}></input>
+                            <select
+                                className="selectOption"
+                                value={bizRevenue}
+                                defaultValue={bizDetail?.bizRevenue}
+                                onChange={(e) => setBizRevenue(e.target.value)}
+                            >
+                                <option value="10억 이하">10억 이하</option>
+                                <option value="100억 이하">100억 이하</option>
+                                <option value="1000억 이하">1000억 이하</option>
+                                <option value="1000억 이상">1000억 이상</option>
+                            </select>
                         </td>
                     </tr>
                     <tr>
@@ -155,7 +189,7 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
                     <tr>
                         <th>회사 소개</th>
                         <td>
-                            <textarea className="textarea" ref={bizIntro} defaultValue={bizDetail?.bizIntro}/>
+                            <textarea className="textarea" ref={bizIntro} defaultValue={bizDetail?.bizIntro} />
                         </td>
                     </tr>
                     <div className="footer">

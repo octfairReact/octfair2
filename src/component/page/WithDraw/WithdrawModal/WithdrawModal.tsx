@@ -45,10 +45,12 @@ export const WithdrawModal = () => {
     return (
         <>
             <WithdrawModalStyled>
-                <strong>비밀번호 확인</strong>
-                <input type="password" ref={password}></input>
                 <div>
-                    <Button onClick={handlerDeleteUser}></Button>
+                    <strong>비밀번호 확인</strong>
+                    <input type="password" ref={password}></input>
+                </div>
+                <div>
+                    <Button onClick={handlerDeleteUser}>탈퇴</Button>
                 </div>
             </WithdrawModalStyled>
         </>

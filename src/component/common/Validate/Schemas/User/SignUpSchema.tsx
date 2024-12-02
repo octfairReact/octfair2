@@ -1,6 +1,4 @@
-import { z } from "zod";
 import { passwordCheckPwMinSchema, userTypeToLoginIdSchema } from "./UserSchema";
-import { UserRegex } from "../../UserRegex";
 
 
 // 회원가입 전용 스키마

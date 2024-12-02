@@ -67,6 +67,14 @@ export const BusinessModalStyled = styled.div`
         margin-left: 15px;
     }
 
+    .selectOption {
+        padding: 8px;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+
     .address-container {
         display: flex;
         align-items: center;

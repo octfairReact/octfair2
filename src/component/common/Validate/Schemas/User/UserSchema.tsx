@@ -29,9 +29,9 @@ export const passwordCheckPwSchema = passwordCheckPwMinSchema.refine((data) => d
     path: ["checkPassword"],
 });
 
-//공통
+//공통(이름, 성별, 생년월일, 전화번호, 이메일, 우편번호, 주소)
 export const otherUserDataSchema = z.object({
-    name: z.string().min(1, "이름을 입력해주세요"),
+    name: z.string().min(1, "이름을 입력해주세요").regex(UserRegex.nameRegex, "올바른 이름 형식이 아닙니다"),
     sex: z.string().min(1, "성별을 선택해주세요"),
     birthday: z
         .string()
