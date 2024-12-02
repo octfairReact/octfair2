@@ -116,7 +116,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
       <Container className="mt-2">
         <div>
           <Stack direction="horizontal" gap={3} className="me-3">
-            <div className="p-2">
+            <div className="p-2" style={{ width: "60%" }}>
               <Row>
                 <h1>{postDetail?.title}</h1>
                 <Row className="my-1">
@@ -128,6 +128,8 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
                       <h4>{bizDetail?.bizName}</h4>
                     </Link>
                   </Col>
+                </Row>
+                <Row>
                   <Col className="d-flex align-items-center">
                     <span>
                       {postDetail?.workLocation} | {postDetail?.expRequired}{" "}

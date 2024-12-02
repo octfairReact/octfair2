@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { Portal } from '../../../common/potal/Portal';
 import { FaqModal } from '../FaqModal/FaqModal';
-import { Button } from 'react-bootstrap';
+import { Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { postApi } from '../../../../api/postApi';
 import { ShowContentStyled } from './styled';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
@@ -71,15 +71,15 @@ export const FaqMain = () => {
 
   return (
     <>
-      <div style={{ display: 'inline-block' }}>
-        <Button className={`${individual}`} onClick={() => changeFaqType('1')}>
+      <ToggleButtonGroup style={{ marginTop: '15px' }} type="radio" name="options" defaultValue={1}>
+        <ToggleButton className={`${individual}`} onClick={() => changeFaqType('1')} id="tbg-radio-1" value={1}>
           개인회원
-        </Button>
-        &nbsp;
-        <Button className={`${biz}`} onClick={() => changeFaqType('2')}>
+        </ToggleButton>
+        <ToggleButton className={`${biz}`} onClick={() => changeFaqType('2')} id="tbg-radio-2" value={2}>
           기업회원
-        </Button>
-      </div>
+        </ToggleButton>
+      </ToggleButtonGroup>
+
       <StyledTable>
         <ShowContentStyled>
           <thead>
@@ -99,7 +99,7 @@ export const FaqMain = () => {
                     <StyledTd>{faq.faq_idx}</StyledTd>
                     <StyledTd onClick={() => handlerShowContent(faq.faq_idx)}>{faq.title}</StyledTd>
                     <StyledTd>{faq.author}</StyledTd>
-                    <StyledTd>{faq.created_date}</StyledTd>
+                    <StyledTd>{faq.created_date.substring(0, 10)}</StyledTd>
                     {userInfo.userType === 'M' && (
                       <StyledTd onClick={() => handlerModal(faq.faq_idx)}>
                         <button type="button" className="btn btn-secondary">

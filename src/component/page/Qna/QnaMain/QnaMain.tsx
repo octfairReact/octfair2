@@ -12,6 +12,8 @@ import { QnaModal } from '../QnaModal/QnaModal';
 import { Button } from 'react-bootstrap';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
 
 export const QnaMain = () => {
   const [qnaList, setQnaList] = useState<IQna[]>();
@@ -64,7 +66,7 @@ export const QnaMain = () => {
 
   return (
     <>
-      <div style={{ display: 'inline-block' }}>
+      {/* <div style={{ display: 'inline-block' }}>
         <Button className={`${individual}`} onClick={() => changeQnaType('A')}>
           개인회원
         </Button>
@@ -72,7 +74,17 @@ export const QnaMain = () => {
         <Button className={`${biz}`} onClick={() => changeQnaType('B')}>
           기업회원
         </Button>
-      </div>
+      </div> */}
+
+      <ToggleButtonGroup style={{ marginTop: '15px' }} type="radio" name="options">
+        <ToggleButton className={`${individual}`} onClick={() => changeQnaType('A')} id="tbg-radio-1" value={1}>
+          개인회원
+        </ToggleButton>
+        <ToggleButton className={`${biz}`} onClick={() => changeQnaType('B')} id="tbg-radio-2" value={2}>
+          기업회원
+        </ToggleButton>
+      </ToggleButtonGroup>
+
       <StyledTable>
         <thead>
           <tr>
@@ -107,7 +119,7 @@ export const QnaMain = () => {
                   </StyledTd>
 
                   <StyledTd>{qna.author}</StyledTd>
-                  <StyledTd>{qna.createdDate}</StyledTd>
+                  <StyledTd>{qna.createdDate.substring(0, 10)}</StyledTd>
                 </tr>
               );
             })

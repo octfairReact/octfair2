@@ -4,20 +4,26 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { useContext, useEffect, useState } from 'react';
 import { QnaContext } from '../../../../api/provider/QnaProvider';
-import { Button } from '../../../common/Button/Button';
 import { pwChkState } from '../../../../stores/pwChkState';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
+import Button from 'react-bootstrap/Button';
 
 export const QnaSearch = () => {
   const navigate = useNavigate();
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
   const [isPwChecked, setIsPwChecked] = useRecoilState<boolean>(pwChkState);
-  const [searchValue, setSearchValue] = useState<{ searchTitle: string; searchStDate: string; searchEdDate: string }>({
+  const [searchValue, setSearchValue] = useState<{
+    searchTitle: string;
+    searchStDate: string;
+    searchEdDate: string;
+    requestType: string | null;
+  }>({
     searchTitle: '',
     searchStDate: '',
     searchEdDate: '',
+    requestType: '',
   });
 
   const { setSearchKeyWord } = useContext(QnaContext);
@@ -37,11 +43,29 @@ export const QnaSearch = () => {
   return (
     <QnaSearchStyled>
       <div className="input-box">
-        <input onChange={(e) => setSearchValue({ ...searchValue, searchTitle: e.target.value })}></input>
-        <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchStDate: e.target.value })}></input>
-        <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchEdDate: e.target.value })}></input>
-        <Button onClick={handlerSearch}>검색</Button>
-        {userInfo.userType !== 'M' ? <Button onClick={handlerModal}>질문등록</Button> : null}
+        {userInfo.userType === 'M' ? (
+          <>
+            <input onChange={(e) => setSearchValue({ ...searchValue, searchTitle: e.target.value })}></input>
+            <input
+              type="date"
+              onChange={(e) => setSearchValue({ ...searchValue, searchStDate: e.target.value })}
+            ></input>
+            <input
+              type="date"
+              onChange={(e) => setSearchValue({ ...searchValue, searchEdDate: e.target.value })}
+            ></input>
+            <Button onClick={handlerSearch}>검색</Button>
+          </>
+        ) : null}
+
+        {userInfo.userType !== 'M' ? (
+          <>
+            <Button onClick={() => setSearchKeyWord({ ...searchValue, requestType: 'my' })}>내가 쓴 글</Button>
+            <Button style={{ marginLeft: '5px' }} onClick={handlerModal}>
+              질문등록
+            </Button>
+          </>
+        ) : null}
       </div>
     </QnaSearchStyled>
   );
