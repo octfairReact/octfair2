@@ -94,6 +94,19 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
   };
 
   const handlerFileUpdate = () => {
+    if (!title.current.value) {
+      alert('제목을 입력해주세요.');
+      title.current.focus();
+      return;
+    } else if (!context.current.value) {
+      alert('내용을 입력해주세요.');
+      context.current.focus();
+      return;
+    } else if (!password.current.value) {
+      alert('비밀번호를 입력해주세요.');
+      password.current.focus();
+      return;
+    }
     const fileForm = new FormData();
     const textData = {
       qnaTit: title.current.value,
@@ -168,7 +181,13 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
         <QnaModalStyled>
           <div className="container">
             <label>
-              제목<input type="text" ref={title} value={qnaDetail?.title || ''} onChange={(e) => setQnaDetail({ ...qnaDetail, title: e.target.value })}></input>
+              제목
+              <input
+                type="text"
+                ref={title}
+                value={qnaDetail?.title || ''}
+                onChange={(e) => setQnaDetail({ ...qnaDetail, title: e.target.value })}
+              ></input>
             </label>
             <label>
               내용<input type="text" ref={context} defaultValue={qnaDetail?.content}></input>
