@@ -28,7 +28,7 @@ export const ChangePwModalStyled = styled.div`
 
     label {
         display: inline-block;
-        width: 120px; /* 라벨 고정 너비 */
+        width: 90px; /* 라벨 고정 너비 */
         text-align: right;
         margin-right: 10px; /* 인풋과 간격 */
         font-weight: bold;
