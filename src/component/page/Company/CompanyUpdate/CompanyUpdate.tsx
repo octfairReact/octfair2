@@ -129,23 +129,23 @@ export const CompanyUpdate = () => {
     var phone = inputNum.replace(/[^0-9]/g, "");
 
     if (phone.length >= 3) {
-			var prefix = phone.substring(0, 3);
-			if ([ "010", "019", "011", "016", "017" ].indexOf(prefix) === -1) {
-				alert("정확한 전화번호를 입력해주세요.");
-				return;
-			}
+      var prefix = phone.substring(0, 3);
+      if ([ "010", "019", "011", "016", "017" ].indexOf(prefix) === -1) {
+        alert("정확한 전화번호를 입력해주세요.");
+        return;
+      }
 		}
 
     // 휴대폰 번호 형식에 맞게 하이픈 추가
-		if (phone.length >= 3 && phone.length <= 7) {
-			phone = phone.replace(/(\d{3})(\d{1,4})/, "$1-$2");
-		} else if (phone.length >= 8) {
-			phone = phone.replace(/(\d{3})(\d{3,4})(\d{0,4})/, "$1-$2-$3");
-		}
+    if (phone.length >= 3 && phone.length <= 7) {
+      phone = phone.replace(/(\d{3})(\d{1,4})/, "$1-$2");
+    } else if (phone.length >= 8) {
+      phone = phone.replace(/(\d{3})(\d{3,4})(\d{0,4})/, "$1-$2-$3");
+    }
 
-		if (phone.length > 13) {
-			phone = phone.substring(0, 13);
-		}
+    if (phone.length > 13) {
+      phone = phone.substring(0, 13);
+    }
 
     setPhoneNum(phone);
   }
