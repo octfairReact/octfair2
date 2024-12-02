@@ -66,16 +66,6 @@ export const QnaMain = () => {
 
   return (
     <>
-      {/* <div style={{ display: 'inline-block' }}>
-        <Button className={`${individual}`} onClick={() => changeQnaType('A')}>
-          개인회원
-        </Button>
-        &nbsp;
-        <Button className={`${biz}`} onClick={() => changeQnaType('B')}>
-          기업회원
-        </Button>
-      </div> */}
-
       <ToggleButtonGroup style={{ marginTop: '15px' }} type="radio" name="options">
         <ToggleButton className={`${individual}`} onClick={() => changeQnaType('A')} id="tbg-radio-1" value={1}>
           개인회원

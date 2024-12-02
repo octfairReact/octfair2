@@ -1,22 +1,15 @@
-import { useNavigate } from "react-router-dom";
-import {
-  StyledTable,
-  StyledTd,
-  StyledTh,
-} from "../../../common/styled/StyledTable";
-import { useContext, useEffect, useState } from "react";
-import { NoticeModal } from "../NoticeModal/NoticeModal";
-import { Portal } from "../../../common/potal/Portal";
-import { useRecoilState } from "recoil";
-import { modalState } from "../../../../stores/modalState";
-import {
-  INotice,
-  INoticeListResponse,
-} from "../../../../models/interface/INotice";
-import { postNoticeApi } from "../../../../api/postNoticeApi";
-import { Notice } from "../../../../api/api";
-import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
-import { NoticeContext } from "../../../../api/provider/NoticeProvider";
+import { useNavigate } from 'react-router-dom';
+import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
+import { useContext, useEffect, useState } from 'react';
+import { NoticeModal } from '../NoticeModal/NoticeModal';
+import { Portal } from '../../../common/potal/Portal';
+import { useRecoilState } from 'recoil';
+import { modalState } from '../../../../stores/modalState';
+import { INotice, INoticeListResponse } from '../../../../models/interface/INotice';
+import { postNoticeApi } from '../../../../api/postNoticeApi';
+import { Notice } from '../../../../api/api';
+import { PageNavigate } from '../../../common/pageNavigation/PageNavigate';
+import { NoticeContext } from '../../../../api/provider/NoticeProvider';
 
 export const NoticeMain = () => {
   const navigate = useNavigate();
@@ -46,13 +39,10 @@ export const NoticeMain = () => {
     const searchParam = {
       ...searchKeyWord,
       currentPage: currentPage.toString(),
-      pageSize: "5",
+      pageSize: '5',
     };
 
-    const searchList = await postNoticeApi<INoticeListResponse>(
-      Notice.getListBody,
-      searchParam
-    );
+    const searchList = await postNoticeApi<INoticeListResponse>(Notice.getListBody, searchParam);
     if (searchList) {
       setNoticeList(searchList.notice);
       setListCount(searchList.noticeCnt);
@@ -120,7 +110,7 @@ export const NoticeMain = () => {
                   <StyledTd>{notice.noticeIdx}</StyledTd>
                   <StyledTd>{notice.title}</StyledTd>
                   <StyledTd>{notice.author}</StyledTd>
-                  <StyledTd>{notice.createdDate}</StyledTd>
+                  <StyledTd>{notice.createdDate.substring(0, 10)}</StyledTd>
                 </tr>
               );
             })
@@ -139,11 +129,7 @@ export const NoticeMain = () => {
       ></PageNavigate>
       {modal && (
         <Portal>
-          <NoticeModal
-            onSuccess={onPostSuccess}
-            noticeSeq={noticeSeq}
-            setNoticeSeq={setNoticeSeq}
-          />
+          <NoticeModal onSuccess={onPostSuccess} noticeSeq={noticeSeq} setNoticeSeq={setNoticeSeq} />
         </Portal>
       )}
     </>
