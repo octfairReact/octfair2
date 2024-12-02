@@ -163,15 +163,17 @@ export const CompanyUpdate = () => {
     const _bizWebUrl = bizWebUrl.current.value;
     const _bizEmpCount = bizEmpCount.current.value;
     const _bizRevenue = bizRevenue.current.value;
+    const _bizLogo = fileInputRef.current.value;
 
-    if      (!_bizName.trim())      { alert("사업자 이름을 입력해 주세요"); return; }
-    else if (!_bizCeoName.trim())   { alert("사업자 이름을 입력해 주세요"); return; }
-    else if (!_bizContact.trim())   { alert("연락처를 입력해 주세요"); return; }
-    else if (!_bizAddr.trim())      { alert("주소를 입력해 주세요"); return; }
-    else if (!_bizFoundDate.trim()) { alert("설립일을 입력해 주세요"); return; }
-    else if (!_bizWebUrl.trim())    { alert("홈페이지 주소를 입력해 주세요"); return; }
-    else if (!_bizEmpCount.trim())  { alert("사원수를 입력해 주세요"); return; }
-    else if (!_bizRevenue.trim())   { alert("매출액을 입력해 주세요"); return; }
+    if      (!_bizName.trim())      { alert("사업자 이름을 입력해 주세요."); return; }
+    else if (!_bizCeoName.trim())   { alert("사업자 이름을 입력해 주세요."); return; }
+    else if (!_bizContact.trim())   { alert("연락처를 입력해 주세요."); return; }
+    else if (!_bizAddr.trim())      { alert("주소를 입력해 주세요."); return; }
+    else if (!_bizFoundDate.trim()) { alert("설립일을 입력해 주세요."); return; }
+    else if (!_bizWebUrl.trim())    { alert("홈페이지 주소를 입력해 주세요."); return; }
+    else if (!_bizEmpCount.trim())  { alert("사원수를 입력해 주세요."); return; }
+    else if (!_bizRevenue.trim())   { alert("매출액을 입력해 주세요."); return; }
+    else if (!_bizLogo)             { alert("로고를 등록해 주세요."); return; }
 
     if (today < new Date(_bizFoundDate)) {
       alert("설립일은 오늘보다 이전이어야 합니다.");
@@ -308,13 +310,13 @@ export const CompanyUpdate = () => {
             </td>
           </tr>
           <tr>
-            <th>기업 소개<span className="font_red">*</span></th>
+            <th>기업 소개</th>
             <td colSpan={3}>
               <textarea 
                 className="form-control" 
                 name="bizIntro" 
                 id="bizIntro" 
-                placeholder="2000자 이내 입력해주세요"
+                placeholder="2000자 이내로 입력해 주세요."
                 rows={10}
                 defaultValue={companyDetail?.bizIntro}
                 ref={bizIntro}
