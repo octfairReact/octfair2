@@ -76,7 +76,7 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
     const textData = {
       title: title.current.value,
       context: context.current.value,
-      // faq_type: faq_type.current.value,
+      faq_type: selectedFaqType,
       faqSeq,
     };
     dataForm.append('text', new Blob([JSON.stringify(textData)], { type: 'application/json' }));
