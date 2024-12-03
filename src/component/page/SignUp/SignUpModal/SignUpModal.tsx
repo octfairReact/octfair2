@@ -5,11 +5,13 @@ import { SignUp } from "../../../../api/api";
 import { postSignUpApi } from "../../../../api/postSignUpApi";
 import { IPostResponse, SignUpOtherUserData, SignUpUserTypeToCheckPw } from "../../../../models/interface/ISignUp";
 import { UserInit } from "../../Login/Init/User";
-import PostCode from "../../../common/PostCode/PostCode";
+import PostCode from "../../../common/Utils/PostCode/PostCode";
 import { Address } from "react-daum-postcode";
 import { idChkState } from "../../../../stores/idChkState";
 import { loginIdSchema, userTypeToCheckPwSchema } from "../../../common/Validate/Schemas/User/SignUpSchema";
 import { otherUserDataSchema } from "../../../common/Validate/Schemas/User/UserSchema";
+import { formatPhoneNumber } from "./../../../common/Utils/Format/FormatPhone";
+import { handleAddressComplete } from "../../../common/Utils/PostCode/HandlerAddress";
 
 export const SignUpModal = () => {
     const [modal, setModal] = useRecoilState<boolean>(modalState);
@@ -31,13 +33,6 @@ export const SignUpModal = () => {
     } = state;
     const { loginId, password, checkPassword, name, birthday, phone, email, userDetailAddress } = refs;
 
-    //select-option으로 값 바뀌는 userType과 Gender 값 세팅
-    const handleUserType = (e) => {
-        setUserType(e.target.value);
-    };
-    const handleUserGender = (e) => {
-        setSex(e.target.value);
-    };
 
     //Id 중복 체크 버튼용 함수
     const checkId = async (e) => {
@@ -66,16 +61,9 @@ export const SignUpModal = () => {
         }
     };
 
-    // 우편번호 api 및 input
-    const handleAddressComplete = (data: Address) => {
-        // 검색된 주소로 `zipCode`와 `userAddress` 상태 업데이트
-        const userAddress = data.address;
-        const useZipCode = data.zonecode;
 
-        if (userAddress !== "" || useZipCode !== "") {
-            setAddress(userAddress);
-            setZipCode(useZipCode);
-        }
+    const onAddressComplete = (data) => {
+        handleAddressComplete(data, setAddress, setZipCode); // 모듈화된 함수 사용
     };
 
     const handlerSave = async (e) => {
@@ -224,7 +212,13 @@ export const SignUpModal = () => {
                         <tr>
                             <th className="required">전화번호</th>
                             <td>
-                                <input type="text" ref={phone}></input>
+                                <input
+                                    type="text"
+                                    ref={phone}
+                                    onChange={(e) => {
+                                        phone.current.value = formatPhoneNumber(e.target.value);
+                                    }}
+                                ></input>
                             </td>
                         </tr>
                         <tr>
@@ -243,7 +237,7 @@ export const SignUpModal = () => {
                                     placeholder="우편번호 입력"
                                 />
 
-                                <PostCode onHandleComplete={handleAddressComplete} />
+                                <PostCode onHandleComplete={onAddressComplete} />
                             </td>
                         </tr>
                         <tr>

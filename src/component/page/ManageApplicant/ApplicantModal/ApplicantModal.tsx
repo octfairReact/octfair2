@@ -2,15 +2,22 @@ import { FC, useEffect, useState } from "react";
 import { NoticeModalStyled } from "../../Notice/NoticeModal/styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../stores/modalState";
-import { IPostResponse, IUser, IUserDetailResponse, manageUpdateApplicantData } from "../../../../models/interface/IUser";
+import {
+    IPostResponse,
+    IUser,
+    IUserDetailResponse,
+    manageUpdateApplicantData,
+} from "../../../../models/interface/IUser";
 import { postApi } from "../../../../api/postApi";
 import { ManageApplicant } from "../../../../api/api";
 import { UserInit } from "../../Login/Init/User";
 import { Button } from "react-bootstrap";
 import { Address } from "react-daum-postcode";
-import PostCode from "../../../common/PostCode/PostCode";
+import PostCode from "../../../common/Utils/PostCode/PostCode";
 import { manageApplicantSchema } from "../../../common/Validate/Schemas/User/ManageApplicantSchema";
 import { ApplicantModalStyled } from "./css/styled";
+import { formatPhoneNumber } from "../../../common/Utils/Format/FormatPhone";
+import { handleAddressComplete } from "../../../common/Utils/PostCode/HandlerAddress";
 
 interface IApplicantModalProps {
     onSuccess: () => void;
@@ -21,18 +28,8 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
     const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [applicantDetail, setApplicantDetail] = useState<IUser>();
     const { state, refs } = UserInit();
-    const {
-        sex,
-        setSex,
-        userType,
-        setUserType,
-        userStatus,
-        setUserStatus,
-        address,
-        setAddress,
-        zipCode,
-        setZipCode,
-    } = state;
+    const { sex, setSex, userType, setUserType, userStatus, setUserStatus, address, setAddress, zipCode, setZipCode } =
+        state;
     const { name, birthday, phone, email, userDetailAddress, regdate } = refs;
 
     useEffect(() => {
@@ -50,17 +47,8 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
         }
     }, [applicantDetail]);
 
-    
-    // 우편번호 api 및 input
-    const handleAddressComplete = (data: Address) => {
-        // 검색된 주소로 `zipCode`와 `userAddress` 상태 업데이트
-        const userAddress = data.address;
-        const useZipCode = data.zonecode;
-
-        if (userAddress !== "" || useZipCode !== "") {
-            setAddress(userAddress);
-            setZipCode(useZipCode);
-        }
+    const onAddressComplete = (data) => {
+        handleAddressComplete(data, setAddress, setZipCode); // 모듈화된 함수 사용
     };
 
     const searchDetail = async () => {
@@ -204,7 +192,14 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
                     <tr>
                         <th>전화번호</th>
                         <td>
-                            <input type="text" ref={phone} defaultValue={applicantDetail?.phone}></input>
+                            <input
+                                type="text"
+                                ref={phone}
+                                defaultValue={applicantDetail?.phone}
+                                onChange={(e) => {
+                                    phone.current.value = formatPhoneNumber(e.target.value);
+                                }}
+                            ></input>
                         </td>
                     </tr>
                     <tr>
@@ -245,7 +240,7 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
                                 onChange={(e) => setZipCode(e.target.value)}
                                 placeholder="우편번호 입력"
                             />
-                            <PostCode onHandleComplete={handleAddressComplete} />
+                            <PostCode onHandleComplete={onAddressComplete} />
                         </td>
                     </tr>
                     <tr>

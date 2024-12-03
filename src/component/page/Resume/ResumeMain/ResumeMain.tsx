@@ -11,7 +11,6 @@ import axios from 'axios';
 
 export const ResumeMain = () => {
   const [resumeList, setResumeList] = useState<IResume[]>();
-  const [resumeSeq, setNoticeSeq] = useState<number>();
   const { searchKeyWord } = useContext(ResumeContext);
   const navigate = useNavigate();
 
@@ -32,7 +31,6 @@ export const ResumeMain = () => {
   };
 
   const handlerDetail = (resumeSeq: number) => {
-    setNoticeSeq(resumeSeq);
     navigate('/react/apply/resumeDetail.do', { state: { idx: resumeSeq } });
   };
 
@@ -75,7 +73,7 @@ export const ResumeMain = () => {
           <tr>
             <StyledTh size={50}>이력서 제목</StyledTh>
             <StyledTh size={20}>관리</StyledTh>
-            <StyledTh size={10}>최종수정일</StyledTh>
+            <StyledTh size={15}>최종수정일</StyledTh>
           </tr>
         </thead>
         <tbody>
@@ -110,24 +108,23 @@ export const ResumeMain = () => {
                   </StyledTd>
                   <StyledTd>
                     <div className="input-box">
-                      <Button variant="primary" style={{ margin: '3px' }} onClick={() => copyResumeList(resume.resIdx)}>
+                      <Button 
+                        variant="primary" 
+                        style={{ margin: '5px', width: '100px' }} 
+                        onClick={() => copyResumeList(resume.resIdx)}
+                      >
                         복사하기
                       </Button>
                       <Button
                         variant="secondary"
-                        style={{ margin: '3px' }}
+                        style={{ margin: '5px', width: '100px' }} 
                         onClick={() => deleteResumeList(resume.resIdx)}
                       >
                         삭제하기
                       </Button>
                     </div>
                   </StyledTd>
-                  <StyledTd 
-                    style={{ 
-                      fontSize: "15px",
-                      color: "gray",
-                    }}
-                  >
+                  <StyledTd style={{ fontSize: "15px", color: "gray" }}>
                     {resume.updatedDate}
                   </StyledTd>
                 </tr>

@@ -23,8 +23,8 @@ export const StyledTable = styled.table`
 
     /* 테이블 올렸을 때 */
     tbody tr:hover {
-        background-color: #d3d3d3;
-        opacity: 0.9;
+        // background-color: #d3d3d3;
+        // opacity: 0.9;
         cursor: pointer;
     }
 `;

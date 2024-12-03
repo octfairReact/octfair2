@@ -47,8 +47,8 @@ export const ChangePwModal = (loginId) => {
         if (updateUserPw.result === "fail1") {
             alert("현재 비밀번호와 일치하지 않습니다");
             return;
-
-        } if (updateUserPw.result === "success") {
+        }
+        if (updateUserPw.result === "success") {
             alert("비밀번호 변경이 완료되었습니다.");
             handlerModal();
         }
@@ -57,7 +57,6 @@ export const ChangePwModal = (loginId) => {
     return (
         <ChangePwModalStyled>
             <div className="changePwArea">
-                
                 <div>
                     <label>현재 비밀번호</label>
                     <input type="password" ref={oldPassword}></input>
@@ -70,10 +69,9 @@ export const ChangePwModal = (loginId) => {
                     <label>비밀번호 확인</label>
                     <input type="password" ref={checkPassword}></input>
                 </div>
-                    <br></br>
-                    <Button onClick={updatePw}>비밀번호 변경</Button>
-                    <Button onClick={handlerModal}>나가기</Button>
-                
+                <br></br>
+                <Button onClick={updatePw}>비밀번호 변경</Button>
+                <Button onClick={handlerModal}>나가기</Button>
             </div>
         </ChangePwModalStyled>
     );

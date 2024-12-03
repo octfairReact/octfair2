@@ -6,6 +6,7 @@ import { ManageBusiness } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
 import { bizDataSchema } from "../../../common/Validate/Schemas/Biz/ManageBizSchema";
 import { BusinessModalStyled } from "./css/styled";
+import { formatPhoneNumber } from "../../../common/Utils/Format/FormatPhone";
 
 interface IBusinessModalProps {
     onSuccess: () => void;
@@ -165,7 +166,14 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
                     <tr>
                         <th>연락처</th>
                         <td>
-                            <input type="text" ref={bizContact} defaultValue={bizDetail?.bizContact}></input>
+                            <input
+                                type="text"
+                                ref={bizContact}
+                                defaultValue={bizDetail?.bizContact}
+                                onChange={(e) => {
+                                    bizContact.current.value = formatPhoneNumber(e.target.value);
+                                }}
+                            ></input>
                         </td>
                     </tr>
                     <tr>
