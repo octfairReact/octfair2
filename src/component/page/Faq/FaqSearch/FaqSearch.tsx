@@ -8,6 +8,8 @@ import Button from 'react-bootstrap/Button';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
 
+//안녕
+
 export const FaqSearch = () => {
   const navigate = useNavigate();
   const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
