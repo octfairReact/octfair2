@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { NoticeContext } from '../../../../api/provider/NoticeProvider';
+import { ILoginInfo } from '../../../../models/interface/store/userInfo';
+import { loginInfoState } from '../../../../stores/userInfo';
 
 export const NoticeSearch = () => {
   // const title = useRef<HTMLInputElement>();
@@ -12,6 +14,7 @@ export const NoticeSearch = () => {
   // const [endDate, setEndDate] = useState<string>();
   const navigate = useNavigate();
   const [modal, setModal] = useRecoilState<boolean>(modalState);
+  const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
   const [searchValue, setSearchValue] = useState<{
     searchTitle: string;
     searchStDate: string;
@@ -54,7 +57,7 @@ export const NoticeSearch = () => {
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchStDate: e.target.value })}></input>
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchEdDate: e.target.value })}></input>
         <Button onClick={handlerSearch}>검색</Button>&nbsp;
-        <Button onClick={handlerModal}>등록</Button>
+        {userInfo.loginId === 'M' ? <Button onClick={handlerModal}>등록</Button> : null}
       </div>
     </NoticeSearchStyled>
   );
