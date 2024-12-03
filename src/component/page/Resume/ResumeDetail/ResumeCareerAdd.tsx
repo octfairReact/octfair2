@@ -28,8 +28,18 @@ export const ResumeCareerAdd = ({ setVisibleState, searchCareerList}) => {
     const _reason = reason.current.value;
     const _crrDesc = crrDesc.current.value;
 
+    if (today < new Date(_startDate)) {
+      alert("입사일은 미래일 수 없습니다.");
+      return;
+    }
+
     if (today < new Date(_endDate)) {
       alert("퇴사일은 오늘보다 미래일 수 없습니다.");
+      return;
+    }
+
+    if (new Date(_endDate) < new Date(_startDate)) {
+      alert("입사일이 퇴사일 이후일 수 없습니다.");
       return;
     }
 
