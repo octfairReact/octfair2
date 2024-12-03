@@ -12,6 +12,8 @@ export const CompanyUpdate = () => {
   const [imageUrl, setImageUrl] = useState<string>();
   const [fileData, setFileData] = useState<File>();
   const [phoneNum, setPhoneNum] = useState("");
+  const [bizEmpCountBind, setBizEmpCount] = useState("");
+  const [bizRevenueBind, setBizRevenue] = useState("");
   const { bizIdx } = useParams();
   const navigate = useNavigate();
 
@@ -36,6 +38,11 @@ export const CompanyUpdate = () => {
     if (companyDetail?.bizContact) {
       setPhoneNum(companyDetail.bizContact);
     }
+
+    if (companyDetail) {
+      setBizEmpCount(companyDetail?.bizEmpCount);
+      setBizRevenue(companyDetail?.bizRevenue);
+  }
   }, [companyDetail]);
 
   const searchDetail = async (bizIdx) => {
@@ -236,7 +243,6 @@ export const CompanyUpdate = () => {
                 name="bizContact" 
                 id="bizContact" 
                 placeholder="ex) 010-xxxx-xxxx" 
-                // defaultValue={companyDetail?.bizContact}
                 value={phoneNum}
                 ref={bizContact}
                 onChange={phoneNumChange}
@@ -260,7 +266,9 @@ export const CompanyUpdate = () => {
               <select 
                 className="form-select" 
                 id="bizEmpCount" 
-                defaultValue={'10명 이하'} 
+                value={bizEmpCountBind}
+                defaultValue={companyDetail?.bizEmpCount} 
+                onChange={(e) => setBizEmpCount(e.target.value)}
                 ref={bizEmpCount} 
               >
                 <option value="10명 이하">10명 이하</option>
@@ -299,8 +307,10 @@ export const CompanyUpdate = () => {
               <select 
                 className="form-select" 
                 id="bizRevenue" 
-                defaultValue={'10억 이하'} 
+                value={bizRevenueBind}
+                defaultValue={companyDetail?.bizRevenue} 
                 ref={bizRevenue}
+                onChange={(e) => setBizRevenue(e.target.value)}
               >
                 <option value="10억 이하">10억 이하</option>
                 <option value="100억 이하">100억 이하</option>
