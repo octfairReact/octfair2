@@ -2,7 +2,7 @@ export interface IApply {
     appId: number;
 	userIdx: number;
 	postingId: number;
-	applyDate: Date;
+	applyDate: string;
 	viewed: string;
 	status: string;
 	resIdx: number;

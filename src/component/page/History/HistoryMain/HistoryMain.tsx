@@ -146,9 +146,8 @@ export const HistoryMain = () => {
                       <p className="status" style={{ fontSize: "10px" }}>
                         지원완료
                       </p>
-                      <p className="date">
-                        {/* <fmt:formatDate value="${data.applyDate}"
-															pattern="yyyy .MM .dd" /> */}
+                      <p className="date" style={{ color: "gray" }}>
+                        {data.applyDate}
                       </p>
                     </StyledTd>
                     <StyledTd className="application-details">

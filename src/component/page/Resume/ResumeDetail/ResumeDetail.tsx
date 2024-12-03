@@ -81,7 +81,6 @@ export const ResumeDetail = () => {
 
   const handlerPreview = (resumeSeq: number) => {
     setModal(!modal);
-    // setResumeSeq(resumeSeq);
   }
 
   const handlerFileUpdate = () => {
@@ -102,16 +101,12 @@ export const ResumeDetail = () => {
       .then((res) => {
           alert("저장되었습니다.");
           searchDetail(resumeSeq);
-      })
-      .catch((err) => {});
+      }).catch((err) => {});
   };
 
   const handlerFile = (e: ChangeEvent<HTMLInputElement>) => {
     const fileInfo = e.target.files;
     if (fileInfo?.length > 0) {
-      const fileInfoSplit = fileInfo[0].name.split(".");
-      // const fileExtension = fileInfoSplit[1].toLowerCase();
-
       setFileData(fileInfo[0]);
     }
   }
@@ -217,16 +212,13 @@ export const ResumeDetail = () => {
           </div>
 
           {/* 경력 */}
-          <ResumeCareer/>
-
+          <ResumeCareer resumeSeq={resumeSeq} />
           {/* 학력 */}
-          <ResumeEdu/>
-
+          <ResumeEdu resumeSeq={resumeSeq} />
           {/* 스킬 */}
-          <ResumeSkill/>
-
+          <ResumeSkill resumeSeq={resumeSeq} />
           {/* 자격증 및 외국어 */}
-          <ResumeCert/>
+          <ResumeCert resumeSeq={resumeSeq} />
 
           <div className="resumeDetail_body">
             <div className="resumeDetail_body_haeder">링크</div>
@@ -270,11 +262,9 @@ export const ResumeDetail = () => {
           <div className="resumeDetail_body">
             <div className="resumeDetail_body_haeder">첨부파일</div>
             <div className="resumeDetail_body_guide">
-              {/* <p className="resumeDetail_body_guide_text"> */}
-                <Alert key={'light'} variant={'light'}>
-                  • 포트폴리오, 경력 기술서 등 첨부 파일이 있다면 등록해 주세요.
-                </Alert>
-              {/* </p> */}
+              <Alert key={'light'} variant={'light'}>
+                • 포트폴리오, 경력 기술서 등 첨부 파일이 있다면 등록해 주세요.
+              </Alert>
             </div>
             <div>
               {resumeDetail?.fileName ? (
@@ -315,28 +305,26 @@ export const ResumeDetail = () => {
               )}
             </div>
           </div>
-
         </div>
 
         <div className="btnGroup" style={{ textAlign: "center" }}>
           <Button 
             variant="secondary" 
-            style={{ margin: "2px" }}
+            style={{ margin: "3px" }}
             onClick={handlerReturn}
           >
             <span>목록으로</span>
           </Button>
           <Button 
             variant="primary" 
-            style={{ margin: "2px" }}
-            // onClick={handlerSave}
+            style={{ margin: "3px" }}
             onClick={handlerFileUpdate}
           >
             <span>저장하기</span>
           </Button>
           <Button 
             variant="secondary" 
-            style={{ margin: "2px" }}
+            style={{ margin: "3px" }}
             onClick={() => handlerPreview(resumeSeq)}
           >
             <span>미리보기</span>

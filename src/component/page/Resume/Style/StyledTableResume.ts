@@ -2,11 +2,6 @@ import styled from 'styled-components';
 
 export const StyledTableResume = styled.table`
     width: 100%;
-    // border-collapse: collapse;
-    // margin: 20px 0px 0px 0px;
-    // font-size: 18px;
-    // text-align: left;
-    // table-layout: fixed;
 
     th,
     td {
@@ -18,18 +13,11 @@ export const StyledTableResume = styled.table`
 
     th {
         background-color: #f5f5f5;
-        // background-color: #2676bf;
-        // color: #ddd;
     }
 
     td {
         font-size: 14px;
     }
-
-    // /* 테이블 올렸을 때 */
-    // tbody tr:hover {
-        
-    // }
 
     #resumetitle, #userName, #userEmail, #userPhone {
         margin: 5px 0px 5px;
@@ -47,36 +35,25 @@ export const StyledTableResume = styled.table`
     }
 
     .resumeDetail_body {
-        margin-top: 50px;
+        margin-top: 70px;
     }
 
     .resumeDetail_body_basicInfo {
         margin-top: 20px;
     }
 
-    // .res-comment {
-    //     border-radius: 10px;
-    // }
-
     .resumeDetail_body_haeder {
         margin-top: 15px;
         margin-bottom: 15px;
-        padding: 5px;
-        font-size: 23px;
+        padding-bottom: 10px;
+        font-size: 25px;
+        font-weight: 500;
         border-bottom: 0.5px solid black;
     }
 
     .resumeDetail_body_guide {
         font-size: 15px;
     }
-
-    // .resumeDetail_body_guide {
-    //     margin: 10px 0px;
-    //     padding: 5px;
-    //     background-color: #eaf2fe;
-    //     border-radius: 5px;
-    //     color: gray;
-    // }
 
     textarea {
         // overflow-y : hidden;
@@ -91,16 +68,4 @@ export const StyledTableResume = styled.table`
         textAlign: center;
         margin: 80px 0px 30px;
     }
-`;
-
-export const ResumeTh = styled.th<{ size?: number }>`
-    // background-color: #f4f4f4;
-    // padding: 12px;
-    // border: 1px solid #ddd;
-    // width: ${(props) => props.size}%;
-`;
-
-export const ResumeTd = styled.td`
-    // padding: 12px;
-    // border: 1px solid #ddd;
 `;

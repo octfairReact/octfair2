@@ -7,7 +7,7 @@ export const ResumeAdd = () => {
   const navigate = useNavigate();
 
   const handlerAdd = () => {
-    navigate('/react/apply/resumeDetail.do', { state: { pageFrom: 'new', idx: '' } });
+    navigate('/react/apply/resumeDetail.do', { state: { idx: '' } });
   };
 
   return (
