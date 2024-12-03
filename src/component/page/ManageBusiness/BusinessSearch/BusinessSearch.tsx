@@ -5,7 +5,6 @@ import { NoticeSearchStyled } from "../../Notice/NoticeSearch/styled";
 import { Button } from "react-bootstrap";
 
 export const BusinessSearch = () => {
-
     const navigate = useNavigate();
     const [searchValue, setSearchValue] = useState<{
         searchName: string;
@@ -21,12 +20,11 @@ export const BusinessSearch = () => {
         setSearchKeyWord(searchValue);
     };
 
-
     return (
         <>
             <NoticeSearchStyled>
                 <div className="input-box">
-                    회원명
+                    기업명
                     <input onChange={(e) => setSearchValue({ ...searchValue, searchName: e.target.value })}></input>
                     <Button onClick={handlerSearch}>검색</Button>
                 </div>

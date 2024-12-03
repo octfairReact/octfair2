@@ -7,7 +7,7 @@ import { MyPage } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
 import { Button } from "react-bootstrap";
 import { UserInit } from "../../Login/Init/User";
-import PostCode from "../../../common/PostCode/PostCode";
+import PostCode from "../../../common/Utils/PostCode/PostCode";
 import { Address } from "react-daum-postcode";
 import { SignUpOtherUserData } from "../../../../models/interface/ISignUp";
 import { MyPageStyled } from "./styled";
@@ -16,6 +16,8 @@ import { Portal } from "../../../common/potal/Portal";
 import { ChangePwModal } from "../ChangePwModal/ChangePwModal";
 import { useNavigate } from "react-router-dom";
 import { otherUserDataSchema } from "../../../common/Validate/Schemas/User/UserSchema";
+import { formatPhoneNumber } from "../../../common/Utils/Format/FormatPhone";
+import { handleAddressComplete } from "../../../common/Utils/PostCode/HandlerAddress";
 
 export const MyPageMain = () => {
     const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
@@ -69,6 +71,7 @@ export const MyPageMain = () => {
         }
     }, [userDetail]); // userDetail 값이 변경될 때마다 실행
 
+
     const handlerUpdate = async () => {
         const nameToDetailAddress: SignUpOtherUserData = {
             name: name.current.value,
@@ -108,17 +111,9 @@ export const MyPageMain = () => {
         }
     };
 
-    // 우편번호 api 및 input
-    const handleAddressComplete = (data: Address) => {
-        // 검색된 주소로 `zipCode`와 `userAddress` 상태 업데이트
-        const userAddress = data.address;
-        const useZipCode = data.zonecode;
-
-        if (userAddress !== "" || useZipCode !== "") {
-            setAddress(userAddress);
-            setZipCode(useZipCode);
-        }
-    };
+        const onAddressComplete = (data) => {
+            handleAddressComplete(data, setAddress, setZipCode); // 모듈화된 함수 사용
+        };
 
     const handlerUpdatePwModal = () => {
         setFindModal(!findModal);
@@ -182,7 +177,14 @@ export const MyPageMain = () => {
                         <tr>
                             <th className="required">전화번호</th>
                             <td>
-                                <input type="text" ref={phone} defaultValue={userDetail?.phone}></input>
+                                <input
+                                    type="text"
+                                    ref={phone}
+                                    defaultValue={userDetail?.phone}
+                                    onChange={(e) => {
+                                        phone.current.value = formatPhoneNumber(e.target.value);
+                                    }}
+                                ></input>
                             </td>
                         </tr>
                         <tr>
@@ -217,7 +219,7 @@ export const MyPageMain = () => {
                                     onChange={(e) => setZipCode(e.target.value)}
                                     placeholder="우편번호 입력"
                                 />
-                                <PostCode onHandleComplete={handleAddressComplete} />
+                                <PostCode onHandleComplete={onAddressComplete} />
                             </td>
                         </tr>
                         <tr>
