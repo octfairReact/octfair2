@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import { UserInit } from "../../Login/Init/User";
+import { UserInit } from "../../Login/User/UserInit";
 import { MyPage } from "../../../../api/api";
 import { IPostResponse } from "../../../../models/interface/ISignUp";
 import { useRecoilState } from "recoil";

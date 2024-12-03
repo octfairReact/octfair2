@@ -173,6 +173,7 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
                                 onChange={(e) => {
                                     bizContact.current.value = formatPhoneNumber(e.target.value);
                                 }}
+                                placeholder="ex) 010-xxxx-xxxx"
                             ></input>
                         </td>
                     </tr>

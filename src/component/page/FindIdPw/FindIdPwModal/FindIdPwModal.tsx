@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FindIdPwModalStyled } from "../styled";
 import { Button } from "react-bootstrap";
-import { UserInit } from "../../Login/Init/User";
+import { UserInit } from "../../Login/User/UserInit";
 import { postSignUpApi } from "../../../../api/postSignUpApi";
 import { SignUp } from "../../../../api/api";
 

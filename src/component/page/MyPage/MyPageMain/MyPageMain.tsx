@@ -6,7 +6,7 @@ import { loginInfoState } from "../../../../stores/userInfo";
 import { MyPage } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
 import { Button } from "react-bootstrap";
-import { UserInit } from "../../Login/Init/User";
+import { UserInit } from "../../Login/User/UserInit";
 import PostCode from "../../../common/Utils/PostCode/PostCode";
 import { Address } from "react-daum-postcode";
 import { SignUpOtherUserData } from "../../../../models/interface/ISignUp";
@@ -71,7 +71,6 @@ export const MyPageMain = () => {
         }
     }, [userDetail]); // userDetail 값이 변경될 때마다 실행
 
-
     const handlerUpdate = async () => {
         const nameToDetailAddress: SignUpOtherUserData = {
             name: name.current.value,
@@ -111,9 +110,9 @@ export const MyPageMain = () => {
         }
     };
 
-        const onAddressComplete = (data) => {
-            handleAddressComplete(data, setAddress, setZipCode); // 모듈화된 함수 사용
-        };
+    const onAddressComplete = (data) => {
+        handleAddressComplete(data, setAddress, setZipCode); // 모듈화된 함수 사용
+    };
 
     const handlerUpdatePwModal = () => {
         setFindModal(!findModal);
@@ -184,6 +183,7 @@ export const MyPageMain = () => {
                                     onChange={(e) => {
                                         phone.current.value = formatPhoneNumber(e.target.value);
                                     }}
+                                    placeholder="ex) 010-xxxx-xxxx"
                                 ></input>
                             </td>
                         </tr>

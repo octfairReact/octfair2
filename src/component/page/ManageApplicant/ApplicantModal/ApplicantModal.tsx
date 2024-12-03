@@ -10,7 +10,7 @@ import {
 } from "../../../../models/interface/IUser";
 import { postApi } from "../../../../api/postApi";
 import { ManageApplicant } from "../../../../api/api";
-import { UserInit } from "../../Login/Init/User";
+import { UserInit } from "../../Login/User/UserInit";
 import { Button } from "react-bootstrap";
 import { Address } from "react-daum-postcode";
 import PostCode from "../../../common/Utils/PostCode/PostCode";
@@ -199,6 +199,7 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
                                 onChange={(e) => {
                                     phone.current.value = formatPhoneNumber(e.target.value);
                                 }}
+                                placeholder="ex) 010-xxxx-xxxx"
                             ></input>
                         </td>
                     </tr>
