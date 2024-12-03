@@ -45,9 +45,9 @@ export const ResumeSkillAdd = ({ setVisibleState, searchSkillList }) => {
           <tr>
             <td width={"30%"}>
               <input 
+                type="text" 
                 id="skillName" 
                 className="form-control" 
-                type="text" 
                 placeholder="스킬명" 
                 defaultValue={""} 
                 required={true} 

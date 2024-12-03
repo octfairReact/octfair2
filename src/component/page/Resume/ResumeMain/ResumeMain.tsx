@@ -11,7 +11,6 @@ import axios from 'axios';
 
 export const ResumeMain = () => {
   const [resumeList, setResumeList] = useState<IResume[]>();
-  const [resumeSeq, setNoticeSeq] = useState<number>();
   const { searchKeyWord } = useContext(ResumeContext);
   const navigate = useNavigate();
 
@@ -32,7 +31,6 @@ export const ResumeMain = () => {
   };
 
   const handlerDetail = (resumeSeq: number) => {
-    setNoticeSeq(resumeSeq);
     navigate('/react/apply/resumeDetail.do', { state: { idx: resumeSeq } });
   };
 
@@ -110,7 +108,11 @@ export const ResumeMain = () => {
                   </StyledTd>
                   <StyledTd>
                     <div className="input-box">
-                      <Button variant="primary" style={{ margin: '3px' }} onClick={() => copyResumeList(resume.resIdx)}>
+                      <Button 
+                        variant="primary" 
+                        style={{ margin: '3px' }} 
+                        onClick={() => copyResumeList(resume.resIdx)}
+                      >
                         복사하기
                       </Button>
                       <Button
@@ -122,12 +124,7 @@ export const ResumeMain = () => {
                       </Button>
                     </div>
                   </StyledTd>
-                  <StyledTd 
-                    style={{ 
-                      fontSize: "15px",
-                      color: "gray",
-                    }}
-                  >
+                  <StyledTd style={{ fontSize: "15px", color: "gray" }}>
                     {resume.updatedDate}
                   </StyledTd>
                 </tr>

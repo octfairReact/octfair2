@@ -7,19 +7,16 @@ import { useLocation } from "react-router-dom";
 import { ResumeCareerAdd } from "./ResumeCareerAdd";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-export const ResumeCareer = () => {
+export const ResumeCareer = ({ resumeSeq }) => {
   const [careerList, setCareerList] = useState<IResumeCareer[]>();
-  const [resumeSeq, setResumeSeq] = useState<number>();
   const [addVisible, setAddVisible] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     if (location?.state){
-      setResumeSeq(location.state.idx);
       searchCareerList();
     }
   }, []);
-
 
   const searchCareerList = async () => {
     const searchParam = { resIdx: location.state.idx };
@@ -136,7 +133,6 @@ export const ResumeCareer = () => {
                     </tbody>
                   );
                 })}
-                
               </table>
             ) : (
               <table className="table">
@@ -151,7 +147,6 @@ export const ResumeCareer = () => {
             )}
           </div>
         }
-          
       </div>
     </div>
   );

@@ -7,15 +7,13 @@ import { useLocation } from "react-router-dom";
 import { ResumeEduAdd } from "./ResumeEduAdd";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-export const ResumeEdu = () => {
+export const ResumeEdu = ({ resumeSeq }) => {
   const [educationList, setEducationList] = useState<IResumeEducation[]>();
-  const [resumeSeq, setResumeSeq] = useState<number>();
   const [addVisible, setAddVisible] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     if (location?.state){
-      setResumeSeq(location.state.idx);
       searchEduList();
     }
   }, []);
@@ -116,7 +114,6 @@ export const ResumeEdu = () => {
                     </tbody>
                   );
                 })}
-                
               </table>
             ) : (
               <table className="table">
@@ -131,7 +128,6 @@ export const ResumeEdu = () => {
             )}
           </div>
         }
-          
       </div>
     </div>
   );

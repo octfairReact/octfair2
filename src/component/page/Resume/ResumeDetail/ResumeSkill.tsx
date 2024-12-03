@@ -7,15 +7,13 @@ import { useLocation } from "react-router-dom";
 import { ResumeSkillAdd } from "./ResumeSkillAdd";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-export const ResumeSkill = () => {
+export const ResumeSkill = ({ resumeSeq }) => {
   const [skillList, setSkillList] = useState<IResumeSkill[]>();
-  const [resumeSeq, setResumeSeq] = useState<number>();
   const [addVisible, setAddVisible] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     if (location?.state){
-      setResumeSeq(location.state.idx);
       searchSkillList();
     }
   }, []);
@@ -114,7 +112,6 @@ export const ResumeSkill = () => {
             )}
           </div>
         }
-
       </div>
     </div>
   );

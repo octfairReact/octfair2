@@ -7,15 +7,13 @@ import { useLocation } from "react-router-dom";
 import { ResumeCertAdd } from "./ResumeCertAdd";
 import { RiDeleteBin6Line } from "react-icons/ri";
 
-export const ResumeCert = () => {
+export const ResumeCert = ({ resumeSeq }) => {
   const [certList, setCertList] = useState<IResumeCertification[]>();
-  const [resumeSeq, setResumeSeq] = useState<number>();
   const [addVisible, setAddVisible] = useState(false);
   const location = useLocation();
   
   useEffect(() => {
     if (location?.state){
-      setResumeSeq(location.state.idx);
       searchCertList();
     }
   }, []);
@@ -113,7 +111,6 @@ export const ResumeCert = () => {
                     </tbody>
                   );
                 })}
-                
               </table>
             ) : (
               <table className="table">
@@ -128,7 +125,6 @@ export const ResumeCert = () => {
             )}
           </div>
         }
-
       </div>
     </div>
   );

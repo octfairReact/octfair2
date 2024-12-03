@@ -6,10 +6,7 @@ import { Resume } from "../../../../api/api";
 import { useLocation } from "react-router-dom";
 
 export const ResumeCareerAdd = ({ setVisibleState, searchCareerList}) => {
-  const [resumeSeq, setResumeSeq] = useState<number>();
   const location = useLocation();
-  // const {formCheck} = useForm()
-
   const company = useRef<HTMLInputElement>();
   const dept      = useRef<HTMLInputElement>();
   const position  = useRef<HTMLInputElement>();
@@ -79,9 +76,9 @@ export const ResumeCareerAdd = ({ setVisibleState, searchCareerList}) => {
           <tr>
             <td>
               <input 
+                type="text" 
                 id="company" 
                 className="form-control" 
-                type="text" 
                 ref={company} 
                 placeholder="회사명" 
                 defaultValue={""}
@@ -91,56 +88,56 @@ export const ResumeCareerAdd = ({ setVisibleState, searchCareerList}) => {
             <td>
               <span style={{ margin: "6px", float: "left" }}>입사일</span>
               <input 
-              type="month" 
-              ref={startDate} 
-              id="startDate" 
-              className="form-control" 
-              required={true} 
-              style={{ width: "70%", float: "right" }}
-              ></input>
+                type="month" 
+                id="startDate" 
+                className="form-control" 
+                ref={startDate} 
+                required={true} 
+                style={{ width: "70%", float: "right" }}
+              />
             </td>
             <td>
               <span style={{ margin: "6px", float: "left" }}>퇴사일</span>
               <input 
-              type="month" 
-              ref={endDate} 
-              id="endDate" 
-              className="form-control" 
-              required={true} 
-              style={{ width: "70%", float: "right" }}
-              ></input>
+                type="month" 
+                id="endDate" 
+                className="form-control" 
+                ref={endDate} 
+                required={true} 
+                style={{ width: "70%", float: "right" }}
+              />
             </td>
           </tr>
           <tr>
             <td>
               <input 
-              type="text" 
-              ref={dept} 
-              id="dept" 
-              className="form-control" 
-              placeholder="근무 부서" 
-              defaultValue={""} 
-              required={true} />
+                type="text" 
+                id="dept" 
+                className="form-control" 
+                ref={dept} 
+                placeholder="근무 부서" 
+                defaultValue={""} 
+                required={true} />
             </td>
             <td>
               <input 
-              type="text" 
-              ref={position} 
-              id="position" 
-              className="form-control" 
-              placeholder="직책/직급" 
-              defaultValue={""} 
-              required={true} />
+                type="text" 
+                id="position" 
+                className="form-control" 
+                ref={position} 
+                placeholder="직책/직급" 
+                defaultValue={""} 
+                required={true} />
             </td>
             <td>
               <input 
-              type="text" 
-              ref={reason} 
-              id="reason" 
-              className="form-control" 
-              placeholder="퇴사 사유" 
-              defaultValue={""} 
-              required={true} />
+                type="text" 
+                id="reason" 
+                className="form-control" 
+                ref={reason} 
+                placeholder="퇴사 사유" 
+                defaultValue={""} 
+                required={true} />
             </td>
           </tr>
           <tr>
@@ -149,12 +146,12 @@ export const ResumeCareerAdd = ({ setVisibleState, searchCareerList}) => {
                 className="form-control" 
                 id="crrDesc" 
                 ref={crrDesc} 
-                placeholder="　담당 업무를 입력해 주세요.&#13;&#10;
-                - 진행한 업무를 다 적기보다는 경력 사항별로 중요한 내용만 엄선해서 작성하는 것이 중요합니다!&#13;&#10;
-                - 경력별 프로젝트 내용을 적을 경우, 역할/팀구성/기여도/성과를 기준으로 요약해서 작성해 보세요!"
                 rows={5}
                 required={true} 
                 defaultValue={""}
+                placeholder="　담당 업무를 입력해 주세요.&#13;&#10;
+                - 진행한 업무를 다 적기보다는 경력 사항별로 중요한 내용만 엄선해서 작성하는 것이 중요합니다!&#13;&#10;
+                - 경력별 프로젝트 내용을 적을 경우, 역할/팀구성/기여도/성과를 기준으로 요약해서 작성해 보세요!"
               />
             </td>
           </tr>
