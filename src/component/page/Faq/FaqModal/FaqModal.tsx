@@ -38,6 +38,7 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
 
     if (detailApi) {
       setFaqDetail(detailApi.detail);
+      setSelectedFaqType(detailApi.detail.faq_type);
     }
   };
 
