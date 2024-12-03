@@ -16,7 +16,6 @@ export const CompanyUpdate = () => {
   const [bizRevenueBind, setBizRevenue] = useState("");
   const { bizIdx } = useParams();
   const navigate = useNavigate();
-
   const bizName = useRef<HTMLInputElement>();
   const bizCeoName = useRef<HTMLInputElement>();
   const bizContact = useRef<HTMLInputElement>();
