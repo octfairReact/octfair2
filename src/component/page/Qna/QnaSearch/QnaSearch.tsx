@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { useContext, useEffect, useState } from 'react';
 import { QnaContext } from '../../../../api/provider/QnaProvider';
-import { pwChkState } from '../../../../stores/pwChkState';
+import { pwChkState, requestQnaType } from '../../../../stores/pwChkState';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
 import Button from 'react-bootstrap/Button';
@@ -14,16 +14,15 @@ export const QnaSearch = () => {
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
   const [isPwChecked, setIsPwChecked] = useRecoilState<boolean>(pwChkState);
+  const [requestType, setRequestType] = useRecoilState<string>(requestQnaType);
   const [searchValue, setSearchValue] = useState<{
     searchTitle: string;
     searchStDate: string;
     searchEdDate: string;
-    requestType: string | null;
   }>({
     searchTitle: '',
     searchStDate: '',
     searchEdDate: '',
-    requestType: '',
   });
 
   const { setSearchKeyWord } = useContext(QnaContext);
@@ -60,7 +59,7 @@ export const QnaSearch = () => {
 
         {userInfo.userType !== 'M' ? (
           <>
-            <Button onClick={() => setSearchKeyWord({ ...searchValue, requestType: 'my' })}>내가 쓴 글</Button>
+            <Button onClick={() => setRequestType('my')}>내가 쓴 글</Button>
             <Button style={{ marginLeft: '5px' }} onClick={handlerModal}>
               질문등록
             </Button>
