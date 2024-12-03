@@ -14,6 +14,7 @@ import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
 import ToggleButton from 'react-bootstrap/ToggleButton';
 import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+import { requestQnaType } from '../../../../stores/pwChkState';
 
 export const QnaMain = () => {
   const [qnaList, setQnaList] = useState<IQna[]>();
@@ -23,11 +24,12 @@ export const QnaMain = () => {
   const [cPage, setCPage] = useState<number>();
   const { searchKeyWord } = useContext(QnaContext);
   const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
+  const [requestType, setRequestType] = useRecoilState<string>(requestQnaType);
   const [selectedQnaType, setSelectedQnaType] = useState<string>(userInfo.userType === 'M' ? 'A' : userInfo.userType);
 
   useEffect(() => {
     searchQnaList();
-  }, [searchKeyWord, selectedQnaType]);
+  }, [searchKeyWord, selectedQnaType, requestType]);
 
   const searchQnaList = async (currentPage?: number) => {
     currentPage = currentPage || 1;
@@ -36,6 +38,7 @@ export const QnaMain = () => {
       currentPage: currentPage.toString(),
       pageSize: '5',
       qna_type: selectedQnaType,
+      requestType: requestType,
     };
 
     const searchList = await postApi<IQnaListResponse>(Qna.getListBody, searchParam);
@@ -59,6 +62,7 @@ export const QnaMain = () => {
 
   const changeQnaType = (qna_type: string) => {
     setSelectedQnaType(qna_type);
+    setRequestType('all');
   };
 
   const individual = selectedQnaType === 'A' ? 'active' : 'inactive';
