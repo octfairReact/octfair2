@@ -217,10 +217,6 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
                 <input type="text" ref={ans_content} defaultValue={qnaDetail?.ans_content || null}></input>
               </label>
             )}
-            {/* {!qnaDetail?.ans_content && (
-              <button onClick={qnaSeq ? handlerFileUpdate : handlerFileSave}>{qnaSeq ? '수정' : '등록'}</button>
-            )}
-            {qnaSeq && !qnaDetail?.ans_content && <button onClick={handlerDelete}>삭제</button>} */}
             {qnaSeq ? (
               userInfo.loginId === qnaDetail?.author || userInfo.userType === 'M' ? (
                 !qnaDetail?.ans_content && (
