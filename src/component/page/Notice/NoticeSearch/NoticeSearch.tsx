@@ -1,10 +1,10 @@
-import { NoticeSearchStyled } from "./styled";
-import { Button } from "../../../common/Button/Button";
-import { useContext, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { modalState } from "../../../../stores/modalState";
-import { NoticeContext } from "../../../../api/provider/NoticeProvider";
+import { NoticeSearchStyled } from './styled';
+import Button from 'react-bootstrap/Button';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { modalState } from '../../../../stores/modalState';
+import { NoticeContext } from '../../../../api/provider/NoticeProvider';
 
 export const NoticeSearch = () => {
   // const title = useRef<HTMLInputElement>();
@@ -17,16 +17,15 @@ export const NoticeSearch = () => {
     searchStDate: string;
     searchEdDate: string;
   }>({
-    searchTitle: "",
-    searchStDate: "",
-    searchEdDate: "",
+    searchTitle: '',
+    searchStDate: '',
+    searchEdDate: '',
   });
 
   const { setSearchKeyWord } = useContext(NoticeContext);
 
   useEffect(() => {
-    window.location.search &&
-      navigate(window.location.pathname, { replace: true });
+    window.location.search && navigate(window.location.pathname, { replace: true });
   }, [navigate]);
 
   // const handlerSearch = () => {
@@ -51,24 +50,10 @@ export const NoticeSearch = () => {
   return (
     <NoticeSearchStyled>
       <div className="input-box">
-        <input
-          onChange={(e) =>
-            setSearchValue({ ...searchValue, searchTitle: e.target.value })
-          }
-        ></input>
-        <input
-          type="date"
-          onChange={(e) =>
-            setSearchValue({ ...searchValue, searchStDate: e.target.value })
-          }
-        ></input>
-        <input
-          type="date"
-          onChange={(e) =>
-            setSearchValue({ ...searchValue, searchEdDate: e.target.value })
-          }
-        ></input>
-        <Button onClick={handlerSearch}>검색</Button>
+        <input onChange={(e) => setSearchValue({ ...searchValue, searchTitle: e.target.value })}></input>
+        <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchStDate: e.target.value })}></input>
+        <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchEdDate: e.target.value })}></input>
+        <Button onClick={handlerSearch}>검색</Button>&nbsp;
         <Button onClick={handlerModal}>등록</Button>
       </div>
     </NoticeSearchStyled>

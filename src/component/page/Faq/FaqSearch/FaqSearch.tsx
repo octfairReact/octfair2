@@ -4,7 +4,7 @@ import { modalState } from '../../../../stores/modalState';
 import { useContext, useEffect, useState } from 'react';
 import { FaqContext } from '../../../../api/provider/FaqProvider';
 import { FaqSearchStyled } from './styled';
-import { Button } from '../../../common/Button/Button';
+import Button from 'react-bootstrap/Button';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
 
@@ -42,7 +42,7 @@ export const FaqSearch = () => {
         <input onChange={(e) => setSearchValue({ ...searchValue, searchTitle: e.target.value })}></input>
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchStDate: e.target.value })}></input>
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchEdDate: e.target.value })}></input>
-        <Button onClick={handlerSearch}>검색</Button>
+        <Button onClick={handlerSearch}>검색</Button>&nbsp;
         {userInfo.userType === 'M' ? <Button onClick={handlerModal}>신규등록</Button> : null}
       </div>
     </FaqSearchStyled>
