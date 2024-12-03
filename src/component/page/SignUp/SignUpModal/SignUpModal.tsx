@@ -4,9 +4,8 @@ import { modalState } from "../../../../stores/modalState";
 import { SignUp } from "../../../../api/api";
 import { postSignUpApi } from "../../../../api/postSignUpApi";
 import { IPostResponse, SignUpOtherUserData, SignUpUserTypeToCheckPw } from "../../../../models/interface/ISignUp";
-import { UserInit } from "../../Login/Init/User";
+import { UserInit } from "../../Login/User/UserInit";
 import PostCode from "../../../common/Utils/PostCode/PostCode";
-import { Address } from "react-daum-postcode";
 import { idChkState } from "../../../../stores/idChkState";
 import { loginIdSchema, userTypeToCheckPwSchema } from "../../../common/Validate/Schemas/User/SignUpSchema";
 import { otherUserDataSchema } from "../../../common/Validate/Schemas/User/UserSchema";
@@ -32,7 +31,6 @@ export const SignUpModal = () => {
         setFirstCheckId,
     } = state;
     const { loginId, password, checkPassword, name, birthday, phone, email, userDetailAddress } = refs;
-
 
     //Id 중복 체크 버튼용 함수
     const checkId = async (e) => {
@@ -60,7 +58,6 @@ export const SignUpModal = () => {
             alert("ID 중복 체크에 실패했습니다. 다시 시도해주세요.");
         }
     };
-
 
     const onAddressComplete = (data) => {
         handleAddressComplete(data, setAddress, setZipCode); // 모듈화된 함수 사용
@@ -218,6 +215,7 @@ export const SignUpModal = () => {
                                     onChange={(e) => {
                                         phone.current.value = formatPhoneNumber(e.target.value);
                                     }}
+                                    placeholder="ex) 010-xxxx-xxxx"
                                 ></input>
                             </td>
                         </tr>
