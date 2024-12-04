@@ -17,7 +17,7 @@ export const ChangePwModalStyled = styled.div`
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
     border: 1px solid #ccc;
 
-    .changePwArea {
+    #changePwArea {
         background-color: white;
         padding: 30px;
         border-radius: 8px;
