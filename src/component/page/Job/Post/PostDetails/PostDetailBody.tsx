@@ -8,6 +8,7 @@ import {
   IBizDetail,
   IPostdetailResponse,
   IPostDetail,
+  IisClicked,
 } from "../../../../../models/interface/IPost";
 import { postApi } from "../../../../../api/postApi";
 import { Post, Scrap } from "../../../../../api/api";
@@ -27,18 +28,18 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
   const [postDetail, setPostDetail] = useState<IPostDetail | null>(null);
   const [bizDetail, setBizDetail] = useState<IBizDetail | null>(null);
   const [modal, setModal] = useRecoilState<boolean>(modalState);
+  const [isClicked, setIsClicked] = useState<IisClicked>();
 
   useEffect(() => {
     postDetailData(postIdx);
-  }, [postIdx]);
+    console.log("postDetailData");
+  }, [postIdx, isClicked]);
 
   useEffect(() => {
     if (bizDetail && postDetail) {
       const bizImagePath = bizDetail?.logicalPath || null;
       const postImagePath = postDetail?.logicalPath || null;
       onImagePath(bizImagePath, postImagePath);
-      console.log("bizImagePath: ", bizImagePath);
-      console.log("postImagePath: ", postImagePath);
     }
   }, [bizDetail, postDetail, onImagePath]);
 
@@ -51,6 +52,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
     if (response) {
       setPostDetail(response.postDetail);
       setBizDetail(response.bizDetail);
+      setIsClicked(response.isClicked);
     }
   };
 

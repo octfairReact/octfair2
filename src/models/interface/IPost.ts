@@ -55,6 +55,12 @@ export interface IPostListResponse {
 export interface IPostdetailResponse {
   postDetail: IPostDetail;
   bizDetail: IBizDetail;
+  isClicked: IisClicked;
+}
+
+export interface IisClicked {
+  isScraped: boolean;
+  isApplyed: boolean;
 }
 
 export interface IHirePost {
