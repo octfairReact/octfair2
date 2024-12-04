@@ -4,7 +4,6 @@ import Modal from 'react-bootstrap/Modal';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { IResumeCareer, IResumeCertification, IResumeDetail, IResumeEducation, IResumeSkill } from '../../../../models/interface/IResume';
 import { postApi } from '../../../../api/postApi';
 import { HireApplicant } from '../../../../api/api';
@@ -37,7 +36,6 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
   resumeSeq,
   setResumeSeq,
 }) => {
-  const navigate = useNavigate();
   const [modal, setModal] = useRecoilState<boolean>(modalState); // recoil에 저장된 state
   const [resumeInfo, setResumeInfo] = useState<IResumeDetail>();
   const [careerInfo, setCareerInfo] = useState<IResumeCareer[] | null>();
@@ -50,7 +48,6 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
     console.log("모달 로그1: " + resumeSeq);
     // 클린업 함수, 컴포넌트가 사라지기 직전에 실행
     return () => {
-      // resumeSeq && setResumeSeq(undefined);
     };
   }, []);
 
@@ -70,19 +67,9 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
       setSkillInfo(priviewDetail.skillInfo);
       setCertInfo(priviewDetail.certInfo);
     }
-    // axios.post('/api/manage-hire/previewResume.do', param).then((res) => {
-    //   const data = res.data;
-    //   console.log("모달 로그: ", data.resumeInfo);
-    //   setResumeInfo(data.resumeInfo);
-    //   setCareerInfo(data.careerInfo);
-    //   setEduInfo(data.eduInfo);
-    //   setSkillInfo(data.skillInfo);
-    //   setCertInfo(data.certInfo);
-    // })
   }
 
   const [show, setShow] = useState(true);
-
 
 
   const handleClose = () => setModal(!modal);
@@ -103,10 +90,6 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
     window.print();
   }
 
-  const handleNavigation = (path) => {
-    navigate("/"+path);
-  };
-
   return (
     <Modal
       show={show}
@@ -118,8 +101,8 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
           <strong>이력서 미리 보기</strong>
       </Modal.Header>
       <Modal.Body>
-        <div id="previewResumeContent" style={{padding: '20px'}}>
-          <div style={{marginBottom: '20px'}}>
+        <div id="previewResumeContent">
+          <div id="previewContentTitle">
             <p id="previewTitle">{resumeInfo?.resTitle}</p>
           </div>
           <div>
@@ -132,32 +115,32 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
             <p>연락처 : {resumeInfo?.phone}</p>
           </div>
           <div id='introAndLink'>
-            {resumeInfo?.shortIntro !== null ?
+            {resumeInfo?.shortIntro !== null &&
               <div>
                 <p >{resumeInfo?.shortIntro}</p>
               </div>
-              : null}
+              }
 
-            {resumeInfo?.proLink !== null ?
+            {resumeInfo?.proLink !== null &&
               <div>
-                <p >링크 : &nbsp;
-                  <a href={resumeInfo?.proLink} target="_blank"
+                <p >링크 :
+                  <a href={resumeInfo?.proLink} target="_blank" id="linkPadding"
          rel="noopener noreferrer">{resumeInfo?.proLink}</a>                  
                 </p>
               </div>
-              : null}
+              }
 
-            {resumeInfo?.fileName !== null ?
+            {resumeInfo?.fileName !== null &&
               <div>
-                <p>첨부파일 : &nbsp;
-                <span onClick={() => downloadFile(resumeInfo?.resIdx)} style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }}>
+                <p>첨부파일 :
+                <span id="addFile" onClick={() => downloadFile(resumeInfo?.resIdx)}>
                  {resumeInfo?.fileName}</span>
                 </p>
               </div>
-              : null}
+              }
           </div>
 
-          {careerInfo?.length > 0 ? (
+          {careerInfo?.length > 0 && (
             <Modal.Body>
               <table className="table">
                 <thead className="table-light">
@@ -172,8 +155,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                         <td>{data.startDate} ~ <br /> {data.endDate}</td>
                         <td><span className='companyPosition'>{data.company} | {data.dept} |
                           {data.position}</span>
-                          <p
-                            style={{ marginTop: '20px', marginLeft: '20px', whiteSpace: 'pre-line' }}>{data.crrDesc}</p>
+                          <p className='companyPositionP'>{data.crrDesc}</p>
                         </td>
                       </tr>
                     )
@@ -182,9 +164,9 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 </tbody>
               </table>
             </Modal.Body>
-          ) : null}
+          ) }
 
-          {eduInfo?.length > 0 ? (
+          {eduInfo?.length > 0 && (
             <Modal.Body>
               <table className="table">
                 <thead className="table-light">
@@ -197,12 +179,12 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                     return (
                       <tr key={data.eduIdx}>
                         <td>{data.grdStatus}</td>
-                        <td>{data.schoolName}
-                          {data.major !== null ? (
+                        <td><span className='major'>{data.schoolName}</span>
+                          {data.major !== null && (
                             <>
-                              {"\u00A0\u00A0"} | {"\u00A0\u00A0"} {data.major}
+                               | <span className='major'>{data.major}</span> 
                             </>
-                          ) : null}
+                          ) }
                         </td>
                         <td>{data.admDate} ~ {data.grdDate}</td>
                       </tr>
@@ -211,9 +193,9 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 </tbody>
               </table>
             </Modal.Body>
-          ) : null}
+          ) }
 
-          {skillInfo?.length > 0 ? (
+          {skillInfo?.length > 0 && (
             <Modal.Body>
               <table className="table">
                 <thead className="table-light">
@@ -233,9 +215,9 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 </tbody>
               </table>
             </Modal.Body>
-          ) : null}
+          )}
 
-          {certInfo?.length > 0 ? (
+          {certInfo?.length > 0 && (
             <Modal.Body>
               <table className="table">
                 <thead className="table-light">
@@ -257,9 +239,9 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 </tbody>
               </table>
             </Modal.Body>
-          ) : null}
+          ) }
 
-          {resumeInfo?.perStatement !== null ? (
+          {resumeInfo?.perStatement !== null && (
             <Modal.Body>
               <table className="table">
                 <thead className="table-light">
@@ -269,8 +251,8 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 </thead>
                 <tbody>
                   <tr>
-                    <td style={{ borderBottom: "1px solid #ccc" }}>
-                      <p style={{ padding: "20px", whiteSpace: "pre-line" }}>
+                    <td id="perStatementTd">
+                      <p id="perStatementP">
                         {resumeInfo?.perStatement}
                       </p>
                     </td>
@@ -278,7 +260,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
                 </tbody>
               </table>
             </Modal.Body>
-          ) : null}
+          ) }
         </div>
       </Modal.Body >
       <Modal.Footer>

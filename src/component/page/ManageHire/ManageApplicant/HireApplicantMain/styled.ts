@@ -113,4 +113,8 @@ body {
 			font-size:18px;
 			font-weight: bold;
 		}
+
+   #listTable td {
+    padding: 7px;
+}
 `;

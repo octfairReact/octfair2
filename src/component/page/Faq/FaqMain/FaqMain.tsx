@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../../../stores/modalState';
 import { Portal } from '../../../common/potal/Portal';
 import { FaqModal } from '../FaqModal/FaqModal';
-import { Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import { postApi } from '../../../../api/postApi';
 import { ShowContentStyled } from './styled';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
@@ -22,8 +22,8 @@ export const FaqMain = () => {
   const [cPage, setCPage] = useState<number>();
   const { searchKeyWord } = useContext(FaqContext);
   const [style, setStyle] = useState<number>(null);
-  const [selectedFaqType, setSelectedFaqType] = useState<string>();
   const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
+  const [selectedFaqType, setSelectedFaqType] = useState<string>(userInfo.userType === 'B' ? '2' : '1');
 
   useEffect(() => {
     searchFaqList();
@@ -62,20 +62,29 @@ export const FaqMain = () => {
     setStyle((style) => (style === faq_idx ? null : faq_idx));
   };
 
-  const changeFaqType = (faq_type: string) => {
-    setSelectedFaqType(faq_type);
-  };
+  // const changeFaqType = (faq_type: string) => {
+  //   setSelectedFaqType(faq_type);
+  // };
 
-  const individual = selectedFaqType === '1' ? 'active' : 'inactive';
-  const biz = selectedFaqType === '2' ? 'active' : 'inactive';
+  // const individual = selectedFaqType === '1' ? 'active' : 'inactive';
+  // const biz = selectedFaqType === '2' ? 'active' : 'inactive';
 
   return (
     <>
-      <ToggleButtonGroup style={{ marginTop: '15px' }} type="radio" name="options" defaultValue={1}>
+      {/* <ToggleButtonGroup style={{ marginTop: '15px' }} type="radio" name="options" defaultValue={1}>
         <ToggleButton className={`${individual}`} onClick={() => changeFaqType('1')} id="tbg-radio-1" value={1}>
           개인회원
         </ToggleButton>
         <ToggleButton className={`${biz}`} onClick={() => changeFaqType('2')} id="tbg-radio-2" value={2}>
+          기업회원
+        </ToggleButton>
+      </ToggleButtonGroup> */}
+
+      <ToggleButtonGroup style={{ marginTop: '15px' }} type="radio" name="options">
+        <ToggleButton onClick={() => setSelectedFaqType('1')} id="tbg-radio-1" value={1}>
+          개인회원
+        </ToggleButton>
+        <ToggleButton onClick={() => setSelectedFaqType('2')} id="tbg-radio-2" value={2}>
           기업회원
         </ToggleButton>
       </ToggleButtonGroup>

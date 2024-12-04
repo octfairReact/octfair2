@@ -14,6 +14,9 @@ export const FaqSearchStyled = styled.div`
     position: relative;
   }
 
+  #abc {
+    padding: 0 10px;
+  }
   @media (max-width: 1000px) {
   }
 `;

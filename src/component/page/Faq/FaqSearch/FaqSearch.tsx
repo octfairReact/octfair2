@@ -42,8 +42,10 @@ export const FaqSearch = () => {
         <input onChange={(e) => setSearchValue({ ...searchValue, searchTitle: e.target.value })}></input>
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchStDate: e.target.value })}></input>
         <input type="date" onChange={(e) => setSearchValue({ ...searchValue, searchEdDate: e.target.value })}></input>
-        <Button onClick={handlerSearch}>검색</Button>&nbsp;
-        {userInfo.userType === 'M' ? <Button onClick={handlerModal}>신규등록</Button> : null}
+        <Button id="abc" onClick={handlerSearch}>
+          검색
+        </Button>
+        {userInfo.userType === 'M' && <Button onClick={handlerModal}>신규등록</Button>}
       </div>
     </FaqSearchStyled>
   );
