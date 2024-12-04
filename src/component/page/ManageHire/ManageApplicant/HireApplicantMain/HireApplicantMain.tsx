@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { HireApplicantContext } from '../../../../../api/provider/HireApplicantProvider.';
-import axios from 'axios';
 import { PageNavigate } from '../../../../common/pageNavigation/PageNavigate';
 import { HireApplicantMainStyled } from './styled';
 import { useRecoilState } from 'recoil';
@@ -25,8 +24,7 @@ const HireApplicantMain = () => {
   const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
 
   useEffect(() => {
-    if (Object.keys(searchKeyWord).length != 0) {
-      // console.log("배열변수 Proc="+Proc.map((Proc)=>Proc.proc));
+    if (Object.keys(searchKeyWord).length !== 0) {
       loadApplicantList();
     }
   }, [searchKeyWord])
@@ -49,12 +47,6 @@ const HireApplicantMain = () => {
       setListCount(searchList.count);
       setCPage(currentPage);
     }
-    // axios.post('/api/manage-hire/applicantList.do', searchParam).then((res) => {
-    //   const data = res.data;
-    //   setApplicantList(data.list);
-    //   setListCount(data.count);
-    //   setCPage(currentPage);
-    // })
   }
 
   const statusUpdate = async (userId:string, nextStatus:string, postIdx:number) => {
@@ -72,11 +64,7 @@ const HireApplicantMain = () => {
       alert("상태가 업데이트 되었습니다.");
     }else{
       alert("오류가 발생하였습니다.");
-    }
-  
-    // axios.post('/api/manage-hire/statusUpdate.do', params).then((res) => {
-    //   const data = res.data;
-    // })
+    }  
   }
 
   const handlerSuccessStatus = (loginId:string, status:string, postId:number) => {
@@ -104,49 +92,18 @@ const HireApplicantMain = () => {
         break;
       }
     }
-    // if (currentStatus === '서류심사중') {
-    //   const nextStatus = '면접진행중'; 
-    //   statusUpdate(userId,nextStatus, postIdx)
-    //   loadApplicantList();
-    // } else if (currentStatus === '면접진행중') {
-    //   const nextStatus = '최종합격'; 
-    //   statusUpdate(userId,nextStatus, postIdx)
-    //   loadApplicantList();
-    // } else if (currentStatus.includes('탈락')){
-    //   const nextStatus = '서류심사중'; 
-    //   statusUpdate(userId,nextStatus, postIdx)
-    //   loadApplicantList();
-    // } else {
-    //   alert('더 이상 진행할 수 없는 상태입니다.');
-    //   return;
-    // }  
   }
 
-  const handlerFailStatus = (loginId:string, status:string, postId:number) => {
+  const handlerFailStatus = (loginId:string, postId:number) => {
     const userId =loginId;
-    const currentStatus = status;
     const postIdx = postId;
     const procArray = searchKeyWord['procArray'];
-    for (const [index, data] of procArray.entries()) {     
+    for (const [] of procArray.entries()) {     
       const nextStatus = '탈락'; 
       statusUpdate(userId,nextStatus, postIdx)
       loadApplicantList();
       break;
     }
-    // if (currentStatus === '서류심사중') {
-    //   const nextStatus = '서류탈락'; 
-    //   statusUpdate(userId,nextStatus, postIdx)
-    //   loadApplicantList();
-    //   return
-    // } else if (currentStatus === '면접진행중') {
-    //   const nextStatus = '면접탈락'; 
-    //   statusUpdate(userId,nextStatus, postIdx)
-    //   loadApplicantList();
-    //   return
-    // } else {
-    //   alert('더 이상 진행할 수 없는 상태입니다.');
-    //   return;
-    // }
   }
   
   const viewChange = async (loginId: string, postId:number) => {
@@ -158,14 +115,10 @@ const HireApplicantMain = () => {
       HireApplicant.viewUpadate,
       params
     );
-    if(res.result =='success'){
+    if(res.result ==='success'){
       console.log('이력서 확인');
       loadApplicantList();
     }
-    // axios.post('/api/manage-hire/viewUpdate.do', params).then((res) => {
-    //   const data = res.data;    
-    // })
-    // loadApplicantList();
   }
 
   const handlerModal = (loginId: string,resSeq: number, postId:number) => {
@@ -223,27 +176,27 @@ const HireApplicantMain = () => {
                       보기</span></td>
                   </tr>
                   <tr>
-                    {list.company !== null ? (
+                    {list.company !== null && (
                       <td>
                         <span className="highlight">경력:</span>{list.company}
                       </td>
-                    ) : null}
+                    ) }
                   </tr>
                   <tr>
                     <td> <span className="highlight">전화번호:</span>{list.phone}</td>
                     <td rowSpan={2}>
-                      {list.viewed == 1 && list.status != '탈락' && list.status != '최종합격' ? (
+                      {list.viewed === 1 && list.status !== '탈락' && list.status !== '최종합격' ? (
                         <>
                           <button id="btnPass" className="btn btn-resume" 
                           onClick={() => handlerSuccessStatus(list.loginId,list.status, list.postIdx)}>합격</button>
                           <button style={{backgroundColor:'white'}} id="btnFail" className="btn btn-danger" 
-                          onClick={() => handlerFailStatus(list.loginId,list.status, list.postIdx)}>불합격</button>
+                          onClick={() => handlerFailStatus(list.loginId, list.postIdx)}>불합격</button>
                         </>
                       ) : null}
-                      {list.viewed == 1 && list.status == '탈락' ? (
+                      {list.viewed === 1 && list.status === '탈락' && (
                         <button style={{backgroundColor:'white'}} id="btnPass" className="btn btn-resume"
                         onClick={() => handlerSuccessStatus(list.loginId,list.status, list.postIdx)}>추가합격</button>
-                      ) : null}
+                      )}
 
                     </td>
                   </tr>
