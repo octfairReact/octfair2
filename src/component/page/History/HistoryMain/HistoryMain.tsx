@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { ApplyContext } from "../../../../api/provider/ApplyProvider";
 import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
@@ -15,6 +14,7 @@ import { ResumeModalPreview } from "../../Resume/ResumeModal/ResumeModalPreview"
 import { IApply, IApplyResponse } from "../../../../models/interface/IHistory";
 import { History } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
+import { HistoryMainStyled } from "./styled";
 
 export const HistoryMain = () => {
   const [applyList, setApplyList] = useState<IApply[]>();
@@ -45,12 +45,6 @@ export const HistoryMain = () => {
       setListCount(searchList.historyCnt);
       setCPage(currentPage);
     }
-    // axios.post('/api/apply/historySearchRest.do',searchParam).then((res) => {
-    //     const data = res.data;
-    //     setApplyList(data.result);
-    // 	setListCount(data.historyCnt);
-    // 	setCPage(currentPage);
-    // })
   };
 
   const cancleApply = async (applyId: number) => {
@@ -59,7 +53,7 @@ export const HistoryMain = () => {
     };
     const res = await postApi<{ result: string }>(History.deleteApply, param);
     console.log(res.result);
-    if (res.result == "success") {
+    if (res.result === "success") {
       alert("지원취소 완료하였습니다.");
     } else {
       alert("지원취소에 실패하였습니다.");
@@ -90,7 +84,7 @@ export const HistoryMain = () => {
   };
 
   return (
-    <>
+    <HistoryMainStyled>
       <div className="divComGrpCodList">
         <StyledTable className="col">
           <caption style={{ visibility: "hidden" }}>지원내역 테이블</caption>
@@ -114,25 +108,16 @@ export const HistoryMain = () => {
           <tbody id="resultList">
             {applyList?.length <= 0 ? (
               <tr>
-                <StyledTd style={{ height: "400px" }} colSpan={5}>
+                <StyledTd id="application-nobodyTd" colSpan={5}>
                   <p>
-                    <img src="https://www.saraminimage.co.kr/sri/person/resume/img_empty_announce.png" />
+                    <img src="https://www.saraminimage.co.kr/sri/person/resume/img_empty_announce.png" alt="빈 공고 이미지"/>
                   </p>
-                  <p
-                    style={{
-                      fontSize: "18px",
-                      fontWeight: "bold",
-                      color: "#868686",
-                      padding: "15px",
-                    }}
-                  >
+                  <p id="application-nobodyP">
                     입사 지원 내역이 없어요.
                   </p>
-                  <p style={{ fontSize: "14px" }}>
-                    <span
-                      onClick={() => handleNavigation(`/react/jobs/posts.do`)}
-                      style={{ color: "#3157dd" }}
-                    >
+                  <p id="application-nobodyGoP">
+                    <span id="application-nobodySpan"
+                      onClick={() => handleNavigation(`/react/jobs/posts.do`)}>
                       현재 채용중인 공고 보러가기 {">"}{" "}
                     </span>
                   </p>
@@ -143,62 +128,28 @@ export const HistoryMain = () => {
                 return (
                   <tr className="resume-entry" key={data.appId}>
                     <StyledTd className="application-date">
-                      <p className="status" style={{ fontSize: "10px" }}>
+                      <p className="status">
                         지원완료
                       </p>
-                      <p className="date" style={{ color: "gray" }}>
+                      <p className="date">
                         {data.applyDate}
                       </p>
                     </StyledTd>
                     <StyledTd className="application-details">
-                      <p
-                        className="company-name"
-                        style={{
-                          textAlign: "left",
-                          paddingLeft: "50px",
-                          marginTop: "5px",
-                          fontSize: "14px",
-                        }}
-                      >
-                        <span
-                          onClick={() =>
-                            handleNavigation(
-                              `/react/company/companyDetailPage.do/${data.postingId}/${data.bizIdx}`
-                            )
-                          }
-                        >
+                      <p className="company-name">
+                        <span onClick={() =>
+                            handleNavigation( `/react/company/companyDetailPage.do/${data.postingId}/${data.bizIdx}`)}>
                           {data.bizName}
                         </span>
                       </p>
-                      <p
-                        className="job-title"
-                        style={{
-                          textAlign: "left",
-                          paddingLeft: "50px",
-                          marginTop: "5px",
-                          fontSize: "15px",
-                          fontWeight: "bold",
-                        }}
-                      >
+                      <p className="job-title">
                         <span
                           onClick={() =>
-                            handleNavigation(
-                              `/react/jobs/post-detail/${data.postingId}`
-                            )
-                          }
-                        >
+                            handleNavigation( `/react/jobs/post-detail/${data.postingId}`)}>
                           {data.postTitle}
                         </span>
                       </p>
-                      <p
-                        className="resume-link"
-                        style={{
-                          textAlign: "left",
-                          paddingLeft: "50px",
-                          margin: "5px 0px 5px 0px",
-                          fontSize: "13px",
-                        }}
-                      >
+                      <p className="resume-link">
                         <span onClick={() => handlerModal(data.resIdx)}>
                           <span>지원이력서</span>
                         </span>
@@ -208,18 +159,14 @@ export const HistoryMain = () => {
                       <p className="status">{data.status}</p>
                     </StyledTd>
                     <StyledTd className="view-status">
-                      <p>{data.viewed == "1" ? "열람" : "미열람"}</p>
+                      <p>{data.viewed === "1" ? "열람" : "미열람"}</p>
                     </StyledTd>
                     <StyledTd className="cancel">
-                      {data.status == "지원완료" ? (
-                        <a
-                          className="cancleApply"
-                          onClick={() => handlerCancleApply(data.appId)}
-                        >
-                          <span>지원취소</span>
-                        </a>
+                      {data.status === "지원완료" ? (                        
+                        <span onClick={() => handlerCancleApply(data.appId)}>지원취소
+                        </span>                        
                       ) : (
-                        <span style={{ color: "#868686" }}>지원취소</span>
+                        <span id="cancleSpan">지원취소</span>
                       )}
                     </StyledTd>
                   </tr>
@@ -244,6 +191,6 @@ export const HistoryMain = () => {
           />
         </Portal>
       )}
-    </>
+    </HistoryMainStyled>
   );
 };
