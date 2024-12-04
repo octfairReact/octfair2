@@ -3,21 +3,24 @@ import { UserInit } from "../../Login/User/UserInit";
 import { MyPage } from "../../../../api/api";
 import { IPostResponse } from "../../../../models/interface/ISignUp";
 import { useRecoilState } from "recoil";
-import { modalState2 } from "../../../../stores/modalState";
+import { modalState} from "../../../../stores/modalState";
 import { ChangePwModalStyled } from "./styled";
 import { useRef } from "react";
 import { postApi } from "../../../../api/postApi";
 import { passwordCheckPwSchema } from "../../../common/Validate/Schemas/User/UserSchema";
+import { useOutsideClick } from "../../../common/Utils/Modal/PreventOutsideClick";
 
 export const ChangePwModal = (loginId) => {
-    const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
 
     const { refs } = UserInit();
     const { password, checkPassword } = refs;
     const oldPassword = useRef<HTMLInputElement>(null);
 
+    useOutsideClick(modal); 
+
     const handlerModal = () => {
-        setFindModal(!findModal);
+        setModal(!modal);
     };
 
     const updatePw = async () => {
@@ -56,7 +59,7 @@ export const ChangePwModal = (loginId) => {
 
     return (
         <ChangePwModalStyled>
-            <div className="changePwArea">
+            <div className="modal-content" id="changePwArea">
                 <div>
                     <label>현재 비밀번호</label>
                     <input type="password" ref={oldPassword}></input>

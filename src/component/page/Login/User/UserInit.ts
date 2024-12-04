@@ -21,6 +21,7 @@ export function UserInit() {
     const userDetailAddress = useRef<HTMLInputElement>(null);
     const regdate = useRef<HTMLInputElement>(null);
 
+
     return {
         state: {
             userType,

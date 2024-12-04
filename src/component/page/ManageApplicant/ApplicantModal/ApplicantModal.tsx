@@ -1,5 +1,4 @@
 import { FC, useEffect, useState } from "react";
-import { NoticeModalStyled } from "../../Notice/NoticeModal/styled";
 import { useRecoilState } from "recoil";
 import { modalState } from "../../../../stores/modalState";
 import {
@@ -12,12 +11,12 @@ import { postApi } from "../../../../api/postApi";
 import { ManageApplicant } from "../../../../api/api";
 import { UserInit } from "../../Login/User/UserInit";
 import { Button } from "react-bootstrap";
-import { Address } from "react-daum-postcode";
 import PostCode from "../../../common/Utils/PostCode/PostCode";
 import { manageApplicantSchema } from "../../../common/Validate/Schemas/User/ManageApplicantSchema";
 import { ApplicantModalStyled } from "./css/styled";
 import { formatPhoneNumber } from "../../../common/Utils/Format/FormatPhone";
 import { handleAddressComplete } from "../../../common/Utils/PostCode/HandlerAddress";
+import { clickHandler, handleOutsideClick, useOutsideClick } from "../../../common/Utils/Modal/PreventOutsideClick";
 
 interface IApplicantModalProps {
     onSuccess: () => void;
@@ -31,6 +30,8 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
     const { sex, setSex, userType, setUserType, userStatus, setUserStatus, address, setAddress, zipCode, setZipCode } =
         state;
     const { name, birthday, phone, email, userDetailAddress, regdate } = refs;
+
+    useOutsideClick(modal);
 
     useEffect(() => {
         loginId && searchDetail(); // 컴포넌트 생성될 때 실행
@@ -117,160 +118,162 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
 
     return (
         <ApplicantModalStyled>
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>
-                            <div className="title-container">
-                                <strong>구직자 회원 관리</strong>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <th>회원 유형</th>
-                        <td>
-                            <select
-                                className="selectUserType"
-                                value={userType || ""}
-                                onChange={(e) => setUserType(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    선택
-                                </option>
-                                <option value="A">개인회원</option>
-                                <option value="B">기업회원</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>아이디</th>
-                        <td>
-                            <input
-                                type="text"
-                                placeholder="숫자, 영문자 조합으로 6~20자리"
-                                defaultValue={applicantDetail?.loginId}
-                                readOnly
-                            ></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>비밀번호</th>
-                        <td>
-                            <Button onClick={handlerResetPw}>비밀번호 초기화</Button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>이름</th>
-                        <td>
-                            <input type="text" ref={name} defaultValue={applicantDetail?.name}></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>성별</th>
-                        <td>
-                            <select
-                                className="selectUserType"
-                                value={sex || ""}
-                                onChange={(e) => setSex(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    선택
-                                </option>
-                                <option value="1">남자</option>
-                                <option value="2">여자</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>생년 월일</th>
-                        <td>
-                            <input type="date" ref={birthday} defaultValue={applicantDetail?.birthday}></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>전화번호</th>
-                        <td>
-                            <input
-                                type="text"
-                                ref={phone}
-                                defaultValue={applicantDetail?.phone}
-                                onChange={(e) => {
-                                    phone.current.value = formatPhoneNumber(e.target.value);
-                                }}
-                                placeholder="ex) 010-xxxx-xxxx"
-                            ></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>이메일</th>
-                        <td>
-                            <input type="text" ref={email} defaultValue={applicantDetail?.email}></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>가입일자</th>
-                        <td>
-                            <input type="date" ref={regdate} defaultValue={applicantDetail?.regdate}></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>활성화 여부</th>
-                        <td>
-                            <select
-                                className="selectUserType"
-                                value={userStatus || ""}
-                                onChange={(e) => setUserStatus(e.target.value)}
-                            >
-                                <option value="" disabled>
-                                    선택
-                                </option>
-                                <option value="1">활성</option>
-                                <option value="2">비활성</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>우편번호</th>
-                        <td className="address-container">
-                            <input
-                                type="text"
-                                value={zipCode || ""}
-                                defaultValue={applicantDetail?.zipCode}
-                                onChange={(e) => setZipCode(e.target.value)}
-                                placeholder="우편번호 입력"
-                            />
-                            <PostCode onHandleComplete={onAddressComplete} />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>주소</th>
-                        <td>
-                            <input
-                                type="text"
-                                defaultValue={applicantDetail?.address}
-                                value={address || ""}
-                                onChange={(e) => setAddress(e.target.value)}
-                            ></input>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>상세 주소</th>
-                        <td>
-                            <input
-                                type="text"
-                                ref={userDetailAddress}
-                                defaultValue={applicantDetail?.detailAddress}
-                            ></input>
-                        </td>
-                    </tr>
-                    <div className="footer">
-                        <button onClick={handlerModal}>나가기</button>
-                        <button onClick={handlerUpdate}>수정</button>
-                    </div>
-                </tbody>
-            </table>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <table className="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <div className="title-container">
+                                    <strong>구직자 회원 관리</strong>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>회원 유형</th>
+                            <td>
+                                <select
+                                    className="selectUserType"
+                                    value={userType || ""}
+                                    onChange={(e) => setUserType(e.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        선택
+                                    </option>
+                                    <option value="A">개인회원</option>
+                                    <option value="B">기업회원</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>아이디</th>
+                            <td>
+                                <input
+                                    type="text"
+                                    placeholder="숫자, 영문자 조합으로 6~20자리"
+                                    defaultValue={applicantDetail?.loginId}
+                                    readOnly
+                                ></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>비밀번호</th>
+                            <td>
+                                <Button onClick={handlerResetPw}>비밀번호 초기화</Button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>이름</th>
+                            <td>
+                                <input type="text" ref={name} defaultValue={applicantDetail?.name}></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>성별</th>
+                            <td>
+                                <select
+                                    className="selectUserType"
+                                    value={sex || ""}
+                                    onChange={(e) => setSex(e.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        선택
+                                    </option>
+                                    <option value="1">남자</option>
+                                    <option value="2">여자</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>생년 월일</th>
+                            <td>
+                                <input type="date" ref={birthday} defaultValue={applicantDetail?.birthday}></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>전화번호</th>
+                            <td>
+                                <input
+                                    type="text"
+                                    ref={phone}
+                                    defaultValue={applicantDetail?.phone}
+                                    onChange={(e) => {
+                                        phone.current.value = formatPhoneNumber(e.target.value);
+                                    }}
+                                    placeholder="ex) 010-xxxx-xxxx"
+                                ></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>이메일</th>
+                            <td>
+                                <input type="text" ref={email} defaultValue={applicantDetail?.email}></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>가입일자</th>
+                            <td>
+                                <input type="date" ref={regdate} defaultValue={applicantDetail?.regdate}></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>활성화 여부</th>
+                            <td>
+                                <select
+                                    className="selectUserType"
+                                    value={userStatus || ""}
+                                    onChange={(e) => setUserStatus(e.target.value)}
+                                >
+                                    <option value="" disabled>
+                                        선택
+                                    </option>
+                                    <option value="1">활성</option>
+                                    <option value="2">비활성</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>우편번호</th>
+                            <td className="address-container">
+                                <input
+                                    type="text"
+                                    value={zipCode || ""}
+                                    defaultValue={applicantDetail?.zipCode}
+                                    onChange={(e) => setZipCode(e.target.value)}
+                                    placeholder="우편번호 입력"
+                                />
+                                <PostCode onHandleComplete={onAddressComplete} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>주소</th>
+                            <td>
+                                <input
+                                    type="text"
+                                    defaultValue={applicantDetail?.address}
+                                    value={address || ""}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                ></input>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>상세 주소</th>
+                            <td>
+                                <input
+                                    type="text"
+                                    ref={userDetailAddress}
+                                    defaultValue={applicantDetail?.detailAddress}
+                                ></input>
+                            </td>
+                        </tr>
+                        <div className="footer">
+                            <button onClick={handlerModal}>나가기</button>
+                            <button onClick={handlerUpdate}>수정</button>
+                        </div>
+                    </tbody>
+                </table>
+            </div>
         </ApplicantModalStyled>
     );
 };

@@ -11,7 +11,7 @@ import PostCode from "../../../common/Utils/PostCode/PostCode";
 import { Address } from "react-daum-postcode";
 import { SignUpOtherUserData } from "../../../../models/interface/ISignUp";
 import { MyPageStyled } from "./styled";
-import { modalState2 } from "../../../../stores/modalState";
+import { modalState } from "../../../../stores/modalState";
 import { Portal } from "../../../common/potal/Portal";
 import { ChangePwModal } from "../ChangePwModal/ChangePwModal";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ import { formatPhoneNumber } from "../../../common/Utils/Format/FormatPhone";
 import { handleAddressComplete } from "../../../common/Utils/PostCode/HandlerAddress";
 
 export const MyPageMain = () => {
-    const [findModal, setFindModal] = useRecoilState<boolean>(modalState2);
+    const [modal, setModal] = useRecoilState<boolean>(modalState);
     const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
     const [userDetail, setUserDetail] = useState<IUser>();
     const { state, refs } = UserInit();
@@ -115,7 +115,7 @@ export const MyPageMain = () => {
     };
 
     const handlerUpdatePwModal = () => {
-        setFindModal(!findModal);
+        setModal(!modal);
     };
 
     return (
@@ -249,7 +249,7 @@ export const MyPageMain = () => {
                     </tbody>
                 </table>
             </MyPageStyled>
-            {findModal && (
+            {modal && (
                 <Portal>
                     <ChangePwModal loginId={userInfo.loginId} />
                 </Portal>

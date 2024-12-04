@@ -25,8 +25,8 @@ export const WithdrawModal = () => {
         if (deleteUser.result === "fail") {
             alert("비밀번호가 일치하지 않습니다.");
             return;
-
-        }if (deleteUser.result === "success") {
+        }
+        if (deleteUser.result === "success") {
             alert("회원 탈퇴 처리가 완료되었습니다.");
             handlerModal();
             handlerLogout();
@@ -38,9 +38,9 @@ export const WithdrawModal = () => {
         navigate("/");
     };
 
-     const handlerModal = () => {
-         setModal(!modal);
-     };
+    const handlerModal = () => {
+        setModal(!modal);
+    };
 
     return (
         <>
@@ -51,6 +51,7 @@ export const WithdrawModal = () => {
                 </div>
                 <div>
                     <Button onClick={handlerDeleteUser}>탈퇴</Button>
+                    <Button onClick={handlerModal}>나가기</Button>
                 </div>
             </WithdrawModalStyled>
         </>
