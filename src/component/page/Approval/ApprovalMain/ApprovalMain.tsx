@@ -5,9 +5,7 @@ import {
   StyledTh,
 } from "../../../common/styled/StyledTable";
 import { PostContext } from "../../../../api/provider/PostProvider";
-import { IPost, IPostListResponse } from "../../../../models/interface/IPost";
 import { PageNavigate } from "../../../common/pageNavigation/PageNavigate";
-import { Post } from "../../../../api/api";
 import { useNavigate } from "react-router-dom";
 import { postApi } from "../../../../api/postApi";
 import {
@@ -23,7 +21,6 @@ const ApprovalMain = () => {
   const { searchKeyWord } = useContext(PostContext);
 
   useEffect(() => {
-    // console.log("updated searchKeyWord: ", searchKeyWord);
     searchManagePostList();
   }, [searchKeyWord]);
 
@@ -35,8 +32,6 @@ const ApprovalMain = () => {
       currentPage: currentPage.toString(),
       pageSize: "5",
     };
-
-    // console.log("searchParam: ", searchParam);
 
     const searchList = await postApi<IManagePostListResponse>(
       "/api/manage-post/readPostList.do",
@@ -52,8 +47,6 @@ const ApprovalMain = () => {
   };
 
   const hanlderDetail = (postIdx: number) => {
-    // console.log("hanlderDetail");
-    // navigate(`/react/jobs/postDetail/${postIdx}`);
     navigate(`/react/jobs/post-detail/${postIdx}`);
   };
 

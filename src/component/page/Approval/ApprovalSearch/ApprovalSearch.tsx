@@ -24,7 +24,6 @@ export const ApprovalSearch = () => {
 
   const handlerSearch = () => {
     setSearchKeyWord(searchValue);
-    // console.log(searchValue);
   };
 
   return (
