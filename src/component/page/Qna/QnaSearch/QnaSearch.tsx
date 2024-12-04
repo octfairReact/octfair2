@@ -55,16 +55,14 @@ export const QnaSearch = () => {
             ></input>
             <Button onClick={handlerSearch}>검색</Button>
           </>
-        ) : null}
-
-        {userInfo.userType !== 'M' ? (
+        ) : (
           <>
             <Button onClick={() => setRequestType('my')}>내가 쓴 글</Button>
             <Button style={{ marginLeft: '5px' }} onClick={handlerModal}>
               질문등록
             </Button>
           </>
-        ) : null}
+        )}
       </div>
     </QnaSearchStyled>
   );
