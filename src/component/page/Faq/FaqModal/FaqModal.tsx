@@ -101,26 +101,26 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
     <FaqModalStyled>
       <div className="container">
         <>
+          유형
           <label>
-            유형
             <div>
               <input
                 type="radio"
                 name="faqTypeSelect"
-                value="1"
+                // value="1"
                 id="indi"
-                checked={faqDetail?.faq_type === '1' || selectedFaqType === '1'}
+                checked={selectedFaqType === '1'}
                 onChange={() => handlerRadioChange('1')}
               />
-              &nbsp;개인회원&nbsp;&nbsp;
+              개인회원
               <input
                 type="radio"
                 name="faqTypeSelect"
-                value="2"
-                checked={faqDetail?.faq_type === '2' || selectedFaqType === '2'}
+                // value="2"
+                checked={selectedFaqType === '2'}
                 onChange={() => handlerRadioChange('2')}
               />
-              &nbsp;기업회원
+              기업회원
             </div>
           </label>
         </>
