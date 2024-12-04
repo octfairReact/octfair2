@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { HireApplicantContext } from '../../../../../api/provider/HireApplicantProvider.';
@@ -6,9 +5,6 @@ import { IApplicantSearch, IBiz, IBizSearch } from '../../../../../models/interf
 import { Form, Stack } from 'react-bootstrap';
 import { postApi } from '../../../../../api/postApi';
 import { HireApplicant } from '../../../../../api/api';
-import { useRecoilState } from 'recoil';
-import { ILoginInfo } from '../../../../../models/interface/store/userInfo';
-import { loginInfoState } from '../../../../../stores/userInfo';
 
 const HireApplicantSearch = () => {
   const navigate = useNavigate();
@@ -28,7 +24,6 @@ const HireApplicantSearch = () => {
 
   useEffect(() => {    
     bizDetailList();     
-    // console.log('배열테스트'+bizList[Number(searchValue.postIdx)].procArray);
   },[]);
 
   useEffect(() => {     
@@ -42,15 +37,13 @@ const HireApplicantSearch = () => {
       HireApplicant.getBizList,
       {}
     );
-    if(searchList.MDetail.length>0){
-      // console.log(searchList.MDetail[0].hirProcess);      
+    if(searchList.MDetail.length>0){  
       searchList.MDetail.forEach(element => {
         if (element.hirProcess && typeof element.hirProcess === 'string') {
-        const procArry = element.hirProcess.split(' > ').map((step)=>({proc: step}));
+        const procArry = element.hirProcess.split(' -> ').map((step)=>({proc: step}));
         element.procArray = procArry;
         }
       });
-      // console.log(searchList.MDetail[0].procArray);
       setBizList(searchList.MDetail);
       setSearchValue({postIdx : searchList.MDetail[0].postIdx.toString(), keyword : searchList.MDetail[0].procArray[0].proc
         ,procArray : searchList.MDetail[0].procArray, title : searchList.MDetail[0].title
@@ -88,11 +81,11 @@ const HireApplicantSearch = () => {
       <Form.Select id="selectValue" onChange={(e) => handlerSearch(e)} value={searchValue.keyword}>
         {bizList?.map((MDetail,index) => (
           <React.Fragment key={index}>
-          {MDetail.postIdx.toString() == searchValue.postIdx ? (            
+          {MDetail.postIdx.toString() == searchValue.postIdx && (            
             MDetail.procArray.map((procArray,index)=>(          
             <option key={index} value={procArray.proc} >{procArray.proc}</option>  
             ))       
-          ) : null }
+          )  }
           </React.Fragment>
         ))} 
         <option value="최종합격" >최종합격</option>

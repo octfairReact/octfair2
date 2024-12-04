@@ -26,7 +26,9 @@ export const ResumeModalStyled = styled.div`
     border-top: 1px solid #ccc;
     white-space: pre-line;
 }
-
+#linkPadding{
+padding-left: 10px;
+}
 td {
     text-align: left;
 }
@@ -35,9 +37,30 @@ td {
     font-size: 15px;
 }
 
-// {
-//     margin-top: 20px;
-//     margin-left: 20px;
-//     white-space: pre-line;
-// }
+#previewResumeContent{
+padding: 20px;
+}
+#previewContentTitle{
+margin-bottom: 20px;
+}
+#addFile{
+color: blue; 
+text-decoration: underline; 
+cursor: pointer;
+}
+.major{
+padding: 0 10px;
+}
+.companyPositionP{
+margin-top: 20px;
+margin-left: 20px;
+white-space: pre-line;
+}
+#perStatementTd{
+border-bottom: 1px solid #ccc;
+}
+#perStatementP{
+padding: 20px;
+white-space: pre-line;
+}
 `;
