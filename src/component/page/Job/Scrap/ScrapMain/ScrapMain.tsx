@@ -28,13 +28,11 @@ export const ScrapMain = () => {
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [selectedScrap, setSelectedScrap] = useState<IScrap>();
 
-  // const { searchKeyWord, setSelectedScrapIdx, selectedScrapIdx } =
   const { searchKeyWord, setSelectedScrapIdxList, selectedScrapIdxList } =
     useContext(ScrapContext);
 
   useEffect(() => {
     searchScrapList();
-    // }, [searchKeyWord, selectedScrapIdx]);
   }, [searchKeyWord, selectedScrapIdxList]);
 
   const searchScrapList = async (currentPage?: number) => {
@@ -50,8 +48,6 @@ export const ScrapMain = () => {
       Scrap.getList,
       searchParam
     );
-
-    console.log("searchscraplist : ", searchList);
 
     if (searchList) {
       setScrapList(searchList.scrapList);
@@ -79,7 +75,6 @@ export const ScrapMain = () => {
 
   // const handlerRadioChange = (scrapIdx: number) => {
   //   setSelectedScrapIdx(scrapIdx); // 선택된 행 업데이트
-  //   console.log(scrapIdx);
   // };
 
   const handlerNavigatePostDetail = (postIdx: number) => {
@@ -89,7 +84,14 @@ export const ScrapMain = () => {
   const handlerModal = (scrap) => {
     setModal(!modal);
     setSelectedScrap(scrap);
-    console.log(scrap);
+    setScrapList((prev) =>
+      prev.map(
+        (item) =>
+          item.scrapIdx === scrap.scrapIdx
+            ? { ...item, isApplyed: true } // 해당하는 scrap만 수정
+            : item // 나머지는 그대로 유지
+      )
+    );
   };
 
   const onPostSuccess = () => {
@@ -126,7 +128,7 @@ export const ScrapMain = () => {
           {scrapList?.length > 0 ? (
             scrapList?.map((scrap) => {
               return (
-                <tr>
+                <tr key={scrap.scrapIdx}>
                   <StyledTd>
                     {/* 라디오버튼 */}
                     {/* <input
@@ -156,9 +158,21 @@ export const ScrapMain = () => {
                       <StyledTd>{scrap.postWorkLocation}</StyledTd>
                       <StyledTd>{scrap.postEndDate}</StyledTd>
                       <StyledTd>
-                        <Button onClick={() => handlerModal(scrap)}>
-                          입사지원
-                        </Button>
+                        {scrap?.isApplyed ? (
+                          <Button onClick={() => handlerModal(scrap)}>
+                            입사지원
+                          </Button>
+                        ) : (
+                          <Button
+                            style={{
+                              color: "#007bff",
+                              backgroundColor: "#ffffff",
+                            }}
+                            onClick={() => handlerModal(scrap)}
+                          >
+                            입사지원
+                          </Button>
+                        )}
                       </StyledTd>
                     </>
                   ) : (

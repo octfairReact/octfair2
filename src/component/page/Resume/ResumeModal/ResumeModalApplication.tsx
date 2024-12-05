@@ -51,7 +51,6 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
     const response = await getApi<ApiResponse>(
       "/api/jobs/applyUserResumeDetail.do"
     );
-    console.log("response: ", response);
     if (response) {
       setUserResumes(response.userResumeList);
     }
@@ -66,14 +65,11 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
       alert("이력서를 선택하세요.");
       return;
     }
-    console.log("selected resume idx: ", selectedResumeIdx);
-
     saveApply();
   };
 
   const saveApply = async () => {
     const request = {
-      // loginIdx: scrap.loginIdx,
       postIdx: scrap ? scrap.postIdx : post.postIdx,
       resumeIdx: selectedResumeIdx,
     };
@@ -81,7 +77,6 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
       "/api/jobs/saveApply.do",
       request
     );
-    console.log("save apply : ", response);
 
     if (response?.result === "success") {
       alert("이력서가 지원 완료되었습니다.");
@@ -103,9 +98,8 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
           <hr />
           {userResumes && userResumes.length > 0 ? (
             userResumes.map((resume) => (
-              <>
+              <div key={resume.resumeIdx}>
                 <div
-                  key={resume.resumeIdx}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -131,7 +125,7 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
                     borderTop: "3px solid #ccc",
                   }}
                 />
-              </>
+              </div>
             ))
           ) : (
             <p>등록된 이력서가 없습니다.</p>
