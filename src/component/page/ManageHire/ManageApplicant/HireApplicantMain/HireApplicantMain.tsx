@@ -76,7 +76,6 @@ const HireApplicantMain = () => {
     for (const [index, data] of procArray.entries()) {      
       if (currentStatus === data.proc && currentStatus !== procArray[procLength-1].proc) {
         const nextStatus = procArray[index+1].proc;
-        console.log("배열변수 Proc="+procArray[index+1].proc);
         statusUpdate(userId,nextStatus, postIdx)
         loadApplicantList();
         break;
@@ -127,11 +126,6 @@ const HireApplicantMain = () => {
 		setResSeq(resSeq);
 	  };
 	
-	const onPostSuccess = () => {
-		setModal(!modal);
-		loadApplicantList();
-	  };
-
   return (
     <>
     <HireApplicantMainStyled>
@@ -220,9 +214,7 @@ const HireApplicantMain = () => {
       {modal && (
         <Portal>
           <ResumeModalPreview
-            onSuccess={onPostSuccess}
             resumeSeq={resSeq}
-            setResumeSeq={setResSeq}
           />
         </Portal>
       )}
