@@ -22,24 +22,34 @@ font-size: 10px;
 .application-date .date{
 color: gray;
 }
+.application-details{
+padding: 4px;
+}
 .application-details .company-name{
 text-align: left;
 padding-left: 50px;
-margin-top: 5px;s
+margin-top: 2px;
 font-size: 14px;
 }
 .application-details .job-title{
 text-align: left;
 padding-left: 50px;
-margin-top: 5px;
+margin-top: 2px;
 font-size: 15px;
 font-weight: bold;
 }
-.application-details .resume-link{
+.modal_preview .resume-link{
 text-align: left;
-padding-left: 50px;
-margin: 5px 0px 5px 0px;
-font-size: 13px;
+}
+.resume_preview{
+color: white;
+background-color: orange;
+font-size: 14px;
+padding: 10px;
+font-weight: 700;
+border-radius: 10px;
+border: none;
+margin: 5px;
 }
 .cancel #cancleSpan{
 color: #868686;

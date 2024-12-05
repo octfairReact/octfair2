@@ -26,15 +26,11 @@ export const downloadFile = (resIdx) => {
   })
 };
 interface IResumeModalProps {
-  onSuccess: () => void;
   resumeSeq: number;
-  setResumeSeq: (resumeSeq: number) => void;
 }
 
 export const ResumeModalPreview: FC<IResumeModalProps> = ({
-  onSuccess,
   resumeSeq,
-  setResumeSeq,
 }) => {
   const [modal, setModal] = useRecoilState<boolean>(modalState); // recoil에 저장된 state
   const [resumeInfo, setResumeInfo] = useState<IResumeDetail>();
@@ -42,14 +38,11 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
   const [eduInfo, setEduInfo] = useState<IResumeEducation[] | null>();
   const [skillInfo, setSkillInfo] = useState<IResumeSkill[] | null>();
   const [certInfo, setCertInfo] = useState<IResumeCertification[] | null>();
+  const [show] = useState(true);
 
   useEffect(() => {
-    resumeSeq && modalDetail(); // 컴포넌트 생성될 때 실행
-    console.log("모달 로그1: " + resumeSeq);
-    // 클린업 함수, 컴포넌트가 사라지기 직전에 실행
-    return () => {
-    };
-  }, []);
+    resumeSeq && modalDetail(); // 컴포넌트 생성될 때 실행    
+  }, );
 
   const modalDetail =  async () => {
     const param = {
@@ -69,10 +62,8 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
     }
   }
 
-  const [show, setShow] = useState(true);
-
-
   const handleClose = () => setModal(!modal);
+  
 
   const handlePrint = () => {
     const printContent = document.getElementById("previewResumeContent")?.innerHTML;
