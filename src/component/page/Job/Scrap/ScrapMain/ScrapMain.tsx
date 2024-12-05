@@ -126,7 +126,7 @@ export const ScrapMain = () => {
           {scrapList?.length > 0 ? (
             scrapList?.map((scrap) => {
               return (
-                <tr>
+                <tr key={scrap.scrapIdx}>
                   <StyledTd>
                     {/* 라디오버튼 */}
                     {/* <input
