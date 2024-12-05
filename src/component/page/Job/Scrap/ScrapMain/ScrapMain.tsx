@@ -89,6 +89,14 @@ export const ScrapMain = () => {
   const handlerModal = (scrap) => {
     setModal(!modal);
     setSelectedScrap(scrap);
+    setScrapList((prev) =>
+      prev.map(
+        (item) =>
+          item.scrapIdx === scrap.scrapIdx
+            ? { ...item, isApplyed: true } // 해당하는 scrap만 수정
+            : item // 나머지는 그대로 유지
+      )
+    );
     console.log(scrap);
   };
 
@@ -156,9 +164,21 @@ export const ScrapMain = () => {
                       <StyledTd>{scrap.postWorkLocation}</StyledTd>
                       <StyledTd>{scrap.postEndDate}</StyledTd>
                       <StyledTd>
-                        <Button onClick={() => handlerModal(scrap)}>
-                          입사지원
-                        </Button>
+                        {scrap?.isApplyed ? (
+                          <Button onClick={() => handlerModal(scrap)}>
+                            입사지원
+                          </Button>
+                        ) : (
+                          <Button
+                            style={{
+                              color: "#007bff",
+                              backgroundColor: "#ffffff",
+                            }}
+                            onClick={() => handlerModal(scrap)}
+                          >
+                            입사지원
+                          </Button>
+                        )}
                       </StyledTd>
                     </>
                   ) : (
