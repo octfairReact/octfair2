@@ -60,18 +60,9 @@ export const HistoryMain = () => {
     }
   };
 
-  const handleNavigation = (path) => {
-    navigate(path);
-  };
-
   const handlerModal = (resSeq: number) => {
     setModal(!modal);
     setResSeq(resSeq);
-  };
-
-  const onPostSuccess = () => {
-    setModal(!modal);
-    searchApplyList();
   };
 
   const handlerCancleApply = (applyId: number) => {
@@ -90,7 +81,8 @@ export const HistoryMain = () => {
           <caption style={{ visibility: "hidden" }}>지원내역 테이블</caption>
           <colgroup>
             <col width="15%" />
-            <col width="40%" />
+            <col width="30%" />
+            <col width="10%" />
             <col width="15%" />
             <col width="15%" />
             <col width="15%" />
@@ -100,6 +92,7 @@ export const HistoryMain = () => {
             <tr>
               <StyledTh scope="col">지원일</StyledTh>
               <StyledTh scope="col">지원내역</StyledTh>
+              <StyledTh scope="col">지원이력서</StyledTh>
               <StyledTh scope="col">공고진행상태</StyledTh>
               <StyledTh scope="col">열람</StyledTh>
               <StyledTh scope="col">취소/삭제</StyledTh>
@@ -108,7 +101,7 @@ export const HistoryMain = () => {
           <tbody id="resultList">
             {applyList?.length <= 0 ? (
               <tr>
-                <StyledTd id="application-nobodyTd" colSpan={5}>
+                <StyledTd id="application-nobodyTd" colSpan={6}>
                   <p>
                     <img src="https://www.saraminimage.co.kr/sri/person/resume/img_empty_announce.png" alt="빈 공고 이미지"/>
                   </p>
@@ -117,7 +110,7 @@ export const HistoryMain = () => {
                   </p>
                   <p id="application-nobodyGoP">
                     <span id="application-nobodySpan"
-                      onClick={() => handleNavigation(`/react/jobs/posts.do`)}>
+                      onClick={() => navigate(`/react/jobs/posts.do`)}>
                       현재 채용중인 공고 보러가기 {">"}{" "}
                     </span>
                   </p>
@@ -138,21 +131,24 @@ export const HistoryMain = () => {
                     <StyledTd className="application-details">
                       <p className="company-name">
                         <span onClick={() =>
-                            handleNavigation( `/react/company/companyDetailPage.do/${data.postingId}/${data.bizIdx}`)}>
+                            navigate( `/react/company/companyDetailPage.do/${data.postingId}/${data.bizIdx}`)}>
                           {data.bizName}
                         </span>
                       </p>
                       <p className="job-title">
                         <span
                           onClick={() =>
-                            handleNavigation( `/react/jobs/post-detail/${data.postingId}`)}>
+                            navigate( `/react/jobs/post-detail/${data.postingId}`)}>
                           {data.postTitle}
                         </span>
                       </p>
+                      
+                    </StyledTd>
+                    <StyledTd className="modal_preview">
                       <p className="resume-link">
-                        <span onClick={() => handlerModal(data.resIdx)}>
-                          <span>지원이력서</span>
-                        </span>
+                        <button className="resume_preview" onClick={() => handlerModal(data.resIdx)}>
+                          이력서 보기
+                        </button>
                       </p>
                     </StyledTd>
                     <StyledTd className="job-status">
@@ -185,9 +181,7 @@ export const HistoryMain = () => {
       {modal && (
         <Portal>
           <ResumeModalPreview
-            onSuccess={onPostSuccess}
             resumeSeq={resSeq}
-            setResumeSeq={setResSeq}
           />
         </Portal>
       )}

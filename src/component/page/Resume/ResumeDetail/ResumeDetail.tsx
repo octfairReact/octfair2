@@ -335,9 +335,7 @@ export const ResumeDetail = () => {
       {modal && (
         <Portal>
           <ResumeModalPreview
-            onSuccess={onPostSuccess}
             resumeSeq={resumeSeq}
-            setResumeSeq={setResumeSeq}
           />
         </Portal>
       )}
