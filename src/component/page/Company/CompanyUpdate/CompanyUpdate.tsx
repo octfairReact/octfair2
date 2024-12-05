@@ -26,6 +26,23 @@ export const CompanyUpdate = () => {
   const bizEmpCount = useRef(null);
   const bizRevenue = useRef(null);
   const fileInputRef = useRef(null);
+
+  // const refs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({
+  //   bizName: null,
+  //   bizCeoName: null,
+  //   bizContact: null,
+  //   bizAddr: null,
+  //   bizWebUrl: null,
+  //   bizFoundDate: null,
+  //   bizIntro: null,
+  //   bizEmpCount: null,
+  //   bizRevenue: null,
+  //   fileInputRef: null,
+  // });
+
+  // const setRef = (key: string) => (el: HTMLInputElement | HTMLTextAreaElement | null) => {
+  //   refs.current[key] = el;
+  // };
   
   useEffect(() => {
     if (bizIdx) {

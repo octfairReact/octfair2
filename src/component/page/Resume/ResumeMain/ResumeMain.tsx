@@ -1,60 +1,55 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IResume, IResumeListResponse } from '../../../../models/interface/IResume';
-import { ResumeContext } from '../../../../api/provider/ResumeProvider';
 import { postApi } from '../../../../api/postApi';
 import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import { Resume } from '../../../../api/api';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
+import swal from 'sweetalert';
 
 export const ResumeMain = () => {
   const [resumeList, setResumeList] = useState<IResume[]>();
-  const { searchKeyWord } = useContext(ResumeContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     searchResumeList();
-  }, [searchKeyWord]);
+  }, []);
 
   const searchResumeList = async () => {
-    const searchParam = {
-      ...searchKeyWord,
-    };
-
-    const searchList = await postApi<IResumeListResponse>(Resume.getList, searchParam);
+    const searchList = await postApi<IResumeListResponse>(Resume.getList, {});
 
     if (searchList) {
       setResumeList(searchList.payload);
     }
   };
 
-  const handlerDetail = (resumeSeq: number) => {
-    navigate('/react/apply/resumeDetail.do', { state: { idx: resumeSeq } });
+  const handlerDetail = (resIdx: number) => {
+    navigate('/react/apply/resumeDetail.do', { state: { idx: resIdx } });
   };
 
-  const copyResumeList = async (resumeSeq: number) => {
-    const copyList = await postApi<IResumeListResponse>(Resume.getCopy, { resIdx: resumeSeq });
+  const copyResumeList = async (resIdx: number) => {
+    const copyList = await postApi<IResumeListResponse>(Resume.getCopy, {resIdx});
 
     if (copyList) {
+      swal("첫 번째 내용", "두 번째 내용", "success");
       searchResumeList();
     }
   };
 
-  const deleteResumeList = async (resumeSeq: number) => {
-    const deleteList = await postApi<IResumeListResponse>(Resume.getDelete, { resIdx: resumeSeq });
+  const deleteResumeList = async (resIdx: number) => {
+    const deleteList = await postApi<IResumeListResponse>(Resume.getDelete, {resIdx});
 
     if (deleteList) {
+      swal("삭제 완료", "이력서가 삭제되었습니다.", "success");
       searchResumeList();
     }
   };
 
   const downloadFile = async (resIdx: number) => {
-    axios.post('/api/apply/fileDownload.do', { resIdx: resIdx }, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    axios.post('/api/apply/fileDownload.do', {resIdx}, {
+      headers: {'Content-Type': 'application/json',},
       responseType: 'blob',
     }).then((res) => {
         const file = new Blob([res.data], { type: res.headers['content-type'] });
@@ -67,76 +62,51 @@ export const ResumeMain = () => {
   };
 
   return (
-    <>
-      <StyledTable>
-        <thead>
+    <StyledTable>
+      <thead>
+        <tr>
+          <StyledTh size={50}>이력서 제목</StyledTh>
+          <StyledTh size={20}>관리</StyledTh>
+          <StyledTh size={15}>최종수정일</StyledTh>
+        </tr>
+      </thead>
+      <tbody>
+        {resumeList?.length > 0 ? (
+          resumeList?.map((resume) => {
+            return (
+              <tr key={resume.resIdx}>
+                <StyledTd>
+                  <p className="detailTitle" onClick={() => handlerDetail(resume.resIdx)}>
+                    {resume.resTitle}
+                  </p>
+                  { resume.fileName && 
+                    <p className="detailFile" onClick={() => downloadFile(resume.resIdx)}>
+                      첨부파일 : {resume.fileName}
+                    </p> 
+                  }
+                </StyledTd>
+                <StyledTd>
+                  <div className="input-box">
+                    <Button variant="primary" onClick={() => copyResumeList(resume.resIdx)}>
+                      복사하기
+                    </Button>
+                    <Button variant="secondary" onClick={() => deleteResumeList(resume.resIdx)}>
+                      삭제하기
+                    </Button>
+                  </div>
+                </StyledTd>
+                <StyledTd>
+                  <span className="tdUpdateDate">{resume.updatedDate}</span>
+                </StyledTd>
+              </tr>
+            );
+          })
+        ) : (
           <tr>
-            <StyledTh size={50}>이력서 제목</StyledTh>
-            <StyledTh size={20}>관리</StyledTh>
-            <StyledTh size={15}>최종수정일</StyledTh>
+            <StyledTd colSpan={3}>데이터가 없습니다.</StyledTd>
           </tr>
-        </thead>
-        <tbody>
-          {resumeList?.length > 0 ? (
-            resumeList?.map((resume) => {
-              return (
-                <tr key={resume.resIdx}>
-                  <StyledTd>
-                    <p 
-                      onClick={() => handlerDetail(resume.resIdx)}
-                      style={{ 
-                        marginTop: "10px",
-                        marginBottom: "12px",
-                        fontWeight: "600",
-                      }}
-                    >
-                      {resume.resTitle}
-                    </p>
-                    { resume.fileName && 
-                      <p
-                        onClick={() => downloadFile(resume.resIdx)}
-                        style={{  
-                          marginBottom: "3px",
-                          fontSize: "13px",
-                          color: "#2c6dd4",
-                          fontWeight: "500",
-                        }}
-                      >
-                        첨부파일 : {resume.fileName}
-                      </p> 
-                    }
-                  </StyledTd>
-                  <StyledTd>
-                    <div className="input-box">
-                      <Button 
-                        variant="primary" 
-                        style={{ margin: '5px', width: '100px' }} 
-                        onClick={() => copyResumeList(resume.resIdx)}
-                      >
-                        복사하기
-                      </Button>
-                      <Button
-                        variant="secondary"
-                        style={{ margin: '5px', width: '100px' }} 
-                        onClick={() => deleteResumeList(resume.resIdx)}
-                      >
-                        삭제하기
-                      </Button>
-                    </div>
-                  </StyledTd>
-                  <StyledTd style={{ fontSize: "15px", color: "gray" }}>
-                    {resume.updatedDate}
-                  </StyledTd>
-                </tr>
-              );
-            })
-          ) : (
-            <tr>
-              <StyledTd colSpan={3}>데이터가 없습니다.</StyledTd>
-            </tr>
-          )}
-        </tbody>
-      </StyledTable>
-    </>
+        )}
+      </tbody>
+    </StyledTable>
   );
 };

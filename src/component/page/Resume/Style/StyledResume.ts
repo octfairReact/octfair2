@@ -1,5 +1,41 @@
 import styled from 'styled-components';
 
+export const StyledResume = styled.div`
+    th {
+        font-size: 17px;
+    }
+
+    tr td {
+        font-size: 16px;
+    }
+
+    .inputBtnGroup > button {
+        margin: 5px;
+        width: 100px;
+    }
+
+    .inputBtnGroup {
+        text-align: right;
+    }
+
+    .tdCrrDesc, .tdSkillDetail {
+        white-space: pre-wrap;
+        text-align: left;
+    }
+
+    .admDate, .grdDate, .startDate, .endDate, .acqDate {
+        width: 70%;
+        float: right;
+    }
+
+    .tdSpan {
+        margin: 6px;
+        float: left;
+    }
+
+
+`;
+
 export const StyledTableResume = styled.table`
     width: 100%;
 
@@ -16,7 +52,7 @@ export const StyledTableResume = styled.table`
     }
 
     td {
-        font-size: 14px;
+        // font-size: 14px;
     }
 
     #resumetitle, #userName, #userEmail, #userPhone {
@@ -61,7 +97,8 @@ export const StyledTableResume = styled.table`
 
     .showTableBtn {
         font-weight: 600;
-        margin-bottom: 10px;
+        font-size: 16px;
+        margin: 10px 0px 15px;
     }
 
     .btnGroup {
