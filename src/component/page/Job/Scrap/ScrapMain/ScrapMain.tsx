@@ -28,13 +28,11 @@ export const ScrapMain = () => {
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [selectedScrap, setSelectedScrap] = useState<IScrap>();
 
-  // const { searchKeyWord, setSelectedScrapIdx, selectedScrapIdx } =
   const { searchKeyWord, setSelectedScrapIdxList, selectedScrapIdxList } =
     useContext(ScrapContext);
 
   useEffect(() => {
     searchScrapList();
-    // }, [searchKeyWord, selectedScrapIdx]);
   }, [searchKeyWord, selectedScrapIdxList]);
 
   const searchScrapList = async (currentPage?: number) => {
@@ -50,8 +48,6 @@ export const ScrapMain = () => {
       Scrap.getList,
       searchParam
     );
-
-    console.log("searchscraplist : ", searchList);
 
     if (searchList) {
       setScrapList(searchList.scrapList);
@@ -79,7 +75,6 @@ export const ScrapMain = () => {
 
   // const handlerRadioChange = (scrapIdx: number) => {
   //   setSelectedScrapIdx(scrapIdx); // 선택된 행 업데이트
-  //   console.log(scrapIdx);
   // };
 
   const handlerNavigatePostDetail = (postIdx: number) => {
@@ -97,7 +92,6 @@ export const ScrapMain = () => {
             : item // 나머지는 그대로 유지
       )
     );
-    console.log(scrap);
   };
 
   const onPostSuccess = () => {
