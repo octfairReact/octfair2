@@ -9,14 +9,11 @@ import { Button } from "react-bootstrap";
 export const CompanyDetail = () => {
   const [companyDetail, setCompanyDetail] = useState<ICompanyDetail>();
   const [imageUrl, setImageUrl] = useState<string>();
-  const { bizIdx } = useParams();
-  const { postIdx } = useParams();
+  const { bizIdx, postIdx } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (bizIdx) {
-      searchDetail(bizIdx);
-    }
+    bizIdx && searchDetail(bizIdx);
   }, []);
 
   const searchDetail = async (bizIdx) => {
@@ -53,13 +50,9 @@ export const CompanyDetail = () => {
 					<tbody>
 						<tr >
 							<td colSpan={4}>
-                {imageUrl ? (
-                  <span id="preview">
-                    <img src={imageUrl} style={{ width: "50%" }} alt="" />
-                  </span>
-                ) : (
-                  <span></span>
-                )}
+                <span id="preview">
+                { imageUrl && <img src={imageUrl} style={{ width: "50%" }} alt="" /> }
+                </span>
               </td>
 						</tr>
 					</tbody>		
@@ -109,10 +102,7 @@ export const CompanyDetail = () => {
       </div>
 
       <div className="btnGroup" style={{ textAlign: "right" }}>
-        <Button 
-          variant="secondary" 
-          onClick={() => navigate(`/react/jobs/post-detail/${postIdx}`)}
-        >
+        <Button variant="secondary" onClick={() => navigate(`/react/jobs/post-detail/${postIdx}`)}>
           <span>기업 지원 공고 확인하기</span>
         </Button>
       </div>

@@ -39,4 +39,26 @@ export const StyledTh = styled.th<{ size?: number }>`
 export const StyledTd = styled.td`
     padding: 12px;
     border: 1px solid #ddd;
+
+    .detailTitle {
+        margin: 10px 0px 12px;
+        font-weight: 600;
+    }
+
+    .detailFile {
+        margin: 0px 0px 3px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #2c6dd4;
+    }
+
+    .input-box > button {
+        margin: 5px;
+        width: 100px;
+    }
+
+    .tdUpdateDate{
+        font-size: 15px;
+        color: gray;
+    }
 `;

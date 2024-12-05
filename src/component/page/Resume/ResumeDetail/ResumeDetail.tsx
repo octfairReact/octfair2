@@ -10,18 +10,18 @@ import { ResumeModalPreview } from "../ResumeModal/ResumeModalPreview";
 import { modalState } from "../../../../stores/modalState";
 import { postApi } from '../../../../api/postApi';
 import { Resume } from '../../../../api/api';
-import { StyledTableResume } from '../Style/StyledTableResume';
+import { StyledTableResume } from '../Style/StyledResume';
 import { ResumeCareer } from './ResumeCareer';
 import { ResumeEdu } from './ResumeEdu';
 import { ResumeSkill } from './ResumeSkill';
 import { ResumeCert } from './ResumeCert';
 import { RiDeleteBin6Line } from "react-icons/ri";
+import swal from 'sweetalert';
 
 export const ResumeDetail = () => {
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [resumeDetail, setResumeDetail] = useState<IResumeDetail>();
-  const [resumeSeq, setResumeSeq] = useState<number>();
-  const [fileData, setFileData] = useState<File>();
+  const [resIdx, setResIdx] = useState<number>();
   const location = useLocation();
   const navigate = useNavigate();
   const resTitle = useRef<HTMLInputElement>();
@@ -32,7 +32,7 @@ export const ResumeDetail = () => {
 
   useEffect(() => {
     if (location.state.idx) {
-      setResumeSeq(location.state.idx);
+      setResIdx(location.state.idx);
       searchDetail(location.state.idx);
     } else {
       insertNew();
@@ -56,19 +56,17 @@ export const ResumeDetail = () => {
   }, [resumeDetail, TextareaAutoResize]);
 
   const insertNew = async () => {
-    const searchParam = {};
-    const newList = await postApi<IResumeDetailReponse>( Resume.getNew, searchParam );
+    const newList = await postApi<IResumeDetailReponse>( Resume.getNew, {});
 
     if (newList) {
-      setResumeSeq(newList.payload.resIdx);
+      setResIdx(newList.payload.resIdx);
       setResumeDetail(newList.payload);
       navigate('/react/apply/resumeDetail.do', { state: { idx: newList.payload.resIdx } });
     }
   }
 
-  const searchDetail = async (resumeSeq: number) => {
-    const searchParam = { resIdx: resumeSeq };
-    const detailList = await postApi<IResumeDetailReponse>( Resume.getDetail, searchParam );
+  const searchDetail = async (resIdx: number) => {
+    const detailList = await postApi<IResumeDetailReponse>( Resume.getDetail, {resIdx});
 
     if (detailList) { 
       setResumeDetail(detailList.payload);
@@ -79,7 +77,7 @@ export const ResumeDetail = () => {
     navigate('/react/apply/resume.do');
   }
 
-  const handlerPreview = (resumeSeq: number) => {
+  const handlerPreview = (resIdx: number) => {
     setModal(!modal);
   }
 
@@ -89,7 +87,7 @@ export const ResumeDetail = () => {
     fileForm.append('short_intro', shortIntro.current.value);
     fileForm.append('pfo_link', pfoLink.current.value);
     fileForm.append('per_statement', perStatement.current.value);
-    fileForm.append('resIdx', resumeSeq.toString());
+    fileForm.append('resIdx', resIdx.toString());
 
     const fileInput = fileInputRef.current;
     if (fileInput && fileInput.files[0]) {
@@ -99,33 +97,22 @@ export const ResumeDetail = () => {
     axios
       .post('/api/apply/resumeUpdate.do', fileForm)
       .then((res) => {
-          alert("저장되었습니다.");
-          searchDetail(resumeSeq);
+          swal("저장 완료", "저장되었습니다.", "success");
+          searchDetail(resIdx);
       }).catch((err) => {});
   };
 
-  const handlerFile = (e: ChangeEvent<HTMLInputElement>) => {
-    const fileInfo = e.target.files;
-    if (fileInfo?.length > 0) {
-      setFileData(fileInfo[0]);
-    }
-  }
-
   const handlerDeleteFile = async () => {
-    const searchParam = { 
-      resIdx: resumeSeq,
-    };
-
-    const deleteList = await postApi<IResumeCareerReponse>(Resume.deleteFile, searchParam);
+    const deleteList = await postApi<IResumeCareerReponse>(Resume.deleteFile, {resIdx});
 
     if (deleteList) {
-      alert("삭제되었습니다.");
-      searchDetail(resumeSeq);
+      swal("삭제 완료", "삭제되었습니다.", "success");
+      searchDetail(resIdx);
     }
   }
 
   const downloadFile = async (resIdx: number) => {
-    axios.post('/api/apply/fileDownload.do', { resIdx: resIdx }, {
+    axios.post('/api/apply/fileDownload.do', {resIdx}, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -139,10 +126,6 @@ export const ResumeDetail = () => {
         URL.revokeObjectURL(link.href);    
     })
   };
-
-  const onPostSuccess = () => {
-    setModal(!modal);
-  }
 
   return (
     <StyledTableResume>
@@ -212,13 +195,13 @@ export const ResumeDetail = () => {
           </div>
 
           {/* 경력 */}
-          <ResumeCareer resumeSeq={resumeSeq} />
+          <ResumeCareer resIdx={resIdx} />
           {/* 학력 */}
-          <ResumeEdu resumeSeq={resumeSeq} />
+          <ResumeEdu resIdx={resIdx} />
           {/* 스킬 */}
-          <ResumeSkill resumeSeq={resumeSeq} />
+          <ResumeSkill resIdx={resIdx} />
           {/* 자격증 및 외국어 */}
-          <ResumeCert resumeSeq={resumeSeq} />
+          <ResumeCert resIdx={resIdx} />
 
           <div className="resumeDetail_body">
             <div className="resumeDetail_body_haeder">링크</div>
@@ -288,7 +271,6 @@ export const ResumeDetail = () => {
                     type="file"
                     id="resumeAttach"
                     style={{ display: "none" }}
-                    onChange={handlerFile}
                     ref={fileInputRef}
                   />
                 </div>
@@ -298,7 +280,6 @@ export const ResumeDetail = () => {
                     type="file" 
                     className="form-control" 
                     id="resumeAttach" 
-                    onChange={handlerFile}
                     ref={fileInputRef} 
                   />
                 </div>
@@ -325,7 +306,7 @@ export const ResumeDetail = () => {
           <Button 
             variant="secondary" 
             style={{ margin: "3px" }}
-            onClick={() => handlerPreview(resumeSeq)}
+            onClick={() => handlerPreview(resIdx)}
           >
             <span>미리보기</span>
           </Button>
@@ -335,7 +316,7 @@ export const ResumeDetail = () => {
       {modal && (
         <Portal>
           <ResumeModalPreview
-            resumeSeq={resumeSeq}
+            resumeSeq={resIdx}
           />
         </Portal>
       )}
