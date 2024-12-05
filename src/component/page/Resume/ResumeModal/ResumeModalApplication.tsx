@@ -6,6 +6,7 @@ import { IScrap } from "../../../../models/interface/IScrap";
 import { IBizDetail, IPostDetail } from "../../../../models/interface/IPost";
 import { getApi } from "../../../../api/getApi";
 import { postApi } from "../../../../api/postApi";
+import swal from "sweetalert";
 
 interface ApplyResume {
   resumeIdx: number;
@@ -62,7 +63,7 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
 
   const handlerApply = () => {
     if (!selectedResumeIdx) {
-      alert("이력서를 선택하세요.");
+      swal("이력서를 선택하세요.", "", "warning");
       return;
     }
     saveApply();
@@ -79,10 +80,10 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
     );
 
     if (response?.result === "success") {
-      alert("이력서가 지원 완료되었습니다.");
+      swal("이력서가 지원 완료되었습니다.", "", "success");
       handlerClose();
     } else if (response?.message === "이미 지원 완료된 공고입니다.") {
-      alert("이미 지원 완료된 공고입니다.");
+      swal("이미 지원 완료된 공고입니다.", "", "error");
     }
   };
 
