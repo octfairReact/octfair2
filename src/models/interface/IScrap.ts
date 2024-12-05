@@ -10,6 +10,7 @@ export interface IScrap {
   postWorkLocation: string;
   scrapIdx: number;
   scrappedDate: string;
+  isApplyed: boolean;
 }
 
 export interface IScrapListResponse {
