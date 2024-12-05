@@ -44,7 +44,7 @@ const HireApplicantSearch = () => {
         element.procArray = procArry;
         }
       });
-      setBizList(searchList.MDetail);
+      setBizList(searchList.MDetail)
       setSearchValue({postIdx : searchList.MDetail[0].postIdx.toString(), keyword : searchList.MDetail[0].procArray[0].proc
         ,procArray : searchList.MDetail[0].procArray, title : searchList.MDetail[0].title
        });
