@@ -85,6 +85,7 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
 
     if (response?.result === "success") {
       alert("이력서가 지원 완료되었습니다.");
+      handlerClose();
     } else if (response?.message === "이미 지원 완료된 공고입니다.") {
       alert("이미 지원 완료된 공고입니다.");
     }

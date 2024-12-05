@@ -33,7 +33,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
   useEffect(() => {
     postDetailData(postIdx);
     console.log("postDetailData");
-  }, [postIdx, isClicked]);
+  }, [postIdx]);
 
   useEffect(() => {
     if (bizDetail && postDetail) {
@@ -53,6 +53,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
       setPostDetail(response.postDetail);
       setBizDetail(response.bizDetail);
       setIsClicked(response.isClicked);
+      console.log(isClicked);
     }
   };
 
@@ -85,6 +86,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
 
     if (response?.result === "success") {
       alert("스크랩이 성공적으로 저장되었습니다.");
+      setIsClicked((prev) => ({ ...prev, isScraped: true }));
     } else {
       alert("이미 스크립된 공고입니다.");
     }
@@ -94,6 +96,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
     setModal(!modal);
     setPostDetail(postDetail);
     setBizDetail(bizDetail);
+    setIsClicked((prev) => ({ ...prev, isApplyed: true }));
     console.log(postDetail);
     console.log(bizDetail);
   };
@@ -141,24 +144,57 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
               </Row>
             </div>
             {userType === "A" ? (
-              <div className="p-2 d-flex justify-content-center">
-                <Button
-                  variant="warning"
-                  size="lg"
-                  style={{ width: "150px", marginRight: "20px" }}
-                  onClick={handlerSaveScrap}
-                >
-                  스크랩
-                </Button>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  style={{ width: "150px" }}
-                  onClick={() => handlerModal(postDetail, bizDetail)}
-                >
-                  입사지원
-                </Button>
-              </div>
+              <>
+                <div className="p-2 d-flex justify-content-center">
+                  {isClicked?.isScraped ? (
+                    <Button
+                      variant="warning"
+                      size="lg"
+                      style={{ width: "150px", marginRight: "20px" }}
+                      onClick={handlerSaveScrap}
+                    >
+                      스크랩
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline-warning"
+                      size="lg"
+                      style={{
+                        width: "150px",
+                        marginRight: "20px",
+                        color: "#ffc107",
+                        borderColor: "#ffc107",
+                      }}
+                      onClick={handlerSaveScrap}
+                    >
+                      스크랩
+                    </Button>
+                  )}
+                  {isClicked?.isApplyed ? (
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      style={{ width: "150px" }}
+                      onClick={() => handlerModal(postDetail, bizDetail)}
+                    >
+                      입사지원
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline-primary"
+                      size="lg"
+                      style={{
+                        width: "150px",
+                        color: "#007bff",
+                        borderColor: "#007bff",
+                      }}
+                      onClick={() => handlerModal(postDetail, bizDetail)}
+                    >
+                      입사지원
+                    </Button>
+                  )}
+                </div>
+              </>
             ) : (
               <></>
             )}
