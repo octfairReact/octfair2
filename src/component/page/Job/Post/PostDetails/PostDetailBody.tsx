@@ -16,6 +16,7 @@ import { ISaveScrapResponse } from "../../../../../models/interface/IScrap";
 import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { ResumeModalApplication } from "../../../Resume/ResumeModal/ResumeModalApplication";
+import swal from "sweetalert";
 
 interface PostDetailBodyProps {
   onImagePath: (bizImage: string | null, postImage: string | null) => void;
@@ -64,10 +65,12 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
 
     console.log("API Response: ", response);
     if (response) {
-      alert(`${appStatus}이(가) 처리되었습니다.`);
+      swal(`${appStatus}이(가) 처리되었습니다.`, "", "success");
     } else {
-      alert(
-        `${appStatus}이(가) 처리되지 않았습니다. 잠시 후 다시 한 번 시도해주세요.`
+      swal(
+        `${appStatus}이(가) 처리되지 않았습니다.`,
+        "잠시 후 다시 한 번 시도해주세요.",
+        "fail"
       );
     }
   };
@@ -85,10 +88,10 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
     console.log("saveScrapResponse : ", response);
 
     if (response?.result === "success") {
-      alert("스크랩이 성공적으로 저장되었습니다.");
+      swal("스크랩이 성공적으로 저장되었습니다.", "", "success");
       setIsClicked((prev) => ({ ...prev, isScraped: true }));
     } else {
-      alert("이미 스크립된 공고입니다.");
+      swal("이미 스크립된 공고입니다.", "", "error");
     }
   };
 

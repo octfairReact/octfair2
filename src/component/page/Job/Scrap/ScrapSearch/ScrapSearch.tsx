@@ -6,6 +6,7 @@ import { Button } from "../../../../common/Button/Button";
 import { postNoticeApi } from "../../../../../api/postNoticeApi";
 import { Scrap } from "../../../../../api/api";
 import { IPostResponse } from "../../../../../models/interface/IScrap";
+import swal from "sweetalert";
 
 export const ScrapSearch = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ export const ScrapSearch = () => {
 
   const handlerDelete = async () => {
     if (selectedScrapIdxList.length === 0) {
-      alert("삭제할 스크랩을 선택해주세요.");
+      swal("삭제할 스크랩을 선택해주세요.", "", "warning");
       return;
     }
 
@@ -42,7 +43,7 @@ export const ScrapSearch = () => {
     });
 
     deletedApi.then((res) => {
-      alert("삭제되었습니다.");
+      swal("삭제되었습니다.", "", "success");
       setSelectedScrapIdxList([]);
     });
   };
