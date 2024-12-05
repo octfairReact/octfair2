@@ -103,9 +103,8 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
           <hr />
           {userResumes && userResumes.length > 0 ? (
             userResumes.map((resume) => (
-              <>
+              <div key={resume.resumeIdx}>
                 <div
-                  key={resume.resumeIdx}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -131,7 +130,7 @@ export const ResumeModalApplication: FC<IResumeModalProps> = ({
                     borderTop: "3px solid #ccc",
                   }}
                 />
-              </>
+              </div>
             ))
           ) : (
             <p>등록된 이력서가 없습니다.</p>
