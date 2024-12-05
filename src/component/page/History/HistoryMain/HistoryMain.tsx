@@ -15,6 +15,7 @@ import { IApply, IApplyResponse } from "../../../../models/interface/IHistory";
 import { History } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
 import { HistoryMainStyled } from "./styled";
+import swal from 'sweetalert';
 
 export const HistoryMain = () => {
   const [applyList, setApplyList] = useState<IApply[]>();
@@ -54,9 +55,11 @@ export const HistoryMain = () => {
     const res = await postApi<{ result: string }>(History.deleteApply, param);
     console.log(res.result);
     if (res.result === "success") {
-      alert("지원취소 완료하였습니다.");
+      swal("지원취소 완료하였습니다.","","success").then(() => {
+        window.location.reload();
+      })            
     } else {
-      alert("지원취소에 실패하였습니다.");
+      swal("지원취소에 실패하였습니다.","","error");
     }
   };
 
@@ -68,7 +71,6 @@ export const HistoryMain = () => {
   const handlerCancleApply = (applyId: number) => {
     if (window.confirm("지원취소 하시겠습니까?")) {
       cancleApply(applyId);
-      window.location.reload();
     } else {
       return false;
     }

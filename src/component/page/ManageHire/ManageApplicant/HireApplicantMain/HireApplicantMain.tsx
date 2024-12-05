@@ -12,6 +12,7 @@ import { postApi } from '../../../../../api/postApi';
 import { Table } from "react-bootstrap";
 import { ILoginInfo } from '../../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../../stores/userInfo';
+import swal from 'sweetalert';
 
 
 const HireApplicantMain = () => {
@@ -60,10 +61,10 @@ const HireApplicantMain = () => {
       HireApplicant.updateStatus,
       params
     )
-    if(status.result == "success"){
-      alert("상태가 업데이트 되었습니다.");
+    if(status.result === "success"){
+      swal("상태가 업데이트 되었습니다.","","success");
     }else{
-      alert("오류가 발생하였습니다.");
+      swal("오류가 발생하였습니다.","","error");
     }  
   }
 
@@ -115,7 +116,6 @@ const HireApplicantMain = () => {
       params
     );
     if(res.result ==='success'){
-      console.log('이력서 확인');
       loadApplicantList();
     }
   }
