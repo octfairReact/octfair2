@@ -1,17 +1,12 @@
-import React from "react";
+import { useContext } from "react";
 import Slider, { Settings } from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { PostDetailContext } from "../../../../../api/provider/PostDetailProvider";
 
-interface SlideImageProps {
-  bizImagePath: string | null;
-  postImagePath: string | null;
-}
+const SlideImage = () => {
+  const { bizImagePath, postImagePath } = useContext(PostDetailContext);
 
-const SlideImage: React.FC<SlideImageProps> = ({
-  bizImagePath,
-  postImagePath,
-}) => {
   const settings: Settings = {
     dots: true,
     infinite: true, // 무한 반복
