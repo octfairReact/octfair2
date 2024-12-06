@@ -115,6 +115,6 @@ body {
 		}
 
    #listTable td {
-    padding: 7px;
+    padding: 3px;
 }
 `;

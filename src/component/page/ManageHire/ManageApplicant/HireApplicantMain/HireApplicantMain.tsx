@@ -13,6 +13,7 @@ import { Table } from "react-bootstrap";
 import { ILoginInfo } from '../../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../../stores/userInfo';
 import swal from 'sweetalert';
+import { useNavigationType } from 'react-router-dom';
 
 
 const HireApplicantMain = () => {
@@ -23,6 +24,15 @@ const HireApplicantMain = () => {
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [resSeq, setResSeq] = useState<number>();  
   const [userInfo] = useRecoilState<ILoginInfo>(loginInfoState);
+  const navigationType = useNavigationType();
+
+  useEffect(() => {
+    if(navigationType === 'POP') {
+      setModal(false);
+    }
+  }, [navigationType]);
+
+  
 
   useEffect(() => {
     if (Object.keys(searchKeyWord).length !== 0) {
