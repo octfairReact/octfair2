@@ -9,7 +9,6 @@ import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTa
 import { PageNavigate } from '../../../common/pageNavigation/PageNavigate';
 import { Portal } from '../../../common/potal/Portal';
 import { QnaModal } from '../QnaModal/QnaModal';
-import { Button } from 'react-bootstrap';
 import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
 import ToggleButton from 'react-bootstrap/ToggleButton';
@@ -83,9 +82,9 @@ export const QnaMain = () => {
         <thead>
           <tr>
             <StyledTh size={5}>번호</StyledTh>
-            <StyledTh size={35}>제목</StyledTh>
-            <StyledTh size={15}>작성자</StyledTh>
-            <StyledTh size={15}>등록일</StyledTh>
+            <StyledTh size={50}>제목</StyledTh>
+            <StyledTh size={10}>작성자</StyledTh>
+            <StyledTh size={20}>등록일</StyledTh>
           </tr>
         </thead>
         <tbody>
@@ -100,12 +99,12 @@ export const QnaMain = () => {
                 >
                   <StyledTd>{qna.qnaIdx}</StyledTd>
                   <StyledTd>
-                    {qna.title}&nbsp;
+                    {qna.title}
                     {qna.ans_content ? (
                       <button
                         type="button"
                         className="btn btn-outline-success  btn-sm"
-                        style={{ width: 70, height: 30 }}
+                        style={{ marginLeft: 7, width: 70, height: 30 }}
                       >
                         답변완료
                       </button>

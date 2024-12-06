@@ -14,8 +14,8 @@ export const FaqSearchStyled = styled.div`
     position: relative;
   }
 
-  #abc {
-    padding: 0 10px;
+  #btnFaqSearch {
+    margin: 5px;
   }
   @media (max-width: 1000px) {
   }

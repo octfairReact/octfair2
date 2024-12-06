@@ -12,9 +12,13 @@ export const FaqModalStyled = styled.div`
   z-index: 1;
   font-weight: bold;
 
+  #faqType {
+    display: inline-block;
+  }
+
   label {
     display: flex;
-    flex-direction: column;
+    // flex-direction: column;
   }
 
   input[type='text'] {
