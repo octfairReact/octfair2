@@ -61,30 +61,16 @@ export const FaqMain = () => {
   const handlerShowContent = (faq_idx) => {
     setStyle((style) => (style === faq_idx ? null : faq_idx));
   };
-
-  // const changeFaqType = (faq_type: string) => {
-  //   setSelectedFaqType(faq_type);
-  // };
-
-  // const individual = selectedFaqType === '1' ? 'active' : 'inactive';
-  // const biz = selectedFaqType === '2' ? 'active' : 'inactive';
+  const indi = selectedFaqType === '1' ? 'active' : 'inactive';
+  const biz = selectedFaqType === '2' ? 'active' : 'inactive';
 
   return (
     <>
-      {/* <ToggleButtonGroup style={{ marginTop: '15px' }} type="radio" name="options" defaultValue={1}>
-        <ToggleButton className={`${individual}`} onClick={() => changeFaqType('1')} id="tbg-radio-1" value={1}>
-          개인회원
-        </ToggleButton>
-        <ToggleButton className={`${biz}`} onClick={() => changeFaqType('2')} id="tbg-radio-2" value={2}>
-          기업회원
-        </ToggleButton>
-      </ToggleButtonGroup> */}
-
       <ToggleButtonGroup style={{ marginTop: '15px' }} type="radio" name="options">
-        <ToggleButton onClick={() => setSelectedFaqType('1')} id="tbg-radio-1" value={1}>
+        <ToggleButton className={`${indi}`} onClick={() => setSelectedFaqType('1')} id="tbg-radio-1" value={1}>
           개인회원
         </ToggleButton>
-        <ToggleButton onClick={() => setSelectedFaqType('2')} id="tbg-radio-2" value={2}>
+        <ToggleButton className={`${biz}`} onClick={() => setSelectedFaqType('2')} id="tbg-radio-2" value={2}>
           기업회원
         </ToggleButton>
       </ToggleButtonGroup>
@@ -92,42 +78,57 @@ export const FaqMain = () => {
       <StyledTable>
         <ShowContentStyled>
           <thead>
-            <tr>
-              <StyledTh size={5}>번호</StyledTh>
-              <StyledTh size={35}>제목</StyledTh>
+            {/* <StyledTh size={5}>번호</StyledTh>
+              <StyledTh size={30}>제목</StyledTh>
               <StyledTh size={10}>작성자</StyledTh>
-              <StyledTh size={10}>등록일</StyledTh>
-              {userInfo.userType === 'M' ? <StyledTh size={10}>관리</StyledTh> : null}
-            </tr>
+              <StyledTh size={15}>등록일</StyledTh> */}
+            {userInfo.userType === 'M' ? (
+              <tr>
+                <StyledTh size={5}>번호</StyledTh>
+                <StyledTh size={50}>제목</StyledTh>
+                <StyledTh size={10}>작성자</StyledTh>
+                <StyledTh size={10}>등록일</StyledTh>
+                <StyledTh size={10}>관리</StyledTh>
+              </tr>
+            ) : (
+              <tr>
+                <StyledTh size={5}>번호</StyledTh>
+                <StyledTh size={50}>제목</StyledTh>
+                <StyledTh size={10}>작성자</StyledTh>
+                <StyledTh size={20}>등록일</StyledTh>
+              </tr>
+            )}
           </thead>
-          {faqList?.length > 0 ? (
-            faqList?.map((faq) => {
-              return (
-                <tbody key={faq.faq_idx}>
-                  <tr>
-                    <StyledTd>{faq.faq_idx}</StyledTd>
-                    <StyledTd onClick={() => handlerShowContent(faq.faq_idx)}>{faq.title}</StyledTd>
-                    <StyledTd>{faq.author}</StyledTd>
-                    <StyledTd>{faq.created_date.substring(0, 10)}</StyledTd>
-                    {userInfo.userType === 'M' && (
-                      <StyledTd onClick={() => handlerModal(faq.faq_idx)}>
-                        <button type="button" className="btn btn-secondary">
-                          관리
-                        </button>
-                      </StyledTd>
-                    )}
-                  </tr>
-                  <tr className={style === faq.faq_idx ? 'show' : 'hide'} style={{ color: 'gray' }}>
-                    <StyledTd colSpan={5}>{faq.content}</StyledTd>
-                  </tr>
-                </tbody>
-              );
-            })
-          ) : (
-            <tr>
-              <StyledTd colSpan={3}>데이터가 없습니다.</StyledTd>
-            </tr>
-          )}
+          <tbody>
+            {faqList?.length > 0 ? (
+              faqList?.map((faq) => {
+                return (
+                  <React.Fragment>
+                    <tr key={faq.faq_idx}>
+                      <StyledTd>{faq.faq_idx}</StyledTd>
+                      <StyledTd onClick={() => handlerShowContent(faq.faq_idx)}>{faq.title}</StyledTd>
+                      <StyledTd>{faq.author}</StyledTd>
+                      <StyledTd>{faq.created_date.substring(0, 10)}</StyledTd>
+                      {userInfo.userType === 'M' && (
+                        <StyledTd onClick={() => handlerModal(faq.faq_idx)}>
+                          <button type="button" className="btn btn-secondary">
+                            관리
+                          </button>
+                        </StyledTd>
+                      )}
+                    </tr>
+                    <tr key={faq.content} className={style === faq.faq_idx ? 'show' : 'hide'} style={{ color: 'gray' }}>
+                      <StyledTd colSpan={5}>{faq.content}</StyledTd>
+                    </tr>
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <tr key="emptyData">
+                <StyledTd colSpan={3}>데이터가 없습니다.</StyledTd>
+              </tr>
+            )}
+          </tbody>
         </ShowContentStyled>
       </StyledTable>
       <PageNavigate
