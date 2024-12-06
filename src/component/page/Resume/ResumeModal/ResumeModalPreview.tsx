@@ -9,6 +9,9 @@ import { postApi } from '../../../../api/postApi';
 import { HireApplicant } from '../../../../api/api';
 import { IPreviewResume } from '../../../../models/interface/IHireApplicant';
 import { ResumeModalStyled } from './ResumeModalStyled';
+import { useNavigationType } from 'react-router-dom';
+
+
 
 export const downloadFile = (resIdx) => {
   axios.post('/api/manage-hire/attachment-download.do', resIdx, {
@@ -38,7 +41,7 @@ export const ResumeModalPreview: FC<IResumeModalProps> = ({
   const [eduInfo, setEduInfo] = useState<IResumeEducation[] | null>();
   const [skillInfo, setSkillInfo] = useState<IResumeSkill[] | null>();
   const [certInfo, setCertInfo] = useState<IResumeCertification[] | null>();
-  const [show] = useState(true);
+  const [show] = useState(true);  
 
   useEffect(() => {
     resumeSeq && modalDetail(); // 컴포넌트 생성될 때 실행    
