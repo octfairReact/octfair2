@@ -12,7 +12,7 @@ export const StyledTableCompany = styled.table`
     th {
         vertical-align: middle;
         background-color: #f5f5f5;
-        font-size: 17px;
+        font-size: 18px;
         textAlign: center;
     }
 
@@ -23,7 +23,7 @@ export const StyledTableCompany = styled.table`
     }
 
     td {
-        font-size: 16px;
+        font-size: 17px;
         height: 50px;
     }
 
@@ -41,7 +41,28 @@ export const StyledTableCompany = styled.table`
     }
 
     .btnGroup {
-        textAlign: center;
-        margin: 30px 0px 30px;
+        text-align: center;
+        margin: 50px 0px 30px;
+    }
+
+    .btnGroup2 {
+        text-align: right;
+        margin: 50px 0px 30px;
+    }
+
+    .btnGroup > button {
+        margin: 5px;
+        width: 100px;
+        font-size: 18px;
+    }
+
+    .btnGroup2 > button {
+        margin: 5px;
+        width: 230px;
+        font-size: 18px;
+    }
+
+    #currentFileName {
+        font-size: 16px;
     }
 `;
