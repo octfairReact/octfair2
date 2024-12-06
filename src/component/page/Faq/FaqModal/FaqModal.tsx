@@ -8,6 +8,9 @@ import { ILoginInfo } from '../../../../models/interface/store/userInfo';
 import { loginInfoState } from '../../../../stores/userInfo';
 import axios, { AxiosResponse } from 'axios';
 import { postApi } from '../../../../api/postApi';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 interface IFaqModalProps {
   onSuccess: () => void;
   faqSeq: number;
@@ -100,30 +103,19 @@ export const FaqModal: FC<IFaqModalProps> = ({ onSuccess, faqSeq, setFaqSeq }) =
   return (
     <FaqModalStyled>
       <div className="container">
-        <>
-          유형
+        <div id="faqType">
           <label>
-            <div>
-              <input
-                type="radio"
-                name="faqTypeSelect"
-                // value="1"
-                id="indi"
-                checked={selectedFaqType === '1'}
-                onChange={() => handlerRadioChange('1')}
-              />
+            유형
+            <label>
+              <input type="radio" checked={selectedFaqType === '1'} onChange={() => handlerRadioChange('1')} />
               개인회원
-              <input
-                type="radio"
-                name="faqTypeSelect"
-                // value="2"
-                checked={selectedFaqType === '2'}
-                onChange={() => handlerRadioChange('2')}
-              />
+            </label>
+            <label id="abc">
+              <input type="radio" checked={selectedFaqType === '2'} onChange={() => handlerRadioChange('2')} />
               기업회원
-            </div>
+            </label>
           </label>
-        </>
+        </div>
         <label>
           제목<input type="text" ref={title} defaultValue={faqDetail?.title}></input>
         </label>

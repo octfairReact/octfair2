@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Col, Container, Row, Stack } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ILoginInfo } from "../../../../../models/interface/store/userInfo";
@@ -17,12 +17,9 @@ import { modalState } from "../../../../../stores/modalState";
 import { Portal } from "../../../../common/potal/Portal";
 import { ResumeModalApplication } from "../../../Resume/ResumeModal/ResumeModalApplication";
 import swal from "sweetalert";
+import { PostDetailContext } from "../../../../../api/provider/PostDetailProvider";
 
-interface PostDetailBodyProps {
-  onImagePath: (bizImage: string | null, postImage: string | null) => void;
-}
-
-const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
+const PostDetailBody = () => {
   const { postIdx } = useParams();
   const [{ userType }] = useRecoilState<ILoginInfo>(loginInfoState);
   const navigate = useNavigate();
@@ -30,6 +27,7 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
   const [bizDetail, setBizDetail] = useState<IBizDetail | null>(null);
   const [modal, setModal] = useRecoilState<boolean>(modalState);
   const [isClicked, setIsClicked] = useState<IisClicked>();
+  const { setBizImagePath, setPostImagePath } = useContext(PostDetailContext);
 
   useEffect(() => {
     postDetailData(postIdx);
@@ -40,9 +38,10 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
     if (bizDetail && postDetail) {
       const bizImagePath = bizDetail?.logicalPath || null;
       const postImagePath = postDetail?.logicalPath || null;
-      onImagePath(bizImagePath, postImagePath);
+      setBizImagePath(bizImagePath);
+      setPostImagePath(postImagePath);
     }
-  }, [bizDetail, postDetail, onImagePath]);
+  }, [bizDetail, postDetail, setBizImagePath, setPostImagePath]);
 
   const postDetailData = async (postIdx: string) => {
     const params = { postIdx };
@@ -106,7 +105,6 @@ const PostDetailBody: React.FC<PostDetailBodyProps> = ({ onImagePath }) => {
 
   const onPostSuccess = () => {
     setModal(!modal);
-    // postDetailData(postIdx);
   };
 
   const handlerUpdateAppStatus = (postIdx, appStatus) => {

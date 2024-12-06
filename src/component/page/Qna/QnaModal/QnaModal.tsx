@@ -9,6 +9,7 @@ import { postApi } from '../../../../api/postApi';
 import { Qna } from '../../../../api/api';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { pwChkState } from '../../../../stores/pwChkState';
+import swal from 'sweetalert';
 
 interface IQnaModalProps {
   onSuccess: () => void;
