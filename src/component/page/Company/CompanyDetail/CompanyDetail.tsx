@@ -17,8 +17,7 @@ export const CompanyDetail = () => {
   }, []);
 
   const searchDetail = async (bizIdx) => {
-    const searchParam = { bizIdx: bizIdx };
-    const detailList = await postApi<ICompanyDetailReponse>( Company.getDetail, searchParam );
+    const detailList = await postApi<ICompanyDetailReponse>( Company.getDetail, {bizIdx});
 
     if (detailList) { 
       setCompanyDetail(detailList.payload);
@@ -100,8 +99,7 @@ export const CompanyDetail = () => {
 					</tbody>
 				</table>
       </div>
-
-      <div className="btnGroup" style={{ textAlign: "right" }}>
+      <div className="btnGroup2">
         <Button variant="secondary" onClick={() => navigate(`/react/jobs/post-detail/${postIdx}`)}>
           <span>기업 지원 공고 확인하기</span>
         </Button>

@@ -33,7 +33,7 @@ export const ResumeMain = () => {
     const copyList = await postApi<IResumeListResponse>(Resume.getCopy, {resIdx});
 
     if (copyList) {
-      swal("첫 번째 내용", "두 번째 내용", "success");
+      swal("복사 완료", "이력서가 복사되었습니다.", "success");
       searchResumeList();
     }
   };
