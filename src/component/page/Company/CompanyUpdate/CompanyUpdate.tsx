@@ -6,44 +6,34 @@ import { Company } from "../../../../api/api";
 import { postApi } from "../../../../api/postApi";
 import { Button } from "react-bootstrap";
 import axios from "axios";
+import swal from 'sweetalert';
 
 export const CompanyUpdate = () => {
   const [companyDetail, setCompanyDetail] = useState<ICompanyDetail>();
   const [imageUrl, setImageUrl] = useState<string>();
-  const [fileData, setFileData] = useState<File>();
   const [phoneNum, setPhoneNum] = useState("");
   const [bizEmpCountBind, setBizEmpCount] = useState("");
   const [bizRevenueBind, setBizRevenue] = useState("");
   const { bizIdx } = useParams();
   const navigate = useNavigate();
-  const bizName = useRef<HTMLInputElement>();
-  const bizCeoName = useRef<HTMLInputElement>();
-  const bizContact = useRef<HTMLInputElement>();
-  const bizAddr = useRef<HTMLInputElement>();
-  const bizWebUrl = useRef<HTMLInputElement>();
-  const bizFoundDate = useRef<HTMLInputElement>();
-  const bizIntro = useRef(null);
   const bizEmpCount = useRef(null);
   const bizRevenue = useRef(null);
   const fileInputRef = useRef(null);
 
-  // const refs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({
-  //   bizName: null,
-  //   bizCeoName: null,
-  //   bizContact: null,
-  //   bizAddr: null,
-  //   bizWebUrl: null,
-  //   bizFoundDate: null,
-  //   bizIntro: null,
-  //   bizEmpCount: null,
-  //   bizRevenue: null,
-  //   fileInputRef: null,
-  // });
+  const refs = useRef<Record<string, HTMLInputElement | HTMLTextAreaElement | null>>({
+    bizName: null,
+    bizCeoName: null,
+    bizContact: null,
+    bizAddr: null,
+    bizWebUrl: null,
+    bizFoundDate: null,
+    bizIntro: null,
+  });
 
-  // const setRef = (key: string) => (el: HTMLInputElement | HTMLTextAreaElement | null) => {
-  //   refs.current[key] = el;
-  // };
-  
+  const setRef = (key: string) => (el: HTMLInputElement | HTMLTextAreaElement | null) => {
+    refs.current[key] = el;
+  };
+
   useEffect(() => {
     if (bizIdx) {
       searchDetail(bizIdx);
@@ -62,13 +52,12 @@ export const CompanyUpdate = () => {
   }, [companyDetail]);
 
   const searchDetail = async (bizIdx) => {
-    const searchParam = { bizIdx: bizIdx };
-    const detailList = await postApi<ICompanyDetailReponse>( Company.getDetail, searchParam );
+    const detailList = await postApi<ICompanyDetailReponse>( Company.getDetail, {bizIdx});
 
     if (detailList) { 
       setCompanyDetail(detailList.payload);
-
       const { fileExt, logicalPath } = detailList.payload;
+
       if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png") {
         setImageUrl(logicalPath);
       } else {
@@ -81,42 +70,35 @@ export const CompanyUpdate = () => {
     const fileInfo = e.target.files;
     if (fileInfo?.length > 0) {
       const fileInfoSplit = fileInfo[0].name.split(".");
-      const fileExtension = fileInfoSplit[1].toLowerCase();
+      const fileExt = fileInfoSplit[1].toLowerCase();
 
-      if (
-        fileExtension === "jpg" ||
-        fileExtension === "gif" ||
-        fileExtension === "png"
-      ) {
+      if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png") {
         setImageUrl(URL.createObjectURL(fileInfo[0]));
       } else {
         setImageUrl("");
       }
-
-      setFileData(fileInfo[0]);
     }
   };
 
   const handlerUpdate = (path: string) => {
-    if (!handlerValidation()) {
-      return;
-    }
-
+    const params = handlerValidation();
+    if (!params) return;
+    
     const fileForm = new FormData();
 
     if (path === "insert" ) {
       fileForm.append('seq', bizIdx);
     }
     
-    fileForm.append('bizName', bizName.current.value);
-    fileForm.append('bizAddr', bizAddr.current.value);
-    fileForm.append('bizContact', bizContact.current.value);
-    fileForm.append('bizWebUrl', bizWebUrl.current.value);
-    fileForm.append('bizCeoName', bizCeoName.current.value);
-    fileForm.append('bizFoundDate', bizFoundDate.current.value);
+    fileForm.append('bizName', params.bizName);
+    fileForm.append('bizAddr', params.bizAddr);
+    fileForm.append('bizContact', params.bizContact);
+    fileForm.append('bizWebUrl', params.bizWebUrl);
+    fileForm.append('bizCeoName', params.bizCeoName);
+    fileForm.append('bizFoundDate', params.bizFoundDate);
     fileForm.append('bizEmpCount', bizEmpCount.current.value);
     fileForm.append('bizRevenue', bizRevenue.current.value);
-    fileForm.append('bizIntro', bizIntro.current.value);
+    fileForm.append('bizIntro', params.bizIntro);
 
     const fileInput = fileInputRef.current;
     if (fileInput && fileInput.files[0]) {
@@ -126,11 +108,10 @@ export const CompanyUpdate = () => {
     axios
     .post(path === "insert" ? Company.getInsert : Company.getUpdate, fileForm)
     .then((res) => {
-      console.log(res.data.result);
       if ("idAlready" === res.data.result) {
-        alert("이미 회사를 등록하셨습니다.");
+        swal("저장 실패", "이미 회사를 등록하셨습니다.", "error");
       } else {
-        alert("회사가 저장되었습니다.");
+        swal("저장 완료", "회사가 저장되었습니다.", "success");
       }
 
       navigate("/react/mypage/update.do");
@@ -138,11 +119,10 @@ export const CompanyUpdate = () => {
   }
 
   const handlerDelete = async () => {
-    const searchParam = {};
-    const deleteList = await postApi<ICompanyDetailReponse>(Company.getDelete, searchParam);
+    const deleteList = await postApi<ICompanyDetailReponse>(Company.getDelete, {});
 
     if (deleteList) {
-      alert("삭제되었습니다.");
+      swal("삭제 완료", "삭제되었습니다.", "success");
       navigate("/react/mypage/update.do");
     }
   }
@@ -154,7 +134,7 @@ export const CompanyUpdate = () => {
     if (phone.length >= 3) {
       var prefix = phone.substring(0, 3);
       if ([ "010", "019", "011", "016", "017" ].indexOf(prefix) === -1) {
-        alert("정확한 전화번호를 입력해주세요.");
+        swal("정확한 전화번호를 입력해주세요.");
         return;
       }
 		}
@@ -178,42 +158,37 @@ export const CompanyUpdate = () => {
     const addressPattern = /^[\w\s가-힣]+$/;
     const urlPattern = /^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+([\/?%&=]*)?$/;
 
-    const _bizName = bizName.current.value;
-    const _bizCeoName = bizCeoName.current.value;
-    const _bizContact = bizContact.current.value;
-    const _bizAddr = bizAddr.current.value;
-    const _bizFoundDate = bizFoundDate.current.value;
-    const _bizWebUrl = bizWebUrl.current.value;
-    const _bizEmpCount = bizEmpCount.current.value;
-    const _bizRevenue = bizRevenue.current.value;
-    const _bizLogo = fileInputRef.current.value;
+    const inputs = Object.keys(refs.current).reduce((acc, key) => {
+      acc[key] = refs.current[key]?.value.trim() || "";
+      return acc;
+    }, {} as Record<string, string>);
 
-    if      (!_bizName.trim())      { alert("사업자 이름을 입력해 주세요."); return; }
-    else if (!_bizCeoName.trim())   { alert("사업자 이름을 입력해 주세요."); return; }
-    else if (!_bizContact.trim())   { alert("연락처를 입력해 주세요."); return; }
-    else if (!_bizAddr.trim())      { alert("주소를 입력해 주세요."); return; }
-    else if (!_bizFoundDate.trim()) { alert("설립일을 입력해 주세요."); return; }
-    else if (!_bizWebUrl.trim())    { alert("홈페이지 주소를 입력해 주세요."); return; }
-    else if (!_bizEmpCount.trim())  { alert("사원수를 입력해 주세요."); return; }
-    else if (!_bizRevenue.trim())   { alert("매출액을 입력해 주세요."); return; }
-    else if (!_bizLogo)             { alert("로고를 등록해 주세요."); return; }
+    if      (!inputs.bizName)             { swal("사업자 이름을 입력해 주세요."); return; }
+    else if (!inputs.bizCeoName)          { swal("사업자 이름을 입력해 주세요."); return; }
+    else if (!inputs.bizContact)          { swal("연락처를 입력해 주세요."); return; }
+    else if (!inputs.bizAddr)             { swal("주소를 입력해 주세요."); return; }
+    else if (!inputs.bizFoundDate)        { swal("설립일을 입력해 주세요."); return; }
+    else if (!inputs.bizWebUrl)           { swal("홈페이지 주소를 입력해 주세요."); return; }
+    else if (!bizEmpCount.current.value)  { swal("사원수를 입력해 주세요."); return; }
+    else if (!bizRevenue.current.value)   { swal("매출액을 입력해 주세요."); return; }
+    else if (!fileInputRef.current.value) { swal("로고를 등록해 주세요."); return; }
 
-    if (today < new Date(_bizFoundDate)) {
-      alert("설립일은 오늘보다 이전이어야 합니다.");
-      return;
+    if (today < new Date(inputs.bizFoundDate)) {
+      swal("설립일은 오늘보다 이전이어야 합니다.");
+      return false;
     }
 
-    if (!addressPattern.test(_bizAddr)) {
-      alert("주소는 특수 문자를 포함하지 않는 형식으로 입력해 주세요.");
-      return;
+    if (!addressPattern.test(inputs.bizAddr)) {
+      swal("주소는 특수 문자를 포함하지 않는 형식으로 입력해 주세요.");
+      return false;
     }
 
-    if (!urlPattern.test(_bizWebUrl)) {
-      alert("홈페이지 주소는 올바른 URL 형식으로 입력해 주세요.");
-      return;
+    if (!urlPattern.test(inputs.bizWebUrl)) {
+      swal("홈페이지 주소는 올바른 URL 형식으로 입력해 주세요.");
+      return false;
     }
 
-    return true;
+    return inputs;
   }
 
   return (
@@ -230,12 +205,9 @@ export const CompanyUpdate = () => {
             <th>사업자명<span className="font_red">*</span></th>
             <td>
               <input 
-                type="text" 
-                className="form-control" 
-                name="bizName" 
-                id="bizName" 
+                type="text" className="form-control" 
                 defaultValue={companyDetail?.bizName}
-                ref={bizName}
+                ref={setRef("bizName")}
               />
               </td>
             <th>사업자 대표<span className="font_red">*</span></th>
@@ -243,10 +215,8 @@ export const CompanyUpdate = () => {
               <input 
                 type="text" 
                 className="form-control" 
-                name="bizCeoName" 
-                id="bizCeoName" 
                 defaultValue={companyDetail?.bizCeoName}
-                ref={bizCeoName}
+                ref={setRef("bizCeoName")}
               />
             </td>
           </tr>
@@ -256,11 +226,9 @@ export const CompanyUpdate = () => {
               <input 
                 type="text" 
                 className="form-control" 
-                name="bizContact" 
-                id="bizContact" 
                 placeholder="ex) 010-xxxx-xxxx" 
                 value={phoneNum}
-                ref={bizContact}
+                ref={setRef("bizContact")}
                 onChange={phoneNumChange}
               />
             </td>
@@ -269,10 +237,8 @@ export const CompanyUpdate = () => {
               <input 
                 type="text" 
                 className="form-control" 
-                name="bizAddr" 
-                id="bizAddr" 
                 defaultValue={companyDetail?.bizAddr}
-                ref={bizAddr}
+                ref={setRef("bizAddr")}
               />
             </td>
           </tr>
@@ -281,7 +247,6 @@ export const CompanyUpdate = () => {
             <td>
               <select 
                 className="form-select" 
-                id="bizEmpCount" 
                 value={bizEmpCountBind}
                 defaultValue={companyDetail?.bizEmpCount} 
                 onChange={(e) => setBizEmpCount(e.target.value)}
@@ -299,10 +264,8 @@ export const CompanyUpdate = () => {
               <input 
                 type="text" 
                 className="form-control" 
-                name="bizWebUrl" 
-                id="bizWebUrl" 
                 defaultValue={companyDetail?.bizWebUrl}
-                ref={bizWebUrl}
+                ref={setRef("bizWebUrl")}
               />
             </td>
           </tr>
@@ -312,17 +275,14 @@ export const CompanyUpdate = () => {
               <input 
                 type="date" 
                 className="form-control" 
-                name="bizFoundDate" 
-                id="bizFoundDate" 
                 defaultValue={companyDetail?.bizFoundDate}
-                ref={bizFoundDate}
+                ref={setRef("bizFoundDate")}
               />
             </td>
             <th>매출액<span className="font_red">*</span></th>
             <td>
               <select 
                 className="form-select" 
-                id="bizRevenue" 
                 value={bizRevenueBind}
                 defaultValue={companyDetail?.bizRevenue} 
                 ref={bizRevenue}
@@ -340,12 +300,10 @@ export const CompanyUpdate = () => {
             <td colSpan={3}>
               <textarea 
                 className="form-control" 
-                name="bizIntro" 
-                id="bizIntro" 
                 placeholder="2000자 이내로 입력해 주세요."
                 rows={10}
                 defaultValue={companyDetail?.bizIntro}
-                ref={bizIntro}
+                ref={setRef("bizIntro")}
               />
             </td>
           </tr>
@@ -355,8 +313,6 @@ export const CompanyUpdate = () => {
               <input 
                 type="file" 
                 className="form-control" 
-                name="bizLogo" 
-                id="bizLogo" 
                 onChange={handlerFile}
                 ref={fileInputRef}
               />
@@ -368,52 +324,32 @@ export const CompanyUpdate = () => {
           <tr>
             <th>미리 보기</th>
             <td colSpan={3}>
-              {imageUrl ? (
+              {imageUrl && 
                 <span id="companyUpdatePreview">
                   <img src={imageUrl} style={{ width: "50%" }} alt="" />
                 </span>
-              ) : (
-                <span></span>
-              )}
+              }
             </td>
           </tr>
         </tbody>
       </table>
 
-      <div className="btnGroup" style={{ textAlign: "right" }}>
+      <div className="btnGroup">
         {bizIdx ? (
-          <Button 
-            variant="primary" 
-            style={{ margin: "3px" }}
-            onClick={() => handlerUpdate("update")}
-          >
+          <Button variant="primary" onClick={() => handlerUpdate("update")}>
             <span>수정</span>
           </Button>
         ) : (
-          <Button 
-            variant="primary" 
-            style={{ margin: "3px" }}
-            onClick={() => handlerUpdate("insert")}
-          >
+          <Button variant="primary" onClick={() => handlerUpdate("insert")}>
             <span>등록</span>
           </Button>
         )}
-
         {bizIdx &&
-          <Button 
-            variant="danger" 
-            style={{ margin: "3px" }}
-            onClick={() => handlerDelete()}
-          >
+          <Button variant="danger" onClick={() => handlerDelete()}>
             <span>삭제</span>
           </Button>
         }
-        
-        <Button 
-          variant="secondary" 
-          style={{ margin: "3px" }}
-          onClick={() => navigate("/react/mypage/update.do")}
-        >
+        <Button variant="secondary" onClick={() => navigate("/react/mypage/update.do")}>
           <span>돌아가기</span>
         </Button>
       </div>
