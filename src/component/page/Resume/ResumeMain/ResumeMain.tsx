@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { IResume, IResumeListResponse } from '../../../../models/interface/IResume';
 import { postApi } from '../../../../api/postApi';
-import { StyledTable, StyledTd, StyledTh } from '../../../common/styled/StyledTable';
 import { Resume } from '../../../../api/api';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import swal from 'sweetalert';
+import { StyledTableResumeMain, StyledTd, StyledTh } from '../Style/StyledResume';
 
 export const ResumeMain = () => {
   const [resumeList, setResumeList] = useState<IResume[]>();
@@ -62,7 +62,7 @@ export const ResumeMain = () => {
   };
 
   return (
-    <StyledTable>
+    <StyledTableResumeMain>
       <thead>
         <tr>
           <StyledTh size={50}>이력서 제목</StyledTh>
@@ -107,6 +107,6 @@ export const ResumeMain = () => {
           </tr>
         )}
       </tbody>
-    </StyledTable>
+    </StyledTableResumeMain>
   );
 };

@@ -193,11 +193,11 @@ export const CompanyUpdate = () => {
 
   return (
     <StyledTableCompany>
-      <table className="table table-bordered writeTable">
+      <table className="table writeTable">
         <colgroup>
-          <col width={"20%"} />
+          <col width={"18%"} />
           <col width={""} />
-          <col width={"20%"} />
+          <col width={"18%"} />
           <col width={""} />
         </colgroup>
         <tbody>

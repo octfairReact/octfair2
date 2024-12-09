@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
 export const ContentBoxStyled = styled.div`
-    background-color: #f5f5f5;
+    // background-color: #f5f5f5;
     padding: 15px 100% 15px 0px;
-    border: 1px solid #ccc;
+    border-bottom: 2px solid #616161;
     box-sizing: border-box;
     display: block;
     + div {
         margin-top: -52px;
-        margin-left: 450px;
+        margin-left: 400px;
     }
 `;
 

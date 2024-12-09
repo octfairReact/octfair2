@@ -1,5 +1,67 @@
 import styled from "styled-components";
 
+export const StyledMypage = styled.section`
+    width: 80%;
+
+    .table {
+        width: 80%;
+        max-width: 800px;
+        min-width: 500px;
+        margin: 30px;
+    }
+
+    th,
+    td {
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        // padding: 0px 0px 0px 20px;
+        padding: 18px;
+        vertical-align: middle;
+        font-size: 18px;
+        text-align: left;
+        width: 150px;
+    }
+
+    .font_red {
+        vertical-align: middle;
+        padding: 2px;
+        margin: 2px;
+    }
+
+    td {
+        font-size: 17px;
+        height: 50px;
+    }
+
+    .btn {
+        font-weight: 600;
+        width: 130px;
+    }
+
+    .btnGroup {
+        width: 90%;
+        text-align: center;
+        margin: 50px 0px 30px;
+    }
+
+    .btnGroup > button {
+        margin: 5px;
+        width: 250px;
+        font-size: 18px;
+        font-weight: 600px;
+    }
+
+    .zipCode, .loginId {
+        width: 230px;
+        display: inline-block;
+        margin: 0px 10px 0px 00px;
+    }
+`;
+
+
 // 스타일 정의 (div 없이)
 export const MyPageStyled = styled.section`
     padding-top: 20px; /* 페이지 상단에 여백 추가 */

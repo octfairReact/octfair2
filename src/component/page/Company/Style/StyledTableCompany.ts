@@ -11,9 +11,9 @@ export const StyledTableCompany = styled.table`
 
     th {
         vertical-align: middle;
-        background-color: #f5f5f5;
+        background-color: #fafafa;
         font-size: 18px;
-        textAlign: center;
+        text-align: centerRe;
     }
 
     .font_red {
