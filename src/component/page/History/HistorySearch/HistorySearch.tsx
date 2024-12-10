@@ -14,6 +14,7 @@ export const HistorySearch = () => {
         keyWord: "",
       });
     const { setSearchKeyWord } = useContext(ApplyContext);
+    const [period,setPeriod] = useState<string>();
 
   useEffect(() => {
     window.location.search &&
@@ -21,10 +22,10 @@ export const HistorySearch = () => {
   }, [navigate]);
 
   const CaculateStartDate = (e) => {
-    const period= e.target.value;
+    const str_period= e.target.value;
     const today = new Date();
-
-    switch (period) {
+    setPeriod(str_period);
+    switch (str_period) {
         case "1week":
           today.setDate(today.getDate() - 7);
           break;
@@ -52,7 +53,7 @@ export const HistorySearch = () => {
     const month = String(today.getMonth() + 1).padStart(2, '0'); 
     const day = String(today.getDate()).padStart(2, '0');
     const startDate=`${year}-${month}-${day}`;
-
+    
     setSearchValue({ ...searchValue, startDate: startDate })
   }
 
@@ -67,8 +68,9 @@ export const HistorySearch = () => {
     return(
         <>
         <HistorySearchStyled>
-							<span className="fr"> <select
-								className="period" id="period" onChange={CaculateStartDate} value={searchValue.startDate}>
+							<span className="fr"> 
+                <select className="period" id="period" 
+                onChange={(e) =>CaculateStartDate(e)} value={period}>
 									<option value="all">조회기간 전체</option>
 									<option value="1week">지난 1주일</option>
 									<option value="1month">지난 1개월</option>
@@ -76,16 +78,19 @@ export const HistorySearch = () => {
 									<option value="3month">지난 3개월</option>
 									<option value="6month">지난 6개월</option>
 									<option value="1year">지난 1년</option>
-							</select> <select className="view-status" id="view-status" onChange={(e) =>
+							</select> 
+              <select className="view-status" id="view-status" onChange={(e) =>
                   setSearchValue({ ...searchValue, viewStatus: e.target.value })} value={searchValue.viewStatus}>
 									<option value="all">열람여부 전체</option>
 									<option value="1">열람</option>
 									<option value="0">미열람</option>
-							</select> <select className="sort-order" id="sort-order" onChange={(e) =>
+							</select> 
+              <select className="sort-order" id="sort-order" onChange={(e) =>
                   setSearchValue({ ...searchValue, sortOrder: e.target.value })} value={searchValue.sortOrder}>
 									<option value="asc">과거지원순</option>
 									<option value="desc">최근지원순</option>
-							</select> <input type="text" className="keyword" id="keyword"
+							</select> 
+              <input type="text" className="keyword" id="keyword"
 								placeholder="키워드 입력"  onChange={(e) =>
                 setSearchValue({ ...searchValue, keyWord: e.target.value })} value={searchValue.keyWord}/> 
                                 <Button onClick={handlerSearch}>검색</Button> 

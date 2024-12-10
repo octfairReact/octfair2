@@ -38,9 +38,7 @@ margin-top: 2px;
 font-size: 15px;
 font-weight: bold;
 }
-.modal_preview .resume-link{
-text-align: left;
-}
+
 .resume_preview{
 color: white;
 background-color: orange;
