@@ -53,12 +53,14 @@ export const StyledTableResume = styled.table`
         // font-size: 14px;
     }
 
-    #resumetitle, #userName, #userEmail, #userPhone {
-        margin: 5px 0px 5px;
+    #resumetitle {
+        margin: 30px 5px 20px;
+        font-size: 35px;
+        width: 90%;
     }
 
-    #resumetitle {
-        font-size: 35px;
+    #userName, #userEmail, #userPhone {
+        margin: 10px 5px;
     }
 
     .res-comment {
@@ -77,8 +79,7 @@ export const StyledTableResume = styled.table`
     }
 
     .resumeDetail_body_haeder {
-        margin-top: 15px;
-        margin-bottom: 15px;
+        margin: 20px 0px;
         padding-bottom: 10px;
         font-size: 25px;
         font-weight: 500;
@@ -100,8 +101,23 @@ export const StyledTableResume = styled.table`
     }
 
     .btnGroup {
-        textAlign: center;
-        margin: 80px 0px 30px;
+        width: 90%;
+        text-align: center;
+        margin: 100px 0px 30px;
+    }
+
+    .btnGroup > button {
+        width: 120px;
+        margin: 5px;
+        font-size: 17px;
+    }
+
+    #fileName {
+        margin: 10px;
+    }
+
+    #deleteIcon {
+        margin-left: 10px;
     }
 `;
 
@@ -147,12 +163,13 @@ export const StyledTd = styled.td`
 
     .detailTitle {
         margin: 10px 0px 12px;
-        font-weight: 600;
+        font-size: 21px;
+        font-weight: 500;
     }
 
     .detailFile {
         margin: 0px 0px 3px;
-        font-size: 13px;
+        font-size: 15px;
         font-weight: 500;
         color: #2c6dd4;
     }
@@ -163,7 +180,7 @@ export const StyledTd = styled.td`
     }
 
     .tdUpdateDate{
-        font-size: 15px;
+        // font-size: 16px;
         color: gray;
     }
 `;

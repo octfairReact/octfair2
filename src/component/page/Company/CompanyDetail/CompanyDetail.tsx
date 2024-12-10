@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { StyledTableCompany } from "../Style/StyledTableCompany"
+import { StyledCompanyDetail, StyledTableCompany } from "../Style/StyledTableCompany"
 import { useEffect, useState } from "react";
 import { ICompanyDetail, ICompanyDetailReponse } from "../../../../models/interface/ICompany";
 import { Company } from "../../../../api/api";
@@ -32,7 +32,7 @@ export const CompanyDetail = () => {
   }
 
   return (
-    <StyledTableCompany>
+    <StyledCompanyDetail>
       <div className="divComGrpCodList">
 			  <table className="table table-bordered">
           <colgroup>
@@ -99,11 +99,11 @@ export const CompanyDetail = () => {
 					</tbody>
 				</table>
       </div>
-      <div className="btnGroup2">
+      <div className="btnGroup">
         <Button variant="secondary" onClick={() => navigate(`/react/jobs/post-detail/${postIdx}`)}>
           <span>기업 지원 공고 확인하기</span>
         </Button>
       </div>
-    </StyledTableCompany>
+    </StyledCompanyDetail>
   );
 };

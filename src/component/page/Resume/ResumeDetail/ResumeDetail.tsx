@@ -131,7 +131,6 @@ export const ResumeDetail = () => {
     <StyledTableResume>
       <div id="container">
         <div className="resumeDetail_body_wrap">
-
           <div className="resumeDetail_body_basicInfo">
             <div className="mb-3">
               <input 
@@ -142,30 +141,9 @@ export const ResumeDetail = () => {
                 defaultValue={resumeDetail?.resTitle}
                 ref={resTitle}
               />
-              <input 
-                id="userName" 
-                className="form-control form-control-sm form-control-plaintext"
-                type="text" 
-                placeholder="이름" 
-                defaultValue={resumeDetail?.userNm}
-                readOnly 
-              />
-              <input 
-                id="userEmail" 
-                className="form-control form-control-sm form-control-plaintext" 
-                type="email" 
-                placeholder="이메일" 
-                defaultValue={resumeDetail?.email}
-                readOnly 
-              />
-              <input 
-                id="userPhone" 
-                className="form-control form-control-sm form-control-plaintext"
-                type="text" 
-                placeholder="연락처" 
-                defaultValue={resumeDetail?.phone}
-                readOnly 
-              />
+              <div id="userName">{resumeDetail?.userNm}</div>
+              <div id="userEmail">{resumeDetail?.email}</div>
+              <div id="userPhone">{resumeDetail?.phone}</div>
             </div>
           </div>
 
@@ -253,61 +231,32 @@ export const ResumeDetail = () => {
               {resumeDetail?.fileName ? (
                 <div className="input-group mb-3">
                   <div className="form-control" style={{ cursor: "pointer" }}>
-                    <span
-                      onClick={() => downloadFile(resumeDetail?.resIdx)}
-                      style={{ margin: "10px" }}
-                    >
+                    <span id="fileName" onClick={() => downloadFile(resumeDetail?.resIdx)}>
                       {resumeDetail?.fileName}
                     </span>
-                    <span 
-                      style={{ marginLeft: "10px" }}
-                      onClick={() => handlerDeleteFile()}
-                    >
+                    <span id="deleteIcon" onClick={() => handlerDeleteFile()}>
                       <RiDeleteBin6Line />
                     </span>
                   </div>
-                  
-                  <input
-                    type="file"
-                    id="resumeAttach"
-                    style={{ display: "none" }}
-                    ref={fileInputRef}
-                  />
+                  <input type="file" style={{ display: "none" }} ref={fileInputRef} />
                 </div>
               ) : (
                 <div className="input-group mb-3">
-                  <input 
-                    type="file" 
-                    className="form-control" 
-                    id="resumeAttach" 
-                    ref={fileInputRef} 
-                  />
+                  <input type="file" className="form-control" ref={fileInputRef} />
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className="btnGroup" style={{ textAlign: "center" }}>
-          <Button 
-            variant="secondary" 
-            style={{ margin: "3px" }}
-            onClick={handlerReturn}
-          >
+        <div className="btnGroup">
+          <Button variant="secondary" onClick={handlerReturn}>
             <span>목록으로</span>
           </Button>
-          <Button 
-            variant="primary" 
-            style={{ margin: "3px" }}
-            onClick={handlerFileUpdate}
-          >
+          <Button variant="primary" onClick={handlerFileUpdate}>
             <span>저장하기</span>
           </Button>
-          <Button 
-            variant="secondary" 
-            style={{ margin: "3px" }}
-            onClick={() => handlerPreview(resIdx)}
-          >
+          <Button variant="secondary" onClick={() => handlerPreview(resIdx)}>
             <span>미리보기</span>
           </Button>
         </div>
@@ -315,9 +264,7 @@ export const ResumeDetail = () => {
 
       {modal && (
         <Portal>
-          <ResumeModalPreview
-            resumeSeq={resIdx}
-          />
+          <ResumeModalPreview resumeSeq={resIdx} />
         </Portal>
       )}
     </StyledTableResume>
