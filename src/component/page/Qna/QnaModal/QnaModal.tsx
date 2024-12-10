@@ -219,13 +219,11 @@ export const QnaModal: FC<IQnaModalProps> = ({ onSuccess, qnaSeq, setQnaSeq }) =
               </label>
             )}
             {qnaSeq ? (
-              userInfo.loginId === qnaDetail?.author || userInfo.userType === 'M' ? (
-                !qnaDetail?.ans_content && (
-                  <>
-                    <button onClick={handlerFileUpdate}>수정</button>
-                    <button onClick={handlerDelete}>삭제</button>
-                  </>
-                )
+              (userInfo.loginId === qnaDetail?.author && !qnaDetail?.ans_content) || userInfo.userType === 'M' ? (
+                <>
+                  <button onClick={handlerFileUpdate}>수정</button>
+                  <button onClick={handlerDelete}>삭제</button>
+                </>
               ) : null
             ) : (
               <button onClick={handlerFileSave}>등록</button>
