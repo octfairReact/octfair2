@@ -56,7 +56,6 @@ export const FindIdPwModal = () => {
             name: name.current.value,
             email: email.current.value,
         };
-        console.log(param);
 
         const findUserId = await postSignUpApi<IPostResponse>(SignUp.findId, param);
         if (findUserId.result === "SUCCESS") {
@@ -88,7 +87,6 @@ export const FindIdPwModal = () => {
             id: loginId.current.value,
             email: email.current.value,
         };
-        console.log(param);
 
         const findUserPw = await postSignUpApi<IPostResponse>(SignUp.findPw, param);
         if (findUserPw.result === "SUCCESS") {
@@ -114,7 +112,7 @@ export const FindIdPwModal = () => {
             pw: password.current.value,
             id: passLoginId,
         };
-        console.log(param);
+        
         const updateUserPw = await postSignUpApi<IPostResponse>(SignUp.updatePw, param);
         if (updateUserPw.result === "SUCCESS") {
             alert("비밀번호 변경이 완료되었습니다.");

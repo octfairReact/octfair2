@@ -52,11 +52,9 @@ export const NoticeModal: FC<INoticeModalProps> = ({
       const { fileExt, logicalPath } = detailApi.detail;
       if (fileExt === "jpg" || fileExt === "gif" || fileExt === "png") {
         setImageUrl(logicalPath);
-        console.log(logicalPath);
       } else {
         setImageUrl("");
       }
-      // console.log(logicalPath);
     }
   };
 

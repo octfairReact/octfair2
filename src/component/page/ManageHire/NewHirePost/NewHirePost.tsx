@@ -42,16 +42,7 @@ const NewHirePost = () => {
   const navigate = useNavigate();
   const [postIdx, setPostIdx] = useState<string | null>(null);
   const params = useParams();
-  const [isEditMode, setIsEditMode] = useState<boolean>(false);
 
-  // useEffect(() => {
-  //   if (postIdx) {
-  //     setIsEditMode(true);
-  //     getPostDetail(postIdx);
-  //   } else {
-  //     setIsEditMode(false);
-  //   }
-  // }, [postIdx]);
   useEffect(() => {
     const fetchedPostIdx = params.postIdx ? params.postIdx : null;
     if (fetchedPostIdx) {
@@ -65,7 +56,6 @@ const NewHirePost = () => {
 
     const response = await postApi<IPostdetailResponse>(Post.getDetail, params);
 
-    console.log("API Response: ", response);
     if (response) {
       setPostData(response.postDetail);
       setBizData(response.bizDetail);

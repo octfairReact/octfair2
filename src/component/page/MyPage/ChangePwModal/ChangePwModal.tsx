@@ -45,7 +45,6 @@ export const ChangePwModal = (loginId) => {
             newPasswdConfirm: checkPassword.current.value,
             loginId: loginId.loginId,
         };
-        console.log(param);
         const updateUserPw = await postApi<IPostResponse>(MyPage.updatePw, param);
         if (updateUserPw.result === "fail1") {
             alert("현재 비밀번호와 일치하지 않습니다");

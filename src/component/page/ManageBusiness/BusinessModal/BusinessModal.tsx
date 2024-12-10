@@ -7,7 +7,7 @@ import { postApi } from "../../../../api/postApi";
 import { bizDataSchema } from "../../../common/Validate/Schemas/Biz/ManageBizSchema";
 import { BusinessModalStyled } from "./css/styled";
 import { formatPhoneNumber } from "../../../common/Utils/Format/FormatPhone";
-import { clickHandler, handleOutsideClick, useOutsideClick } from "../../../common/Utils/Modal/PreventOutsideClick";
+import { useOutsideClick } from "../../../common/Utils/Modal/PreventOutsideClick";
 
 interface IBusinessModalProps {
     onSuccess: () => void;
@@ -22,8 +22,6 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
 
     const bizName = useRef<HTMLInputElement>(null);
     const bizCeoName = useRef<HTMLInputElement>(null);
-    // const bizEmpCount = useRef<HTMLInputElement>(null);
-    // const bizRevenue = useRef<HTMLInputElement>(null);
     const bizContact = useRef<HTMLInputElement>(null);
     const bizAddr = useRef<HTMLInputElement>(null);
     const bizWebUrl = useRef<HTMLInputElement>(null);
@@ -46,7 +44,6 @@ export const BusinessModal: FC<IBusinessModalProps> = ({ onSuccess, bizIdx }) =>
 
     const searchDetail = async () => {
         const param = { bizIdx: bizIdx };
-        console.log(param);
         const detailApi = await postApi<IBizDetailResponse>(ManageBusiness.getDetail, param);
         if (detailApi) {
             setBizDetail(detailApi.detail);

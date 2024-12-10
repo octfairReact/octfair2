@@ -37,7 +37,6 @@ export const ApplicantMain = () => {
         const searchList = await postApi<IUserListResponse>(ManageApplicant.getList, searchParam);
 
         if (searchList) {
-            console.log(searchList.applicantCnt);
             setApplicantList(searchList.applicant);
             setListCount(searchList.applicantCnt);
             setCPage(currentPage);

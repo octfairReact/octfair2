@@ -33,13 +33,10 @@ export const ManagePostMain = () => {
       pageSize: "5",
     };
 
-    // console.log("searchParam: ", searchParam);
-
     const searchList = await postApi<IManagePostListResponse>(
       "/api/manage-post/readPostList.do",
       searchParam
     );
-    console.log("manage-post API Response:", searchList);
 
     if (searchList) {
       setManagePostList(searchList.approvalList);
@@ -49,8 +46,6 @@ export const ManagePostMain = () => {
   };
 
   const hanlderDetail = (postIdx: number) => {
-    // console.log("hanlderDetail");
-    // navigate(`/react/jobs/postDetail/${postIdx}`);
     navigate(`/react/jobs/post-detail/${postIdx}`);
   };
 
