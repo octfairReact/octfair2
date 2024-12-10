@@ -54,7 +54,6 @@ export const ApplicantModal: FC<IApplicantModalProps> = ({ onSuccess, loginId })
 
     const searchDetail = async () => {
         const param = { loginId: loginId };
-        console.log(param);
         const detailApi = await postApi<IUserDetailResponse>(ManageApplicant.getDetail, param);
         if (detailApi) {
             setApplicantDetail(detailApi.detail);

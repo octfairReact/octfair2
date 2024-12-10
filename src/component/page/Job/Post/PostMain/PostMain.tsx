@@ -26,7 +26,6 @@ export const PostMain = () => {
   const { searchKeyWord } = useContext(PostContext);
 
   useEffect(() => {
-    // console.log("updated searchKeyWord: ", searchKeyWord);
     searchJobPostList();
   }, [searchKeyWord]);
 
@@ -39,13 +38,10 @@ export const PostMain = () => {
       pageSize: "5",
     };
 
-    // console.log("searchParam: ", searchParam);
-
     const searchList = await postApi<IPostListResponse>(
       Post.getList,
       searchParam
     );
-    // console.log("API Response:", searchList);
 
     if (searchList) {
       setJobPostList(searchList.approvalList);
@@ -55,8 +51,6 @@ export const PostMain = () => {
   };
 
   const hanlderDetail = (postIdx: number) => {
-    // console.log("hanlderDetail");
-    // navigate(`/react/jobs/postDetail/${postIdx}`);
     navigate(`/react/jobs/post-detail/${postIdx}`);
   };
 

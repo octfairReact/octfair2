@@ -53,7 +53,6 @@ export const HistoryMain = () => {
       appId: applyId,
     };
     const res = await postApi<{ result: string }>(History.deleteApply, param);
-    console.log(res.result);
     if (res.result === "success") {
       swal("지원취소 완료하였습니다.","","success").then(() => {
         window.location.reload();

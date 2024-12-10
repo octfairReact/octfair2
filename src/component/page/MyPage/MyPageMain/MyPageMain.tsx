@@ -31,7 +31,6 @@ export const MyPageMain = () => {
 
   const searchDetail = async () => {
     const param = { loginId: userInfo.loginId };
-    console.log(param);
     const detailApi = await postApi<IUserDetailResponse>(MyPage.getDetail, param);
 
     if (detailApi) {
@@ -63,7 +62,6 @@ export const MyPageMain = () => {
   useEffect(() => {
     // userDetail 값이 변경되면 여기서 다른 작업을 수행할 수 있음
     if (userDetail) {
-      console.log("User Detail updated:", userDetail);
       // 추가 작업 (예: UI에 사용자 상세 정보 반영)
       setSex(userDetail?.sex);
       setAddress(userDetail?.address);

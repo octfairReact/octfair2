@@ -31,7 +31,6 @@ const PostDetailBody = () => {
 
   useEffect(() => {
     postDetailData(postIdx);
-    console.log("postDetailData");
   }, [postIdx]);
 
   useEffect(() => {
@@ -48,12 +47,10 @@ const PostDetailBody = () => {
 
     const response = await postApi<IPostdetailResponse>(Post.getDetail, params);
 
-    console.log("API Response: ", response);
     if (response) {
       setPostDetail(response.postDetail);
       setBizDetail(response.bizDetail);
       setIsClicked(response.isClicked);
-      console.log(isClicked);
     }
   };
 
@@ -62,7 +59,6 @@ const PostDetailBody = () => {
 
     const response = await postApi("/api/manage-post/statusUpdate.do", params);
 
-    console.log("API Response: ", response);
     if (response) {
       swal(`${appStatus}이(가) 처리되었습니다.`, "", "success");
     } else {
@@ -75,7 +71,6 @@ const PostDetailBody = () => {
   };
 
   const handlerSaveScrap = async () => {
-    console.log("handlerSaveScrap");
     const requestBody = {
       postIdx: postDetail.postIdx,
     };
@@ -84,7 +79,6 @@ const PostDetailBody = () => {
       Scrap.saveScrap,
       requestBody
     );
-    console.log("saveScrapResponse : ", response);
 
     if (response?.result === "success") {
       swal("스크랩이 성공적으로 저장되었습니다.", "", "success");
@@ -99,8 +93,6 @@ const PostDetailBody = () => {
     setPostDetail(postDetail);
     setBizDetail(bizDetail);
     setIsClicked((prev) => ({ ...prev, isApplyed: true }));
-    console.log(postDetail);
-    console.log(bizDetail);
   };
 
   const onPostSuccess = () => {

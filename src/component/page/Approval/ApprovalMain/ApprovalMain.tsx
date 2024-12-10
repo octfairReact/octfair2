@@ -37,7 +37,6 @@ const ApprovalMain = () => {
       "/api/manage-post/readPostList.do",
       searchParam
     );
-    console.log("manage-post API Response:", searchList);
 
     if (searchList) {
       setManagePostList(searchList.pendingList);
