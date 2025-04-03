@@ -20,7 +20,7 @@
 
 <br>
 
-| **김영찬** | **박선준** | **김재원** |
+| **김** | **박** | **김재원** |
 | :------: |  :------: | :------: |
 | [<img src="https://avatars.githubusercontent.com/u/154858214?v=4" height=250 width=250> <br/> @yckim8721](https://github.com/yckim8721) | [<img src="https://avatars.githubusercontent.com/u/169329496?v=4" height=250 width=250> <br/> @adventureJava](https://github.com/adventureJava) ||
   
