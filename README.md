@@ -14,13 +14,13 @@
 
 <div align="center">
   
-| **김용빈** | **나유리** | **임한울** |
+| **** | **** | **** |
 | :------: |  :------: | :------: |
 | [<img src="https://avatars.githubusercontent.com/u/44955172?v=4" height=250 width=250> <br/> @yongbyn](https://github.com/yongbyn) | [<img src="https://avatars.githubusercontent.com/u/51113213?v=4" height=250 width=250> <br/> @nyr6230](https://github.com/nyr6230) | [<img src="https://avatars.githubusercontent.com/u/126750650?v=4" height=250 width=250> <br/> @katpaking](https://github.com/katpaking) |
 
 <br>
 
-| **김** | **박** | **김재원** |
+| **** | **박* | **** |
 | :------: |  :------: | :------: |
 | [<img src="https://avatars.githubusercontent.com/u/154858214?v=4" height=250 width=250> <br/> @yckim8721](https://github.com/yckim8721) | [<img src="https://avatars.githubusercontent.com/u/169329496?v=4" height=250 width=250> <br/> @adventureJava](https://github.com/adventureJava) ||
   
